@@ -1,6 +1,5 @@
 package com.hfad.myferma.SalePackage
 
-import android.R
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Bundle
@@ -12,9 +11,15 @@ import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarData
+import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
@@ -53,17 +58,17 @@ class SaleChartFragment : Fragment() {
         layout = inflater.inflate(R.layout.fragment_sale_chart, container, false)
         // установка спинеров
 
-        animals_spiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView?
-        mount_spiner = layout.findViewById<View>(R.id.mount_spiner) as AutoCompleteTextView?
-        year_spiner = layout.findViewById<View>(R.id.year_spiner) as AutoCompleteTextView?
+        animals_spiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
+        mount_spiner = layout.findViewById<View>(R.id.mount_spiner) as AutoCompleteTextView
+        year_spiner = layout.findViewById<View>(R.id.year_spiner) as AutoCompleteTextView
 
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
 
         add()
-        //Создание списка с данными для графиков
-        visitors = ArrayList<BarEntry>()
+
         val calendar: Calendar = Calendar.getInstance()
+
         // настройка спинеров
         mount_spiner.setText("За весь год", false)
         year_spiner.setText(calendar.get(Calendar.YEAR).toString(), false)
@@ -72,6 +77,7 @@ class SaleChartFragment : Fragment() {
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
         fab.visibility = View.GONE
+
         val appBar: MaterialToolbar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
         appBar.title = "Мои продажи - График"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
@@ -80,9 +86,10 @@ class SaleChartFragment : Fragment() {
         //Логика просчета
         storeDataInArrays()
         bar(labes)
+
         animals_spiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                visitors!!.clear()
+                visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
                     bar(mountMass)
@@ -92,7 +99,7 @@ class SaleChartFragment : Fragment() {
             }
         mount_spiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                visitors!!.clear()
+                visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
                     bar(mountMass)
@@ -102,7 +109,7 @@ class SaleChartFragment : Fragment() {
             }
         year_spiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-                visitors!!.clear()
+                visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
                     bar(mountMass)
@@ -120,7 +127,7 @@ class SaleChartFragment : Fragment() {
             //Настройка спинера с продуктами
            val  arrayAdapterProduct = ArrayAdapter<String>(
                requireContext().applicationContext,
-                R.layout.simple_spinner_dropdown_item,
+               android.R.layout.simple_spinner_dropdown_item,
                 productList
             )
             animals_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterProduct)
@@ -128,7 +135,7 @@ class SaleChartFragment : Fragment() {
             // настройка спинера с годами (выглядил как обычный, и год запоминал)
            val arrayAdapterYear = ArrayAdapter<String>(
                 requireContext().applicationContext,
-                R.layout.simple_spinner_dropdown_item,
+               android.R.layout.simple_spinner_dropdown_item,
                 yearList
             )
             year_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterYear)
@@ -138,22 +145,20 @@ class SaleChartFragment : Fragment() {
     fun add() {
         val yearSet: MutableSet<String> = HashSet()
         val productSet: MutableSet<String> = HashSet()
+
         val cursor: Cursor = myDB.readAllDataSale()
         while (cursor.moveToNext()) {
-            val year: String = cursor.getString(5)
-            val product: String = cursor.getString(1)
+            val year = cursor.getString(5)
+            val product = cursor.getString(1)
             yearSet.add(year)
             productSet.add(product)
         }
+
         cursor.close()
-        yearList = ArrayList()
-        productList = ArrayList()
-        for (yearColum: String in yearSet) {
-            yearList.add(yearColum)
-        }
-        for (productColum: String in productSet) {
-            productList.add(productColum)
-        }
+
+        yearList = yearSet.toMutableList()
+        productList = productSet.toMutableList()
+
     }
 
     private fun bar(xAsis: Array<String>) {
@@ -165,10 +170,10 @@ class SaleChartFragment : Fragment() {
         val barData: BarData = BarData(barDataSet)
         barChart.invalidate()
         barChart.setFitBars(true)
-        barChart.setData(barData)
-        barChart.getDescription().setText("График проданной продукции со склада")
+        barChart.data = barData
+        barChart.description.text = "График проданной продукции со склада"
         barChart.animateY(2000)
-        val xAxis: XAxis = barChart.getXAxis()
+        val xAxis: XAxis = barChart.xAxis
         xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
         xAxis.setDrawGridLines(false)
         xAxis.setGranularity(1f) // only intervals of 1 day
@@ -205,7 +210,7 @@ class SaleChartFragment : Fragment() {
                     if ((year2 == cursor.getString(5))) {
                         x = cursor.getString(2).toFloat()
                         y = cursor.getString(3).toFloat()
-                        visitors!!.add(BarEntry(y, x))
+                        visitors.add(BarEntry(y, x))
                     }
                 }
             }
@@ -218,7 +223,7 @@ class SaleChartFragment : Fragment() {
                         if ((year2 == cursor.getString(5))) {
                             x = cursor.getString(2).toFloat()
                             y = cursor.getString(3).toFloat()
-                            visitors!!.add(BarEntry(y, x))
+                            visitors.add(BarEntry(y, x))
                         }
                     }
                 }
@@ -227,7 +232,7 @@ class SaleChartFragment : Fragment() {
         } else if (cursor.count == 0) {
             x = 0f
             y = 0f
-            visitors!!.add(BarEntry(y, x))
+            visitors.add(BarEntry(y, x))
         } else if (mount == 13) {
             if ((animalsType == cursor.getString(1))) {
                 if (mount == 13) {
@@ -252,7 +257,7 @@ class SaleChartFragment : Fragment() {
             } else {
                 x = 0f
                 y = 0f
-                visitors!!.add(BarEntry(y, x))
+                visitors.add(BarEntry(y, x))
             }
             while (cursor.moveToNext()) {
                 if ((animalsType == cursor.getString(1))) {
@@ -278,23 +283,23 @@ class SaleChartFragment : Fragment() {
                 }
             }
             cursor.close()
-            visitors!!.add(BarEntry(1, jan))
-            visitors!!.add(BarEntry(2, feb))
-            visitors!!.add(BarEntry(3, mar))
-            visitors!!.add(BarEntry(4, apr))
-            visitors!!.add(BarEntry(5, mai))
-            visitors!!.add(BarEntry(6, jun))
-            visitors!!.add(BarEntry(7, jul))
-            visitors!!.add(BarEntry(8, aug))
-            visitors!!.add(BarEntry(9, sep))
-            visitors!!.add(BarEntry(10, oct))
-            visitors!!.add(BarEntry(11, nov))
-            visitors!!.add(BarEntry(12, dec))
+            visitors.add(BarEntry(1, jan))
+            visitors.add(BarEntry(2, feb))
+            visitors.add(BarEntry(3, mar))
+            visitors.add(BarEntry(4, apr))
+            visitors.add(BarEntry(5, mai))
+            visitors.add(BarEntry(6, jun))
+            visitors.add(BarEntry(7, jul))
+            visitors.add(BarEntry(8, aug))
+            visitors.add(BarEntry(9, sep))
+            visitors.add(BarEntry(10, oct))
+            visitors.add(BarEntry(11, nov))
+            visitors.add(BarEntry(12, dec))
             // если месяц пустой
         } else {
             x = 0f
             y = 0f
-            visitors!!.add(BarEntry(y, x))
+            visitors.add(BarEntry(y, x))
         }
     }
 
