@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:columnCount="3">
+
+    <!-- TODO: Update blank fragment layout -->
+
+<!--    <TextView-->
+<!--        style="@style/TextAppearance.MyApp.DisplaySmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_row="0"-->
+<!--        android:layout_column="0"-->
+<!--        android:text="Мой товар"-->
+<!--        android:padding="10dp"-->
+<!--        android:layout_columnSpan="2"-->
+<!--        android:layout_gravity="left"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginBottom="100dp"-->
+
+<!--        />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:textSize="18dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:layout_marginBottom="40dp"
+        android:layout_marginLeft="10dp"
+        android:text="@string/result_text" />
+
+    <TextView
+        android:id="@+id/totalAdd_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18dp"
+        android:layout_marginLeft="-15dp"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:fontFamily="@font/commissioner_regular"
+        android:text="" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/menu"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:hint="Товар"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp">
+
+        <AutoCompleteTextView
+            android:id="@+id/animals_spiner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/add_edit"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:hint="Количество"
+        app:helperText="Укажите кол-во товара"
+        app:helperTextEnabled="true"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        app:endIconMode="custom"
+        app:suffixText="шт."
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
+            android:inputType="phone"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/add_button"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="5dp"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="1"
+        android:text="@string/add_button"
+        app:icon="@drawable/baseline_add_24"
+
+        />
+
+
+    <Button
+        android:id="@+id/addChart_button"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="0"
+        android:text="График"
+        app:icon="@drawable/baseline_bar_chart_24"/>
+    />
+
+
+</GridLayout>

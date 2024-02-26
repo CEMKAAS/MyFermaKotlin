@@ -1,0 +1,169 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    style="@style/Widget.Material3.BottomSheet"
+    app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
+
+    <com.google.android.material.bottomsheet.BottomSheetDragHandleView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        />
+
+
+    <TableLayout
+        android:id="@+id/tableLayout1"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="5dp"
+        android:stretchColumns="*"
+        app:layout_constraintBottom_toTopOf="@+id/tableLayout3"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.39">
+
+        <TableRow>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/name_incubator"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+
+                android:hint="Назавание инкубатора"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:helperText="Укажите название инкубатора"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:inputType="text" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </TableRow>
+
+    </TableLayout>
+
+    <TableLayout
+        android:id="@+id/tableLayout3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:stretchColumns="*"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout1"
+        app:layout_constraintVertical_bias="0.39">
+
+        <TableRow>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/eggAll"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Количество"
+                android:padding="5dp"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:endIconDrawable="@drawable/baseline_egg_24"
+                app:helperText="Укажите кол-во яиц"
+                app:helperTextEnabled="true"
+                app:suffixText="шт.">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:inputType="number" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time1"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+
+                android:padding="5dp"
+                app:endIconDrawable="@drawable/baseline_access_time_24"
+                android:hint="Уведомление "
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+
+                app:helperText="Укажите время"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:focusableInTouchMode="false"
+                    android:inputType="time" />
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+
+        </TableRow>
+
+        <TableRow>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:hint="Уведомление "
+                app:endIconMode="custom"
+                android:padding="5dp"
+                app:errorEnabled="true"
+                app:endIconDrawable="@drawable/baseline_access_time_24"
+                app:helperText="Укажите время"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:focusableInTouchMode="false"
+                    android:inputType="time"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+
+            <com.google.android.material.textfield.TextInputLayout
+                android:id="@+id/time3"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:padding="5dp"
+                android:hint="Уведомление "
+                android:stretchColumns="*"
+                app:endIconMode="custom"
+                app:errorEnabled="true"
+                app:endIconDrawable="@drawable/baseline_access_time_24"
+                app:helperText="Укажите время"
+                app:helperTextEnabled="true">
+
+                <com.google.android.material.textfield.TextInputEditText
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:imeOptions="actionGo"
+                    android:focusableInTouchMode="false"
+                    android:inputType="time"/>
+
+            </com.google.android.material.textfield.TextInputLayout>
+        </TableRow>
+    </TableLayout>
+
+    <Button
+        android:id="@+id/update_button"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Обновить"
+        android:layout_marginTop="10dp"
+        android:layout_marginBottom="10dp"
+        android:textAllCaps="false"
+        android:textSize="20sp" />
+
+</LinearLayout>

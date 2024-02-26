@@ -1,0 +1,57 @@
+<resources>
+    <!-- Reply Preference -->
+    <string-array name="reply_entries">
+        <item>Reply</item>
+        <item>Reply to all</item>
+    </string-array>
+
+    <string-array name="statusWriteOff2">
+        <item>На собсвенные нужды</item>
+        <item>На утилизацию</item>
+    </string-array>
+
+
+    <string-array name="mounts">
+        <item>За весь год</item>
+        <item>Январь</item>
+        <item>Февраль</item>
+        <item>Март</item>
+        <item>Апрель</item>
+        <item>Май</item>
+        <item>Июнь</item>
+        <item>Июль</item>
+        <item>Август</item>
+        <item>Сентябрь</item>
+        <item>Октябрь</item>
+        <item>Ноябрь</item>
+        <item>Декабрь</item>
+    </string-array>
+
+    <string-array name="birsd">
+        <item>Курицы</item>
+        <item>Гуси</item>
+        <item>Индюки</item>
+        <item>Перепела</item>
+        <item>Утки</item>
+    </string-array>
+
+    <string-array name="sort">
+        <item>По умолчанию</item>
+        <item>По возрастанию</item>
+        <item>По убыванию</item>
+    </string-array>
+
+    <string-array name="animals_spiner_two">
+        <item>Все</item>
+        <item>Яйца</item>
+        <item>Молоко</item>
+        <item>Мясо</item>
+    </string-array>
+
+
+
+    <string-array name="reply_values">
+        <item>reply</item>
+        <item>reply_all</item>
+    </string-array>
+</resources>

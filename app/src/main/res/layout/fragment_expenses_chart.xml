@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:layout_gravity="center|top">
+
+    <com.github.mikephil.charting.charts.PieChart
+        android:id="@+id/barChart"
+        android:layout_width="match_parent"
+        android:layout_height="400dp"
+        android:layout_gravity="center" />
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_gravity="center">
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/menu2"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Месяц"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/mount_spiner"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:inputType="none"
+            android:textSize="10dp"
+            app:simpleItems="@array/mounts" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/menu3"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:hint="Год"
+        android:layout_marginLeft="5dp"
+        >
+
+        <AutoCompleteTextView
+            android:id="@+id/year_spiner"
+            android:layout_width="150dp"
+            android:layout_height="50dp"
+            android:textSize="10dp"
+            android:inputType="none" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    </LinearLayout>
+</LinearLayout>

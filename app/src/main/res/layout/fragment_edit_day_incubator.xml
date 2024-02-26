@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:columnCount="3">
+
+    <TextView
+        android:id="@+id/text_unit"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/unit_text"
+        android:layout_gravity="center"
+        android:textSize="24dp"
+        android:layout_columnSpan="2"
+        android:layout_marginBottom="16dp"
+        android:layout_row="0"
+        android:layout_column="0" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/discAdd_input"
+        android:layout_width="164dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:hint="Температура"
+        android:layout_marginRight="16dp"
+        android:layout_marginBottom="16dp"
+        app:helperText="Укажите температура"
+        app:helperTextEnabled="true"
+        app:suffixText="°C"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="phone"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/dayAdd_input"
+        android:layout_width="164dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:hint="Влажность"
+        app:helperText="Укажите влажность"
+        app:helperTextEnabled="true"
+        app:suffixText="%"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/mountAdd_input"
+        android:layout_width="164dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_row="2"
+        android:layout_column="0"
+        android:hint="Переворот"
+        app:helperText="Укажите кол-во переворачиваний"
+        android:layout_marginBottom="16dp"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/yearAdd_input"
+        android:layout_width="164dp"
+        android:layout_height="wrap_content"
+        android:ems="10"
+        android:layout_row="2"
+        android:layout_column="1"
+        android:hint="Проветривание"
+        app:helperText="Укажите кол-во проветриваний"
+        app:helperTextEnabled="true"
+        app:errorEnabled="true">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="text"
+            />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+
+    <Button
+        android:id="@+id/update_button"
+        android:layout_width="match_parent"
+        android:layout_height="70dp"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:text="Обновить"
+        android:textAllCaps="false"
+        android:layout_columnSpan="2"
+        android:layout_gravity="center"
+        android:textSize="20sp" />
+
+
+</GridLayout>

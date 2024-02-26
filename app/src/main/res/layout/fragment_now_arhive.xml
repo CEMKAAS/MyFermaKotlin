@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="?selectableItemBackground">
+
+    <TableLayout
+        android:id="@+id/tableLayout2"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_marginBottom="50dp"
+        android:stretchColumns="1,2,3,4"
+        app:layout_constraintBottom_toTopOf="@+id/begin"
+        tools:layout_editor_absoluteX="8dp">
+
+        <TextView
+            android:id="@+id/type"
+            style="@style/TextAppearance.MyApp.DisplaySmall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="Курицы" />
+
+        <TextView
+            android:id="@+id/date"
+            style="@style/TextAppearance.MyApp.DisplaySmall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:text="12.05.2023- 21.05.2023" />
+
+        <TextView
+            android:id="@+id/egg"
+            style="@style/TextAppearance.MyApp.DisplaySmall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Было заложено 10 яиц" />
+
+        <TextView
+            android:id="@+id/little_birds"
+            style="@style/TextAppearance.MyApp.DisplaySmall2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Вышло птенцов 10 штук" />
+
+        <TableRow android:background="#3E6A00">
+
+            <TextView
+                android:layout_width="29dp"
+                android:layout_column="1"
+                android:layout_marginLeft="1dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="0.5dp"
+                android:layout_marginBottom="0.5dp"
+                android:background="#EEF3DC"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="День"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_column="2"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="0.5dp"
+                android:layout_marginBottom="0.5dp"
+                android:background="#EEF3DC"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="°C"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="25dp"
+                android:layout_column="3"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="0.5dp"
+                android:layout_marginBottom="0.5dp"
+                android:background="#EEF3DC"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="%"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="45dp"
+                android:layout_column="4"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginBottom="0.5dp"
+                android:background="#EEF3DC"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Поворот"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:layout_width="110dp"
+                android:layout_column="4"
+                android:layout_marginLeft="0.5dp"
+                android:layout_marginTop="1dp"
+                android:layout_marginRight="1dp"
+                android:layout_marginBottom="0.5dp"
+                android:background="#EEF3DC"
+                android:gravity="center"
+                android:padding="10dp"
+                android:text="Проветривание"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+
+        </TableRow>
+
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content" />
+
+        <ImageView
+            android:id="@+id/empty_imageview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="230dp"
+            android:alpha="0.1"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/no_data"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:alpha="0.4"
+            android:text="No Data."
+            android:textSize="20sp"
+            android:visibility="gone"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/empty_imageview" />
+    </TableLayout>
+
+    <Button
+        android:id="@+id/begin"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:text="Удалить"
+        android:textAllCaps="false"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@+id/tableLayout2" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

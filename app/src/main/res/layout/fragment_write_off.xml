@@ -1,0 +1,164 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:columnCount="3">
+
+    <!-- TODO: Update blank fragment layout -->
+
+    <!--    <TextView-->
+    <!--        style="@style/TextAppearance.MyApp.DisplaySmall"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_row="0"-->
+    <!--        android:layout_column="0"-->
+    <!--        android:text="Мой товар"-->
+    <!--        android:padding="10dp"-->
+    <!--        android:layout_columnSpan="2"-->
+    <!--        android:layout_gravity="left"-->
+    <!--        android:layout_marginTop="20dp"-->
+    <!--        android:layout_marginBottom="100dp"-->
+
+    <!--        />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:textSize="18dp"
+        android:text="@string/result_text"
+         />
+
+    <TextView
+        android:id="@+id/result_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:layout_marginLeft="-15dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:text=""
+        android:textSize="18dp" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/menu"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_width="170dp"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_gravity="fill_horizontal"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        android:hint="Товар">
+
+        <AutoCompleteTextView
+            android:id="@+id/animals_spiner"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:inputType="none"
+            app:simpleItems="@array/animals" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/add_edit"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:layout_marginLeft="5dp"
+        android:layout_marginRight="10dp"
+        android:hint="Количество"
+        app:endIconMode="custom"
+        app:errorEnabled="true"
+        app:helperText="Укажите кол-во товара"
+        app:helperTextEnabled="true"
+        app:suffixText="шт.">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
+            android:inputType="phone" />
+
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <RadioGroup
+        android:id="@+id/radioGroup"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_marginLeft="5dp"
+        android:checkedButton="@+id/radio_button_1"
+        android:orientation="horizontal">
+
+        <RadioButton
+            android:id="@+id/radio_button_1"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:text="На собсвенные нужды"
+            app:icon="@drawable/baseline_cottage_24" />
+
+        <RadioButton
+            android:id="@+id/radio_button_2"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="5dp"
+            android:text="На утилизацию"
+            app:icon="@drawable/baseline_cottage_24"/>
+    </RadioGroup>
+
+    <Button
+        android:id="@+id/writeOffChart_button"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="5"
+        android:layout_column="0"
+        android:onClick="onClickAddChart"
+        android:text="График"
+        app:icon="@drawable/baseline_bar_chart_24"/>
+    />
+
+    <Button
+        android:id="@+id/addWriteOff_button"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="5"
+        android:layout_column="1"
+        android:layout_marginLeft="5dp"
+        android:layout_marginTop="30dp"
+        android:onClick="onClickAddWriteOff"
+        android:text="Списать"
+        app:icon="@drawable/baseline_edit_note_24" />
+
+    <TextView
+        android:id="@+id/errorText"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="6"
+        android:layout_column="0"
+        android:layout_columnSpan="2"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="20dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:text=""
+        android:textColor="#f50029"
+        android:textSize="18dp" />
+
+
+</GridLayout>

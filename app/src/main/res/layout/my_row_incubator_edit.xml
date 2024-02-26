@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<TableLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mainLayout"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:stretchColumns="1,2,3,4"
+    android:background="#3E6A00">
+
+    <TableRow>
+
+        <TextView
+            android:layout_height="match_parent"
+            android:layout_width="29dp"
+            android:layout_column="1"
+            android:gravity="center"
+            android:padding="10dp"
+            android:id="@+id/id_txt"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            android:layout_marginRight="0.5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
+            android:background="#FCFBF4"/>
+
+        <EditText
+            android:id="@+id/temp_edit"
+            android:layout_width="29dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            android:layout_marginRight="0.5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
+            android:imeOptions="actionGo"
+            android:inputType="phone"
+            android:background="#FCFBF4"
+            app:errorEnabled="true"/>
+
+        <EditText
+            android:id="@+id/damp_edit"
+            android:layout_width="25dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            android:layout_marginRight="0.5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
+            android:background="#FCFBF4"
+            android:imeOptions="actionGo"
+            android:inputType="phone"
+            app:errorEnabled="true"/>
+
+
+
+        <EditText
+            android:id="@+id/over_edit"
+            android:layout_width="45dp"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            android:layout_marginRight="0.5dp"
+            android:layout_marginLeft="1dp"
+            android:layout_marginBottom="0.5dp"
+            android:layout_marginTop="0.5dp"
+            android:imeOptions="actionGo"
+            android:inputType="phone"
+            android:background="#FCFBF4"
+            app:errorEnabled="true"/>
+
+        <EditText
+            android:id="@+id/airing_edit"
+            android:layout_width="110dp"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="1dp"
+            android:layout_marginTop="0.5dp"
+            android:layout_marginRight="0.5dp"
+            android:layout_marginBottom="0.5dp"
+            android:background="#FCFBF4"
+            android:gravity="center"
+            android:imeOptions="actionGo"
+            android:inputType="text|textCapCharacters"
+            android:padding="10dp"
+            android:textSize="12dp"
+            android:textStyle="bold"
+            app:boxStrokeWidth="0dp"
+            app:boxStrokeWidthFocused="0dp"
+            app:errorEnabled="true" />
+
+
+    </TableRow>
+
+</TableLayout>

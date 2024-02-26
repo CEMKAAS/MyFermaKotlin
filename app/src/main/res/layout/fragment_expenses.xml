@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="utf-8"?>
+<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_gravity="center"
+    android:columnCount="3">
+
+
+<!--    <TextView-->
+<!--        style="@style/TextAppearance.MyApp.DisplaySmall"-->
+<!--        android:layout_width="wrap_content"-->
+<!--        android:layout_height="wrap_content"-->
+<!--        android:layout_row="0"-->
+<!--        android:layout_column="0"-->
+<!--        android:layout_columnSpan="2"-->
+<!--        android:layout_gravity="left"-->
+<!--        android:layout_marginTop="20dp"-->
+<!--        android:layout_marginBottom="100dp"-->
+<!--        android:padding="10dp"-->
+<!--        android:text="Мои покупки"-->
+
+<!--        />-->
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginBottom="40dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:text="Ваш баланс составляет:"
+        android:textSize="18dp" />
+
+    <TextView
+        android:id="@+id/totalExpenses_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="1"
+        android:layout_column="1"
+        android:layout_marginLeft="5dp"
+        android:fontFamily="@font/commissioner_regular"
+        android:text=""
+        android:textSize="18dp" />
+
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/menu"
+        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+        android:layout_row="3"
+        android:layout_column="0"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="5dp"
+        app:errorEnabled="true">
+
+        <AutoCompleteTextView
+            android:id="@+id/expensesName_editText"
+            android:layout_width="170dp"
+            android:layout_height="wrap_content"
+            android:hint="Введите товар"
+            android:imeOptions="actionNext"
+            android:inputType="text" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <com.google.android.material.textfield.TextInputLayout
+        android:id="@+id/expenses_editText"
+        android:layout_width="160dp"
+        android:layout_height="wrap_content"
+        android:layout_row="3"
+        android:layout_column="1"
+        android:layout_marginLeft="-20dp"
+        android:layout_marginRight="10dp"
+        android:hint="Цена"
+        app:errorEnabled="true"
+        app:helperText="Укажите цену за товар"
+        app:helperTextEnabled="true"
+        app:endIconMode="custom"
+        app:suffixText="₽">
+
+        <com.google.android.material.textfield.TextInputEditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:imeOptions="actionGo"
+            android:inputType="phone" />
+    </com.google.android.material.textfield.TextInputLayout>
+
+    <Button
+        android:id="@+id/expensesChart_button"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="50dp"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_row="4"
+        android:layout_column="0"
+        android:onClick="onClickAddChart"
+        android:text="График"
+        app:icon="@drawable/baseline_bar_chart_24"/>
+    />
+
+    <Button
+        android:id="@+id/addExpenses_button"
+        style="@style/Widget.Material3.Button.Icon"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="-20dp"
+        android:layout_row="4"
+        android:layout_column="1"
+        android:onClick="onClickAddExpenses"
+        android:text="@string/add_button"
+        app:icon="@drawable/ic_baseline_add_shopping_cart_24" />
+
+
+    <!--    <Button-->
+    <!--        android:id="@+id/addExpensesHistory_button"-->
+    <!--        android:layout_width="wrap_content"-->
+    <!--        android:layout_height="wrap_content"-->
+    <!--        android:layout_row="3"-->
+    <!--        android:layout_column="1"-->
+    <!--        android:onClick="onClickExpensesHistori"-->
+    <!--        android:text="История" />/>-->
+
+
+</GridLayout>

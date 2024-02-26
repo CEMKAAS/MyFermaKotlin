@@ -1,0 +1,92 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <string name="app_name">Мое хозяйство</string>
+    <string name="operation_button">Мои операции</string>
+    <string name="warehouse_button">Мои склад</string>
+    <string name="finance_button">Мои финансы</string>
+    <string name="add_button">Добавить</string>
+    <string name="sale_button">Мои продажи</string>
+    <string name="expenses_button">Мои расходы</string>
+    <string name="number_button">0</string>
+    <string name="unit_text"></string>
+    <string name="result_text">Сейчас на складе:</string>
+    <string name="TV_text"></string>
+    <string name="egg_text">Яиц: </string>
+    <string name="milk_text">Молока: </string>
+    <string name="meat_text">Мяса: </string>
+    <string name="unitegg_text"></string>
+    <string name="unitmilk_text"></string>
+    <string name="unitmeat_text"></string>
+    <string name="finance_text">Ваши финансы</string>
+    <string name="eggfinance_text">Вы заработали на яицах: </string>
+    <string name="milkfinance_text">Вы заработали на молоке: </string>
+    <string name="meatfinance_text">Вы заработали на мясе: </string>
+
+    <string name="eggfinance1_text">Вы сэкономили на яицах: </string>
+    <string name="milkfinance1_text">Вы сэкономили на молоке: </string>
+    <string name="meatfinance1_text">Вы сэкономили на мясе: </string>
+    <string name="egg1_text"></string>
+    <string name="milk1_text"></string>
+    <string name="meat1_text"></string>
+
+
+    <string name="totalAmount_text">Общая сумма: </string>
+    <string name="totalExpenses_text">Расходы: </string>
+    <string name="clearFinance_text">Чистая прибыль: </string>
+
+    <string name="totalAmount1_text"></string>
+    <string name="totalExpenses1_text"></string>
+    <string name="clearFinance1_text"></string>
+
+
+    <string name="priceEgg_text">Цена на Яйца</string>
+    <string name="priceMilk_text">Цена на Молоко</string>
+    <string name="priceMeat_text">Цена на Мясо</string>
+    <string name="price"></string>
+
+
+    <string name="button_response">Добавлено!</string>
+
+    <string-array name="animals">
+        <item>Яйца</item>
+        <item>Молоко</item>
+        <item>Мясо</item>
+    </string-array>
+
+    <string-array name="statusWriteOff" tools:ignore="DuplicateDefinition,ExtraTranslation">
+        <item>На собственные нужды</item>
+        <item>На утилизацию</item>
+    </string-array>
+
+
+    <string name="title_activity_price">PriceActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="title_activity_settings">SettingsActivity</string>
+
+    <!-- Preference Titles -->
+    <string name="messages_header">Messages</string>
+    <string name="sync_header">Sync</string>
+
+    <!-- Messages Preferences -->
+    <string name="signature_title">Your signature</string>
+    <string name="reply_title">Default reply action</string>
+
+    <!-- Sync Preferences -->
+    <string name="sync_title">Sync email periodically</string>
+    <string name="attachment_title">Download incoming attachments</string>
+    <string name="attachment_summary_on">Automatically download attachments for incoming emails
+    </string>
+    <string name="attachment_summary_off">Only download attachments when manually requested</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="title_activity_main2">MainActivity2</string>
+    <string name="title_home">Home</string>
+    <string name="title_dashboard">Dashboard</string>
+    <string name="title_notifications">Notifications</string>
+</resources>
