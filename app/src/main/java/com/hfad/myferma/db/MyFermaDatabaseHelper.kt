@@ -254,6 +254,99 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
         )
     }
 
+    //Эксперименты TODO КОсяк возможно
+    fun selectChartMountExpen(
+        mount: String,
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT ${MyConstanta.TITLEEXPENSES}, sum(${MyConstanta.DISCROTIONEXPENSES})" +
+                    " FROM ${MyConstanta.TABLE_NAMEEXPENSES}" +
+                    " WHERE ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.TITLEEXPENSES}",
+            arrayOf(mount, year)
+        )
+    }
+
+    fun selectChartYearExpen(
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT ${MyConstanta.TITLEEXPENSES}, sum(${MyConstanta.DISCROTIONEXPENSES})" +
+                    " FROM ${MyConstanta.TABLE_NAMEEXPENSES}" +
+                    " WHERE ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.TITLEEXPENSES}",
+            arrayOf(year)
+        )
+    }
+
+    //Эксперименты TODO КОсяк возможно
+    fun selectChartMountWriteOff(
+        type: String,
+        mount: String,
+        year: String,
+        status: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum(${MyConstanta.TITLEWRITEOFF}), ${MyConstanta.DAY}" +
+                    " FROM ${MyConstanta.TABLE_NAMEWRITEOFF} " +
+                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ?  and  ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}" +
+                    " group by ${MyConstanta.DAY}",
+            arrayOf(type, mount, year, status)
+        )
+    }
+
+    fun selectChartYearWriteOff(
+        type: String,
+        year: String,
+        status: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum(${MyConstanta.TITLEWRITEOFF}), ${MyConstanta.MOUNT}" +
+                    " FROM ${MyConstanta.TABLE_NAMEWRITEOFF} " +
+                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ? and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}" +
+                    " group by ${MyConstanta.MOUNT}",
+            arrayOf(type, year, status)
+        )
+    }
+
+
+    //Эксперименты TODO КОсяк возможно
+    fun selectChartMountFinance1(
+        mount: String,
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT ${MyConstanta.TITLESale}, sum(${MyConstanta.PRICEALL}), ${MyConstanta.DAY}" +
+                    " FROM ${MyConstanta.TABLE_NAMESALE} " +
+                    " WHERE ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.TITLESale} and ${MyConstanta.DAY}",
+            arrayOf(mount, year)
+        )
+    }
+
+//    fun selectChartYear(
+//        discrotionСolumn: String,
+//        nameTable: String,
+//        typeColumn: String,
+//        type: String,
+//        year: String
+//    ): Cursor {
+//        val db = this.readableDatabase
+//        return db.rawQuery(
+//            "SELECT sum($discrotionСolumn), ${MyConstanta.MOUNT}" +
+//                    " FROM $nameTable " +
+//                    " WHERE $typeColumn = ?  and ${MyConstanta.YEAR} = ?" +
+//                    " group by ${MyConstanta.MOUNT}",
+//            arrayOf(type, year)
+//        )
+//    }
+
 
     fun idIncubator(id: String): Cursor {
         val db = readableDatabase

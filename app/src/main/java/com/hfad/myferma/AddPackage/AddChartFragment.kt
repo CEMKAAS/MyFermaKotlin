@@ -28,9 +28,9 @@ import java.util.Calendar
 class AddChartFragment : Fragment() {
 
     private lateinit var myDB: MyFermaDatabaseHelper
-    private lateinit var animals_spiner: AutoCompleteTextView
-    private lateinit var animals_spiner2: AutoCompleteTextView
-    private lateinit var animals_spiner3: AutoCompleteTextView
+    private lateinit var animalsSpiner: AutoCompleteTextView
+    private lateinit var mountSpiner: AutoCompleteTextView
+    private lateinit var yearSpiner: AutoCompleteTextView
     private var visitors = mutableListOf<BarEntry>()
 
     private var mountMass = mutableListOf<String>()
@@ -66,15 +66,15 @@ class AddChartFragment : Fragment() {
 
         layout = inflater.inflate(R.layout.fragment_add_chart, container, false)
         // установка спинеров
-        animals_spiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
-        animals_spiner2 = layout.findViewById<View>(R.id.animals_spiner2) as AutoCompleteTextView
-        animals_spiner3 = layout.findViewById<View>(R.id.animals_spiner3) as AutoCompleteTextView
+        animalsSpiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
+        mountSpiner = layout.findViewById<View>(R.id.animals_spiner2) as AutoCompleteTextView
+        yearSpiner = layout.findViewById<View>(R.id.animals_spiner3) as AutoCompleteTextView
 
         val calendar = Calendar.getInstance()
 
         // настройка спинеров
-        animals_spiner2.setText("За весь год", false)
-        animals_spiner3.setText(calendar[Calendar.YEAR].toString(), false)
+        mountSpiner.setText("За весь год", false)
+        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
@@ -91,7 +91,7 @@ class AddChartFragment : Fragment() {
         storeDataInArrays()
         bar(labes)
 
-        animals_spiner.onItemClickListener =
+        animalsSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
 
                 visitors.clear()
@@ -103,7 +103,7 @@ class AddChartFragment : Fragment() {
                 }
 
             }
-        animals_spiner2.onItemClickListener =
+        mountSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
 
                 visitors.clear()
@@ -115,11 +115,12 @@ class AddChartFragment : Fragment() {
                 }
 
             }
-        animals_spiner3.onItemClickListener =
+        yearSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
 
                 visitors.clear()
                 storeDataInArrays()
+
                 if (mount != 13) {
                     bar(mountMass)
                 } else {
@@ -136,7 +137,7 @@ class AddChartFragment : Fragment() {
         //установка графиков
         val barChart: BarChart = layout.findViewById(R.id.barChart)
         // настройка графиков
-        val barDataSet = BarDataSet(visitors, animals_spiner.text.toString())
+        val barDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
 //        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
         barDataSet.valueTextColor = Color.BLACK
         barDataSet.valueTextSize = 16f
@@ -164,7 +165,7 @@ class AddChartFragment : Fragment() {
                 android.R.layout.simple_spinner_dropdown_item,
                 productList
             )
-            animals_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterProduct)
+            animalsSpiner.setAdapter<ArrayAdapter<String>>(arrayAdapterProduct)
 
             // настройка спинера с годами (выглядил как обычный, и год запоминал)
             val arrayAdapterYear = ArrayAdapter<String>(
@@ -172,7 +173,7 @@ class AddChartFragment : Fragment() {
                 android.R.layout.simple_spinner_dropdown_item,
                 yearList
             )
-            animals_spiner3.setAdapter<ArrayAdapter<String>>(arrayAdapterYear)
+            yearSpiner.setAdapter<ArrayAdapter<String>>(arrayAdapterYear)
         }
     }
 
@@ -198,11 +199,9 @@ class AddChartFragment : Fragment() {
 
     private fun storeDataInArrays() {
 
-        var x: Float
-        var y: Float
-        val animalsType: String = animals_spiner.text.toString()
-        val mountString: String = animals_spiner2.text.toString()
-        val year2: String = animals_spiner3.text.toString()
+        val animalsType: String = animalsSpiner.text.toString()
+        val mountString: String = mountSpiner.text.toString()
+        val year2: String = yearSpiner.text.toString()
 
         setMount(mountString)
 
@@ -219,17 +218,17 @@ class AddChartFragment : Fragment() {
 
                     while (cursor.moveToNext()) {
 
-                        x = cursor.getString(0).toFloat()
-                        y = cursor.getString(1).toFloat()
+                       val x = cursor.getString(0).toFloat()
+                       val y = cursor.getString(1).toFloat()
+
                         visitors.add(BarEntry(y, x))
 
                     }
 
                 } else {
-                    x = 0f
-                    y = 0f
-                    visitors.add(BarEntry(y, x))
+                    visitors.add(BarEntry(0f, 0f))
                 }
+
                 cursor.close()
 
 
@@ -266,17 +265,14 @@ class AddChartFragment : Fragment() {
                         12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
                     }
                 }
-
                 cursor.close()
-
-                // если месяц пустой
             }
 
             else -> {
-                x = 0f
-                y = 0f
-                visitors.add(BarEntry(y, x))
+                visitors.add(BarEntry(0f, 0f))
             }
+
+
         }
     }
 

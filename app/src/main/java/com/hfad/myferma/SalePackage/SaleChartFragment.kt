@@ -20,16 +20,18 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.hfad.myferma.R
+import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
 class SaleChartFragment : Fragment() {
     private lateinit var myDB: MyFermaDatabaseHelper
-    private lateinit var animals_spiner: AutoCompleteTextView
-    private lateinit var mount_spiner: AutoCompleteTextView
-    private lateinit var year_spiner: AutoCompleteTextView
+    private lateinit var animalsSpiner: AutoCompleteTextView
+    private lateinit var mountSpiner: AutoCompleteTextView
+    private lateinit var yearSpiner: AutoCompleteTextView
     private var visitors = mutableListOf<BarEntry>()
-    private val labes: Array<String> = arrayOf(
+
+    private val labes = mutableListOf<String>(
         "",
         "Январь",
         "Февраль",
@@ -58,9 +60,9 @@ class SaleChartFragment : Fragment() {
         layout = inflater.inflate(R.layout.fragment_sale_chart, container, false)
         // установка спинеров
 
-        animals_spiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
-        mount_spiner = layout.findViewById<View>(R.id.mount_spiner) as AutoCompleteTextView
-        year_spiner = layout.findViewById<View>(R.id.year_spiner) as AutoCompleteTextView
+        animalsSpiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
+        mountSpiner = layout.findViewById<View>(R.id.mount_spiner) as AutoCompleteTextView
+        yearSpiner = layout.findViewById<View>(R.id.year_spiner) as AutoCompleteTextView
 
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
@@ -70,8 +72,8 @@ class SaleChartFragment : Fragment() {
         val calendar: Calendar = Calendar.getInstance()
 
         // настройка спинеров
-        mount_spiner.setText("За весь год", false)
-        year_spiner.setText(calendar.get(Calendar.YEAR).toString(), false)
+        mountSpiner.setText("За весь год", false)
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
@@ -87,8 +89,9 @@ class SaleChartFragment : Fragment() {
         storeDataInArrays()
         bar(labes)
 
-        animals_spiner.onItemClickListener =
+        animalsSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
+
                 visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
@@ -96,9 +99,11 @@ class SaleChartFragment : Fragment() {
                 } else {
                     bar(labes)
                 }
+
             }
-        mount_spiner.onItemClickListener =
+        mountSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
+
                 visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
@@ -106,9 +111,11 @@ class SaleChartFragment : Fragment() {
                 } else {
                     bar(labes)
                 }
+
             }
-        year_spiner.onItemClickListener =
+        yearSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
+
                 visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
@@ -116,6 +123,7 @@ class SaleChartFragment : Fragment() {
                 } else {
                     bar(labes)
                 }
+
             }
         return layout
     }
@@ -130,7 +138,7 @@ class SaleChartFragment : Fragment() {
                android.R.layout.simple_spinner_dropdown_item,
                 productList
             )
-            animals_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterProduct)
+            animalsSpiner.setAdapter<ArrayAdapter<String>>(arrayAdapterProduct)
 
             // настройка спинера с годами (выглядил как обычный, и год запоминал)
            val arrayAdapterYear = ArrayAdapter<String>(
@@ -138,7 +146,7 @@ class SaleChartFragment : Fragment() {
                android.R.layout.simple_spinner_dropdown_item,
                 yearList
             )
-            year_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterYear)
+            yearSpiner.setAdapter<ArrayAdapter<String>>(arrayAdapterYear)
         }
     }
 
@@ -161,10 +169,10 @@ class SaleChartFragment : Fragment() {
 
     }
 
-    private fun bar(xAsis: Array<String>) {
+    private fun bar(xAsis: MutableList<String>) {
         val barChart: BarChart = layout.findViewById(R.id.barChart)
-        val barDataSet: BarDataSet = BarDataSet(visitors, animals_spiner.text.toString())
-        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
+        val barDataSet: BarDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
+//        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
         barDataSet.setValueTextColor(Color.BLACK)
         barDataSet.setValueTextSize(16f)
         val barData: BarData = BarData(barDataSet)
@@ -182,124 +190,81 @@ class SaleChartFragment : Fragment() {
     }
 
     private fun storeDataInArrays() {
-        val cursor: Cursor = myDB.readAllDataSale()
-        var x: Float
-        var y: Float
-        val animalsType: String = animals_spiner.text.toString()
-        val mountString: String = mount_spiner.text.toString()
-        val year2: String = year_spiner.text.toString()
-        var jan: Float = 0f
-        var feb: Float = 0f
-        var mar: Float = 0f
-        var apr: Float = 0f
-        var mai: Float = 0f
-        var jun: Float = 0f
-        var jul: Float = 0f
-        var aug: Float = 0f
-        var sep: Float = 0f
-        var oct: Float = 0f
-        var nov: Float = 0f
-        var dec: Float = 0f
+
+        val animalsType: String = animalsSpiner.text.toString()
+        val mountString: String = mountSpiner.text.toString()
+        val year2: String = yearSpiner.text.toString()
+
         setMount(mountString)
-        cursor.moveToNext()
-        if (mount <= 12 && mount > 0) {
-            if ((animalsType == cursor.getString(1))) {
-                //проверка месяца
-                if (mount == cursor.getString(4).toInt()) {
-                    //проверка года
-                    if ((year2 == cursor.getString(5))) {
-                        x = cursor.getString(2).toFloat()
-                        y = cursor.getString(3).toFloat()
+
+        when (mount) {
+
+            in 1..12 -> {
+
+                val cursor: Cursor = myDB.selectChartMount(
+                    MyConstanta.DISCROTIONSale, MyConstanta.TABLE_NAMESALE, MyConstanta.TITLESale, animalsType,
+                    mount.toString(), year2
+                )
+
+                if (cursor.count != 0) {
+
+                    while (cursor.moveToNext()) {
+
+                        val x = cursor.getString(0).toFloat()
+                        val y = cursor.getString(1).toFloat()
+
                         visitors.add(BarEntry(y, x))
+
+                    }
+
+                } else {
+                    visitors.add(BarEntry(0f, 0f))
+                }
+
+                cursor.close()
+
+
+            }
+
+            13 -> {
+
+                for (i in 0..12) {
+                    visitors.add(BarEntry(i.toFloat(), 0f))
+                }
+
+                val cursor = myDB.selectChartYear(
+                    MyConstanta.DISCROTIONSale,
+                    MyConstanta.TABLE_NAMESALE,
+                    MyConstanta.TITLESale,
+                    animalsType,
+                    year2
+                )
+
+                while (cursor.moveToNext()) {
+                    when (cursor.getString(1).toInt()) {
+
+                        1 -> visitors[0] = BarEntry(1f, cursor.getString(0).toFloat())
+                        2 -> visitors[1] = BarEntry(2f, cursor.getString(0).toFloat())
+                        3 -> visitors[2] = BarEntry(3f, cursor.getString(0).toFloat())
+                        4 -> visitors[3] = BarEntry(4f, cursor.getString(0).toFloat())
+                        5 -> visitors[4] = BarEntry(5f, cursor.getString(0).toFloat())
+                        6 -> visitors[5] = BarEntry(6f, cursor.getString(0).toFloat())
+                        7 -> visitors[6] = BarEntry(7f, cursor.getString(0).toFloat())
+                        8 -> visitors[7] = BarEntry(8f, cursor.getString(0).toFloat())
+                        9 -> visitors[8] = BarEntry(9f, cursor.getString(0).toFloat())
+                        10 -> visitors[9] = BarEntry(10f, cursor.getString(0).toFloat())
+                        11 -> visitors[10] = BarEntry(11f, cursor.getString(0).toFloat())
+                        12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
                     }
                 }
+                cursor.close()
             }
-            while (cursor.moveToNext()) {
-                //проверка товара
-                if ((animalsType == cursor.getString(1))) {
-                    //проверка месяца
-                    if (mount == cursor.getString(4).toInt()) {
-                        //проверка года
-                        if ((year2 == cursor.getString(5))) {
-                            x = cursor.getString(2).toFloat()
-                            y = cursor.getString(3).toFloat()
-                            visitors.add(BarEntry(y, x))
-                        }
-                    }
-                }
+
+            else -> {
+                visitors.add(BarEntry(0f, 0f))
             }
-            cursor.close()
-        } else if (cursor.count == 0) {
-            x = 0f
-            y = 0f
-            visitors.add(BarEntry(y, x))
-        } else if (mount == 13) {
-            if ((animalsType == cursor.getString(1))) {
-                if (mount == 13) {
-                    //проверка года
-                    if ((year2 == cursor.getString(5))) {
-                        when (cursor.getString(4).toInt()) {
-                            1 -> jan += cursor.getString(2).toFloat()
-                            2 -> feb += cursor.getString(2).toFloat()
-                            3 -> mar += cursor.getString(2).toFloat()
-                            4 -> apr += cursor.getString(2).toFloat()
-                            5 -> mai += cursor.getString(2).toFloat()
-                            6 -> jun += cursor.getString(2).toFloat()
-                            7 -> jul += cursor.getString(2).toFloat()
-                            8 -> aug += cursor.getString(2).toFloat()
-                            9 -> sep += cursor.getString(2).toFloat()
-                            10 -> oct += cursor.getString(2).toFloat()
-                            11 -> nov += cursor.getString(2).toFloat()
-                            12 -> dec += cursor.getString(2).toFloat()
-                        }
-                    }
-                }
-            } else {
-                x = 0f
-                y = 0f
-                visitors.add(BarEntry(y, x))
-            }
-            while (cursor.moveToNext()) {
-                if ((animalsType == cursor.getString(1))) {
-                    if (mount == 13) {
-                        //проверка года
-                        if ((year2 == cursor.getString(5))) {
-                            when (cursor.getString(4).toInt()) {
-                                1 -> jan += cursor.getString(2).toFloat()
-                                2 -> feb += cursor.getString(2).toFloat()
-                                3 -> mar += cursor.getString(2).toFloat()
-                                4 -> apr += cursor.getString(2).toFloat()
-                                5 -> mai += cursor.getString(2).toFloat()
-                                6 -> jun += cursor.getString(2).toFloat()
-                                7 -> jul += cursor.getString(2).toFloat()
-                                8 -> aug += cursor.getString(2).toFloat()
-                                9 -> sep += cursor.getString(2).toFloat()
-                                10 -> oct += cursor.getString(2).toFloat()
-                                11 -> nov += cursor.getString(2).toFloat()
-                                12 -> dec += cursor.getString(2).toFloat()
-                            }
-                        }
-                    }
-                }
-            }
-            cursor.close()
-            visitors.add(BarEntry(1, jan))
-            visitors.add(BarEntry(2, feb))
-            visitors.add(BarEntry(3, mar))
-            visitors.add(BarEntry(4, apr))
-            visitors.add(BarEntry(5, mai))
-            visitors.add(BarEntry(6, jun))
-            visitors.add(BarEntry(7, jul))
-            visitors.add(BarEntry(8, aug))
-            visitors.add(BarEntry(9, sep))
-            visitors.add(BarEntry(10, oct))
-            visitors.add(BarEntry(11, nov))
-            visitors.add(BarEntry(12, dec))
-            // если месяц пустой
-        } else {
-            x = 0f
-            y = 0f
-            visitors.add(BarEntry(y, x))
+
+
         }
     }
 
