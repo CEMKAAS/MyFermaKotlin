@@ -10,21 +10,30 @@ import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
+import com.github.mikephil.charting.charts.LineChart
+import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.Entry
+import com.github.mikephil.charting.data.LineData
+import com.github.mikephil.charting.data.LineDataSet
+import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.hfad.myferma.R
+import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
-import java.security.KeyStore.Entry
 import java.util.Calendar
 
 class FinanceChart2Fragment : Fragment() {
-    private var arrayAdapterAnimals: ArrayAdapter<String>? = null
+
     private lateinit var myDB: MyFermaDatabaseHelper
+
     private var entriesFirst = mutableListOf<Entry>()
     private var entriesSecond = mutableListOf<Entry>()
     private var entriesThird = mutableListOf<Entry>()
-    private lateinit var mount_spiner: AutoCompleteTextView
-    private lateinit var year_spiner: AutoCompleteTextView
+
+    private lateinit var mountSpiner: AutoCompleteTextView
+    private lateinit var yearSpiner: AutoCompleteTextView
     private val labes: Array<String> = arrayOf(
         "",
         "Январь",
@@ -44,6 +53,7 @@ class FinanceChart2Fragment : Fragment() {
     private var mountMass = mutableListOf<String>()
     private lateinit  var layout: View
     private var mount: Int = 0
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -51,34 +61,33 @@ class FinanceChart2Fragment : Fragment() {
 
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
-        val calendar = Calendar.getInstance()
+
         layout = inflater.inflate(R.layout.fragment_finance_chart2, container, false)
 
         // установка спинеров
-        mount_spiner = layout.findViewById<AutoCompleteTextView>(R.id.mount_spiner)
-        year_spiner = layout.findViewById<AutoCompleteTextView>(R.id.year_spiner)
+        mountSpiner = layout.findViewById<AutoCompleteTextView>(R.id.mount_spiner)
+        yearSpiner = layout.findViewById<AutoCompleteTextView>(R.id.year_spiner)
 
+        val calendar = Calendar.getInstance()
         // настройка спинеров
-        mount_spiner.setText("За весь год", false)
-        year_spiner.setText(calendar.get(Calendar.YEAR).toString(), false)
+        mountSpiner.setText("За весь год", false)
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
         fab.visibility = View.GONE
+
         val appBar: MaterialToolbar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
         appBar.title = "Мои Финансы - Общее"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
 
-        //Массивы
-        entriesFirst = ArrayList<Entry>()
-        entriesSecond = ArrayList<Entry>()
-        entriesThird = ArrayList<Entry>()
         spiner()
-        mount_spiner.setOnItemClickListener { parent, view, position, id -> spiner() }
-        year_spiner.onItemClickListener =
+        mountSpiner.setOnItemClickListener { parent, view, position, id -> spiner() }
+        yearSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id -> spiner() }
+
         return layout
     }
 
@@ -86,33 +95,38 @@ class FinanceChart2Fragment : Fragment() {
         entriesFirst.clear()
         entriesSecond.clear()
         entriesThird.clear()
+
         allProducts()
+
         val lineChart: LineChart = layout.findViewById(R.id.lineChart)
-        lineChart.getDescription().setText("График финансов")
+        lineChart.description.text = "График финансов"
         val datasetFirst: LineDataSet = LineDataSet(entriesFirst, "Прибыль")
 
         // График будет зеленого цвета
-        datasetFirst.setColor(Color.GRAY)
+        datasetFirst.color = Color.GRAY
         // График будет плавным
-        datasetFirst.setMode(LineDataSet.Mode.LINEAR)
+        datasetFirst.mode = LineDataSet.Mode.LINEAR
         val datasetSecond: LineDataSet = LineDataSet(entriesSecond, "Чистая прибыль")
         // График будет зеленого цвета
-        datasetSecond.setColor(Color.GREEN)
+        datasetSecond.color = Color.GREEN
         // График будет плавным
-        datasetSecond.setMode(LineDataSet.Mode.LINEAR)
+        datasetSecond.mode = LineDataSet.Mode.LINEAR
         val datasetThird: LineDataSet = LineDataSet(entriesThird, "Расходы")
         // График будет зеленого цвета
-        datasetThird.setColor(Color.RED)
+        datasetThird.color = Color.RED
         // График будет плавным
-        datasetThird.setMode(LineDataSet.Mode.LINEAR)
-        val dataSets: ArrayList<ILineDataSet?> = ArrayList<Any?>()
+        datasetThird.mode = LineDataSet.Mode.LINEAR
+
+        val dataSets: ArrayList<ILineDataSet> = arrayListOf()
         dataSets.add(datasetFirst)
         dataSets.add(datasetSecond)
         dataSets.add(datasetThird)
+
         val data: LineData = LineData(dataSets)
         lineChart.invalidate()
-        lineChart.setData(data)
+        lineChart.data = data
         lineChart.animateY(500)
+
         if (mount != 13) {
             xaxis(lineChart, mountMass)
         } else {
@@ -121,12 +135,12 @@ class FinanceChart2Fragment : Fragment() {
     }
 
     private fun xaxis(lineChart: LineChart, valueX: Array<String>?) {
-        val xAxis: XAxis = lineChart.getXAxis()
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
+        val xAxis: XAxis = lineChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
-        xAxis.setGranularity(1f) // only intervals of 1 day
-        xAxis.setLabelCount(7)
-        xAxis.setValueFormatter(IndexAxisValueFormatter(valueX))
+        xAxis.granularity = 1f // only intervals of 1 day
+        xAxis.labelCount = 7
+        xAxis.valueFormatter = IndexAxisValueFormatter(valueX)
     }
 
     override fun onStart() {
@@ -134,12 +148,12 @@ class FinanceChart2Fragment : Fragment() {
         val view: View? = view
         if (view != null) {
             // настройка спинера с годами (выглядил как обычный, и год запоминал)
-            arrayAdapterAnimals = ArrayAdapter<String>(
+            val arrayAdapterAnimals = ArrayAdapter<String>(
                 requireContext().applicationContext,
-                R.layout.simple_spinner_dropdown_item,
+                android.R.layout.simple_spinner_dropdown_item,
                 add()
             )
-            year_spiner.setAdapter<ArrayAdapter<String>>(arrayAdapterAnimals)
+            yearSpiner.setAdapter<ArrayAdapter<String>>(arrayAdapterAnimals)
         }
     }
 
@@ -161,44 +175,57 @@ class FinanceChart2Fragment : Fragment() {
     }
 
     private fun allProducts() {
-        val cursor = myDB.readAllDataSale()
-        val cursorExpenses = myDB.readAllDataExpenses()
-        val sumCategory: MutableMap<Float, Float?> = HashMap()
-        val sumCategoryExpenses: MutableMap<Float, Float?> = HashMap()
-        val sumCategoryClear: MutableMap<Float, Float?> = HashMap()
-        val mountString: String = mount_spiner.text.toString()
-        val year2: String = year_spiner.text.toString()
+
+        val cursorExpenses =
+
+        val sumCategory: MutableMap<Float, Float> = HashMap()
+        val sumCategoryExpenses: MutableMap<Float, Float> = HashMap()
+        val sumCategoryClear: MutableMap<Float, Float> = HashMap()
+
+        val mountString: String = mountSpiner.text.toString()
+        val year2: String = yearSpiner.text.toString()
+
         setMount(mountString)
-        if (mount <= 12 && mount > 0) {
-            allProductsMount(cursor, entriesFirst, 6, 1, year2)
-            allProductsMount(cursorExpenses, entriesThird, 2, -1, year2)
-        } else if (mount == 13) {
-            allProductsYear(cursor, year2, sumCategory, entriesFirst, 6, 1)
-            allProductsYear(cursorExpenses, year2, sumCategoryExpenses, entriesThird, 2, -1)
-            for (entry: Map.Entry<Float, Float?> in sumCategory.entries) {
-                val name: Float = entry.key
-                val sum: Float? = entry.value
-                sumCategoryClear[name] = sum
+
+        when (mount) {
+
+            in 1..12 -> {
+                allProductsMount(myDB.selectChartMountFinance2(MyConstanta.PRICEALL, MyConstanta.TABLE_NAMESALE, mount.toString(),year2), entriesFirst, 6, 1, year2)
+                allProductsMount(myDB.selectChartMountFinance2(MyConstanta.TITLEEXPENSES, MyConstanta.TABLE_NAMEEXPENSES, mount.toString(),year2), entriesThird, 2, -1, year2)
             }
-            for (entry2: Map.Entry<Float, Float?> in sumCategoryExpenses.entries) {
-                val nameExpenses: Float = entry2.key
-                val sumExpenses: Float? = entry2.value
-                if (sumCategoryClear[nameExpenses] == null) {
-                    sumCategoryClear[nameExpenses] = sumExpenses
-                } else {
-                    val sum: Float = sumCategoryClear[nameExpenses]!! + (sumExpenses)!!
-                    sumCategoryClear[nameExpenses] = sum
+
+            13 -> {
+
+                allProductsYear(cursor, year2, sumCategory, entriesFirst, 6, 1)
+                allProductsYear(cursorExpenses, year2, sumCategoryExpenses, entriesThird, 2, -1)
+
+                for (entry: Map.Entry<Float, Float?> in sumCategory.entries) {
+                    val name: Float = entry.key
+                    val sum: Float? = entry.value
+                    sumCategoryClear[name] = sum
+                }
+                for (entry2: Map.Entry<Float, Float?> in sumCategoryExpenses.entries) {
+                    val nameExpenses: Float = entry2.key
+                    val sumExpenses: Float? = entry2.value
+                    if (sumCategoryClear[nameExpenses] == null) {
+                        sumCategoryClear[nameExpenses] = sumExpenses
+                    } else {
+                        val sum: Float = sumCategoryClear[nameExpenses]!! + (sumExpenses)!!
+                        sumCategoryClear[nameExpenses] = sum
+                    }
+                }
+                for (entry: Map.Entry<Float, Float?> in sumCategoryClear.entries) {
+                    val name: Float = entry.key
+                    val sum: Float? = entry.value
+                    entriesSecond.add(Entry(name, sum))
                 }
             }
-            for (entry: Map.Entry<Float, Float?> in sumCategoryClear.entries) {
-                val name: Float = entry.key
-                val sum: Float? = entry.value
-                entriesSecond.add(Entry(name, sum))
+
+            else -> {
+                entriesFirst.add(Entry(0f, 0f))
+                entriesSecond.add(Entry(0f, 0f))
+                entriesThird.add(Entry(0f, 0f))
             }
-        } else {
-            entriesFirst.add(Entry(0f, 0f))
-            entriesSecond.add(Entry(0f, 0f))
-            entriesThird.add(Entry(0f, 0f))
         }
         cursorExpenses.close()
         cursor.close()
@@ -206,7 +233,7 @@ class FinanceChart2Fragment : Fragment() {
 
     private fun allProductsMount(
         cursor: Cursor,
-        entries: ArrayList<Entry>?,
+        entries: ArrayList<Entry>,
         price: Int,
         kof: Int,
         year2: String
@@ -215,18 +242,20 @@ class FinanceChart2Fragment : Fragment() {
         var y: Float
         if (cursor.count != 0) {
             while (cursor.moveToNext()) {
+
+
                 //проверка месяца
                 if (mount == cursor.getString(4).toInt()) {
                     //проверка года
                     if ((year2 == cursor.getString(5))) {
                         y = cursor.getString(price).toFloat() * kof //Для вычитания
-                        x = cursor.getString(3).toFloat()
-                        entries!!.add(Entry(x, y))
+                        x = cursor.getString(0).toFloat()
+                        entries.add(Entry(x, y))
                     }
                 }
             }
         } else {
-            entries!!.add(Entry(0, 0))
+            entries.add(Entry(0f, 0f))
         }
         cursor.close()
     }

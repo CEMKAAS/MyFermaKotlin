@@ -51,27 +51,11 @@ class FinanceChartFragment : Fragment() {
     private lateinit var layout: View
     private var mount: Int = 0
     private var idColor: Int = 0
-    private var year: String? = null
 
     private var yearList = mutableListOf<String>()
     private var productList = mutableListOf<String>()
     private var productListAll = mutableListOf<String>()
 
-    private var sumCategory = mutableMapOf<String, MutableList<Entry>>()
-
-    private var sumProductYan = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductFeb = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductMar = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductApr = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductMay = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductJun = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductJar = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductAvg = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductSep = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductOkt = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductNov = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductDec = mutableMapOf<String, ArrayList<Entry>>()
-    private var sumProductAll = mutableMapOf<String, ArrayList<Entry>>()
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -94,7 +78,6 @@ class FinanceChartFragment : Fragment() {
 
         val calendar = Calendar.getInstance()
         yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
-        year = yearSpiner.text.toString()
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
@@ -108,12 +91,6 @@ class FinanceChartFragment : Fragment() {
             requireActivity().supportFragmentManager.popBackStack()
         }
 
-        //Логика просчета
-        allProducts()
-
-        //Формируем списки
-        all()
-
         // Формируем график
         spiner()
 
@@ -126,7 +103,7 @@ class FinanceChartFragment : Fragment() {
         return layout
     }
 
-    fun spiner() {
+    private fun spiner() {
         visitors.clear()
 
         val animalsType: String = animalsSpiner.text.toString()
@@ -140,70 +117,65 @@ class FinanceChartFragment : Fragment() {
 
         if (animalsType == "Все") {
 
-            val dataSets: ArrayList<ILineDataSet?> = ArrayList<Any?>()
+            val dataSets: ArrayList<ILineDataSet> = arrayListOf()
 
-            if (mount in 1..12) {
-
-                allProductsMount(year2)
-
-                for (product: String in productList) {
-                    greatChar(product, dataSets, sumCategory)
-                }
-
-            } else {
-                if (year == year2) {
-
-                    for (product: String in productList) {
-                        greatChar(product, dataSets, sumProductAll)
-                    }
-
-                } else {
-                    year = year2
-                    //Логика просчета
-                    allProducts()
-                    //Формируем списки
-                    all()
-                    for (product: String in productList) {
-                        greatChar(product, dataSets, sumProductAll)
-                    }
-                }
+            when (mount) {
+                in 1..12 -> allProducts(dataSets, year2, true)
+                13 -> allProducts( dataSets, year2, true)
             }
 
             val data: LineData = LineData(dataSets)
             lineChart.invalidate()
             lineChart.data = data
-            lineChart.animateY(500)
-
-            if (mount != 13) {
-                xaxis(lineChart, mountMass)
-            } else {
-                xaxis(lineChart, labes)
-            }
         } else {
             //Если не все
-            storeDataInArrays(animalsType, mountString, year2)
+            storeDataInArrays(animalsType, year2)
 
             val dataset: LineDataSet = LineDataSet(visitors, animalsType)
             val data: LineData = LineData(dataset)
             lineChart.invalidate()
             lineChart.data = data
-            lineChart.animateY(500)
+        }
 
-            if (mount != 13) {
-                xaxis(lineChart, mountMass)
-            } else {
-                xaxis(lineChart, labes)
-            }
+        lineChart.animateY(500)
+
+        if (mount != 13) xaxis(lineChart, mountMass)
+        else xaxis(lineChart, labes)
+    }
+
+    // Добавление значений в мапу
+    private fun allProducts( dataSets: ArrayList<ILineDataSet>, year2: String, mountBoolean:Boolean) {
+
+        for (product in productList) {
+            val sd: ArrayList<Entry> = ArrayList<Entry>()
+
+            val cursor = if (mountBoolean)  myDB.selectChartMountFinance1(product, mount.toString(), year2)
+            else myDB.selectChartYearFinance1(product, year2)
+
+            if (cursor.count != 0) {
+                //проверка за весь год //TODO Сократи это говно плиз и еще ниже будет его тоже, будущий Семён я сделал все что мог (2023 март год) // TODO я сделал все что мог дальше ты сам брат (2024 февраль)
+                while (cursor.moveToNext()) {
+                    sd.add(Entry(cursor.getString(1).toFloat(), cursor.getString(0).toFloat()))
+                }
+
+            } else sd.add(Entry(0f, 0f))
+            cursor.close()
+
+            greatChar(product, dataSets, sd)
+
         }
     }
 
+
+    //Если пользователь выбрал все товары по месяцу за год
+
     // Добавление графиков
-    fun greatChar(
+    private fun greatChar(
         product: String,
         dataSets: ArrayList<ILineDataSet>,
-        mapProduct: Map<String, ArrayList<Entry>>
+        sd: ArrayList<Entry>
     ) {
-        val datasetFirst: LineDataSet = LineDataSet(mapProduct[product], product)
+        val datasetFirst: LineDataSet = LineDataSet(sd, product)
         idColor++
         //График будет зеленого цвета
         datasetFirst.color = setColors() // Todo Логика просчета
@@ -227,149 +199,19 @@ class FinanceChartFragment : Fragment() {
         return Color.GRAY
     }
 
-    // Добавление значений в мапу
-    fun allProducts() {
-
-        sumProductYan.clear()
-        sumProductFeb.clear()
-        sumProductMar.clear()
-        sumProductApr.clear()
-        sumProductMay.clear()
-        sumProductJun.clear()
-        sumProductJar.clear()
-        sumProductAvg.clear()
-        sumProductSep.clear()
-        sumProductOkt.clear()
-        sumProductNov.clear()
-        sumProductDec.clear()
-        sumProductAll.clear()
-
-        val cursor = myDB.readAllDataSale()
-        val year2: String = yearSpiner.text.toString()
-        if (cursor.count != 0) {
-            //проверка за весь год //TODO Сократи это говно плиз и еще ниже будет его тоже, будущий Семён я сделал все что мог
-            while (cursor.moveToNext()) {
-                //проверка года
-                if ((year2 == cursor.getString(5))) {
-                    when (cursor.getString(4).toInt()) {
-                        1 -> productMount(cursor, sumProductYan, 1f)
-                        2 -> productMount(cursor, sumProductFeb, 2f)
-                        3 -> productMount(cursor, sumProductMar, 3f)
-                        4 -> productMount(cursor, sumProductApr, 4f)
-                        5 -> productMount(cursor, sumProductMay, 5f)
-                        6 -> productMount(cursor, sumProductJun, 6f)
-                        7 -> productMount(cursor, sumProductJar, 7f)
-                        8 -> productMount(cursor, sumProductAvg, 8f)
-                        9 -> productMount(cursor, sumProductSep, 9f)
-                        10 -> productMount(cursor, sumProductOkt, 10f)
-                        11 -> productMount(cursor, sumProductNov, 11f)
-                        12 -> productMount(cursor, sumProductDec, 12f)
-                    }
-                }
-            }
-        }
-        cursor.close()
-    }
-
-    // Добавление значений по месячно
-    private fun productMount(
-        cursor: Cursor,
-        sumProductMount: MutableMap<String, ArrayList<Entry>>,
-        x: Float
-    ) {
-        if (sumProductMount[cursor.getString(1)] == null) {
-            val sd: ArrayList<Entry> = ArrayList<Entry>()
-            val y: Float = cursor.getString(6).toFloat()
-            sd.add(Entry(x, y))
-            sumProductMount[cursor.getString(1)] = sd
-
-        } else {
-            var y: Float = cursor.getString(6).toFloat()
-            for (ds: Entry in sumProductMount.get(cursor.getString(1))) {
-                y += ds.y
-            }
-            sumProductMount[cursor.getString(1)]!!.clear()
-            sumProductMount[cursor.getString(1)]!!.add(Entry(x, y))
-            sumProductMount[cursor.getString(1)] = sumProductMount.get(cursor.getString(1))
-        }
-    }
-
-    // Соединение значений в единую мапу
-    private fun all() {
-        for (product: String in productList) {
-            val entries: ArrayList<Entry> = ArrayList<Entry>()
-            entries.addAll(addAll22(sumProductYan, product, 1f))
-            entries.addAll(addAll22(sumProductFeb, product, 2f))
-            entries.addAll(addAll22(sumProductMar, product, 3f))
-            entries.addAll(addAll22(sumProductApr, product, 4f))
-            entries.addAll(addAll22(sumProductMay, product, 5f))
-            entries.addAll(addAll22(sumProductJun, product, 6f))
-            entries.addAll(addAll22(sumProductJar, product, 7f))
-            entries.addAll(addAll22(sumProductAvg, product, 8f))
-            entries.addAll(addAll22(sumProductSep, product, 9f))
-            entries.addAll(addAll22(sumProductOkt, product, 10f))
-            entries.addAll(addAll22(sumProductNov, product, 11f))
-            entries.addAll(addAll22(sumProductDec, product, 12f))
-            sumProductAll[product] = entries
-        }
-    }
-
-    // Находим пустые мапы и добавляем минимальные значения
-    private fun addAll22(
-        sumProductYansdad: MutableMap<String, ArrayList<Entry>?>?,
-        product1: String,
-        x: Float
-    ): ArrayList<Entry> {
-        val entries: ArrayList<Entry> = ArrayList<Entry>()
-
-        if (sumProductYansdad!![product1] == null) {
-            entries.add(Entry(x, 0))
-            sumProductYansdad[product1] = entries
-
-        } else {
-
-            entries.addAll(sumProductYansdad[product1]!!)
-        }
-        return entries
-    }
-
-    //Если пользователь выбрал все товары по месяцу за год
-    private fun allProductsMount(year2: String) {
-
-        sumCategory.clear()
-
-        val cursor = myDB.selectChartMountFinance1(mount.toString(), year2)
-
-        if (cursor.count != 0) {
-            while (cursor.moveToNext()) {
-                sumCategory[cursor.getString(0)]!!.add(Entry(cursor.getString(2).toFloat(), cursor.getString(1).toFloat()))
-            }
-
-        } else {
-
-            val sd: ArrayList<Entry> = ArrayList<Entry>()
-            sd.add(Entry(0f, 0f))
-
-            for (product: String in productList) {
-                sumCategory[product] = sd
-            }
-
-        }
-        cursor.close()
-    }
-
-
 
     //Товары если не все
-    fun storeDataInArrays(animalsType: String, mountString: String, year2: String) {
-
-        setMount(mountString)
+    private fun storeDataInArrays(animalsType: String, year2: String) {
 
         when (mount) {
             in 1..12 -> {
                 val cursor: Cursor = myDB.selectChartMount(
-                    MyConstanta.DISCROTIONSale, MyConstanta.TABLE_NAMESALE, MyConstanta.TITLESale, animalsType,
-                    mount.toString(), year2
+                    MyConstanta.DISCROTIONSale,
+                    MyConstanta.TABLE_NAMESALE,
+                    MyConstanta.TITLESale,
+                    animalsType,
+                    mount.toString(),
+                    year2
                 )
                 if (cursor.count != 0) {
                     while (cursor.moveToNext()) {
@@ -472,6 +314,7 @@ class FinanceChartFragment : Fragment() {
         cursor.close()
 
         yearList = yearSet.toMutableList()
+        productList = productSet.toMutableList()
 
         productListAll = productSet.toMutableList()
         productListAll.add("Все")

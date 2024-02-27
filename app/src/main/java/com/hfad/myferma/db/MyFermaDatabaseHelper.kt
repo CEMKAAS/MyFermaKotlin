@@ -317,35 +317,64 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
 
     //Эксперименты TODO КОсяк возможно
     fun selectChartMountFinance1(
+        type: String,
         mount: String,
         year: String
     ): Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
-            "SELECT ${MyConstanta.TITLESale}, sum(${MyConstanta.PRICEALL}), ${MyConstanta.DAY}" +
+            "SELECT sum(${MyConstanta.PRICEALL}), ${MyConstanta.DAY}" +
                     " FROM ${MyConstanta.TABLE_NAMESALE} " +
-                    " WHERE ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ?" +
-                    " group by ${MyConstanta.TITLESale} and ${MyConstanta.DAY}",
-            arrayOf(mount, year)
+                    " WHERE ${MyConstanta.TITLESale} = ?  and ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.DAY}",
+            arrayOf(type, mount, year)
         )
     }
 
-//    fun selectChartYear(
-//        discrotionСolumn: String,
-//        nameTable: String,
-//        typeColumn: String,
-//        type: String,
-//        year: String
-//    ): Cursor {
-//        val db = this.readableDatabase
-//        return db.rawQuery(
-//            "SELECT sum($discrotionСolumn), ${MyConstanta.MOUNT}" +
-//                    " FROM $nameTable " +
-//                    " WHERE $typeColumn = ?  and ${MyConstanta.YEAR} = ?" +
-//                    " group by ${MyConstanta.MOUNT}",
-//            arrayOf(type, year)
-//        )
-//    }
+    fun selectChartYearFinance1(
+        type: String,
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum(${MyConstanta.PRICEALL}), ${MyConstanta.MOUNT}" +
+                    " FROM ${MyConstanta.TABLE_NAMESALE} " +
+                    " WHERE ${MyConstanta.TITLESale} = ? and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.MOUNT}",
+            arrayOf(type, year)
+        )
+    }
+
+    //Эксперименты TODO КОсяк возможно
+    fun selectChartMountFinance2(
+        priceColumn: String,
+        tableName: String,
+        mount: String,
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum($priceColumn), ${MyConstanta.DAY}" +
+                    " FROM $tableName" +
+                    " WHERE ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.DAY}",
+            arrayOf( mount, year)
+        )
+    }
+
+    fun selectChartYearFinance2(
+        type: String,
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum(${MyConstanta.PRICEALL}), ${MyConstanta.MOUNT}" +
+                    " FROM ${MyConstanta.TABLE_NAMESALE} " +
+                    " WHERE ${MyConstanta.TITLESale} = ? and ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.MOUNT}",
+            arrayOf(type, year)
+        )
+    }
 
 
     fun idIncubator(id: String): Cursor {

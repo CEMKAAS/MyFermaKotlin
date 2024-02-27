@@ -241,7 +241,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
     //Кнопка
     override fun onClick(v: View) {
         when (v.id) {
-//            R.id.financeChart_button -> onClickFinanceChart(v, FinanceChartFragment())
+            R.id.financeChart_button -> onClickFinanceChart(v, FinanceChartFragment())
 //            R.id.financeChart2_button -> onClickFinanceChart(v, FinanceChart2Fragment())
         }
     }
