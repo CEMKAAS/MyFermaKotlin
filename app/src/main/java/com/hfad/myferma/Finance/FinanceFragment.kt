@@ -89,7 +89,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
 
         //Общая сумма и Расходы
         val totalAmount: Double = totalSum(MyConstanta.PRICEALL, MyConstanta.TABLE_NAMESALE)
-        val totalExpenses: Double = totalSum(MyConstanta.PRICEALL, MyConstanta.TABLE_NAMESALE)
+        val totalExpenses: Double = totalSum(MyConstanta.DISCROTIONEXPENSES, MyConstanta.TABLE_NAMEEXPENSES)
         val clearFinance: Double = totalAmount - totalExpenses
 
         totalAmountText = layout.findViewById<View>(R.id.totalAmount_text) as TextView

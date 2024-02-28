@@ -191,7 +191,7 @@ class FinanceChart2Fragment : Fragment() {
                 )
                 allProductsMount(
                     myDB.selectChartMountFinance2(
-                        MyConstanta.TITLEEXPENSES,
+                        MyConstanta.DISCROTIONEXPENSES,
                         MyConstanta.TABLE_NAMEEXPENSES,
                         mount.toString(),
                         year2
@@ -206,7 +206,7 @@ class FinanceChart2Fragment : Fragment() {
                     MyConstanta.TABLE_NAMESALE,
                     year2), entriesFirst,  1)
                 allProductsYear(myDB.selectChartYearFinance2(
-                    MyConstanta.TITLEEXPENSES,
+                    MyConstanta.DISCROTIONEXPENSES,
                     MyConstanta.TABLE_NAMEEXPENSES,
                     year2
                 ), entriesThird, -1)
@@ -216,7 +216,7 @@ class FinanceChart2Fragment : Fragment() {
                 for (i in 0..11){
                     val x = entriesFirst[i].y
                     val y = entriesThird[i].y
-                    entriesSecond[i] = Entry(i.toFloat(),x-y)
+                    entriesSecond.add(i,Entry(i.toFloat(),x+y))
                 }
             }
 
@@ -235,8 +235,8 @@ class FinanceChart2Fragment : Fragment() {
     ) {
         if (cursor.count != 0) {
             while (cursor.moveToNext()) {
-                val y = cursor.getString(1).toFloat() * kof //Для вычитания
-                val x = cursor.getString(0).toFloat()
+                val x = cursor.getString(1).toFloat()  //Для вычитания
+                val y = cursor.getString(0).toFloat() * kof
                 entries.add(Entry(x, y))
             }
         } else entries.add(Entry(0f, 0f))
@@ -254,18 +254,18 @@ class FinanceChart2Fragment : Fragment() {
 
         while (cursor.moveToNext()) {
             when (cursor.getString(1).toInt()) {
-                1 -> entries[0] = Entry(1f, (cursor.getString(0).toFloat())*kof)
-                2 -> entries[1] = Entry(2f, (cursor.getString(0).toFloat())*kof)
-                3 -> entries[2] = Entry(3f, (cursor.getString(0).toFloat())*kof)
-                4 -> entries[3] = Entry(4f, (cursor.getString(0).toFloat())*kof)
-                5 -> entries[4] = Entry(5f, (cursor.getString(0).toFloat())*kof)
-                6 -> entries[5] = Entry(6f, (cursor.getString(0).toFloat())*kof)
-                7 -> entries[6] = Entry(7f, (cursor.getString(0).toFloat())*kof)
-                8 -> entries[7] = Entry(8f, (cursor.getString(0).toFloat())*kof)
-                9 -> entries[8] = Entry(9f, (cursor.getString(0).toFloat())*kof)
-                10 -> entries[9] = Entry(10f, (cursor.getString(0).toFloat())*kof)
-                11 -> entries[10] = Entry(11f, (cursor.getString(0).toFloat())*kof)
-                12 -> entries[11] = Entry(12f, (cursor.getString(0).toFloat())*kof)
+                1 -> entries[0] = Entry(0f, (cursor.getString(0).toFloat())*kof)
+                2 -> entries[1] = Entry(1f, (cursor.getString(0).toFloat())*kof)
+                3 -> entries[2] = Entry(2f, (cursor.getString(0).toFloat())*kof)
+                4 -> entries[3] = Entry(3f, (cursor.getString(0).toFloat())*kof)
+                5 -> entries[4] = Entry(4f, (cursor.getString(0).toFloat())*kof)
+                6 -> entries[5] = Entry(5f, (cursor.getString(0).toFloat())*kof)
+                7 -> entries[6] = Entry(6f, (cursor.getString(0).toFloat())*kof)
+                8 -> entries[7] = Entry(7f, (cursor.getString(0).toFloat())*kof)
+                9 -> entries[8] = Entry(8f, (cursor.getString(0).toFloat())*kof)
+                10 -> entries[9] = Entry(9f, (cursor.getString(0).toFloat())*kof)
+                11 -> entries[10] = Entry(10f, (cursor.getString(0).toFloat())*kof)
+                12 -> entries[11] = Entry(11f, (cursor.getString(0).toFloat())*kof)
             }
         }
         cursor.close()

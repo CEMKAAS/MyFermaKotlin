@@ -87,7 +87,6 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
                     Toast.makeText(activity, "Добавлено!", Toast.LENGTH_SHORT)
                     menu.isErrorEnabled = false
                 }
-
                 EditorInfo.IME_ACTION_GO -> expensesInTable()
             }
             false
@@ -126,6 +125,7 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
             val inputExpenses: Double =
                 inputExpensesString.replace(",".toRegex(), ".").replace("[^\\d.]".toRegex(), "")
                     .toDouble()
+
             myDB.insertToDbExpenses(expensesName, inputExpenses)
 
             Toast.makeText(activity, "Добавлено!", Toast.LENGTH_SHORT).show()
@@ -135,6 +135,7 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
             totalExpensesText.text = f.format(clearFinance).toString() + " ₽"
             expensesNameEditText.text.clear()
             expensesEditText.editText!!.text.clear()
+
         } else {
             if ((expensesEditText.editText!!.text.toString() == "")) {
                 expensesEditText.error = "Введите цену!"
