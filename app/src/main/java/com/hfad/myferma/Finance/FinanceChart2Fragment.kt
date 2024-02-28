@@ -12,6 +12,7 @@ import android.widget.AutoCompleteTextView
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.LineChart
 import com.github.mikephil.charting.components.XAxis
+import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.data.Entry
 import com.github.mikephil.charting.data.LineData
 import com.github.mikephil.charting.data.LineDataSet
@@ -34,7 +35,7 @@ class FinanceChart2Fragment : Fragment() {
 
     private lateinit var mountSpiner: AutoCompleteTextView
     private lateinit var yearSpiner: AutoCompleteTextView
-    private val labes: Array<String> = arrayOf(
+    private val labes = mutableListOf<String>(
         "",
         "Январь",
         "Февраль",
@@ -51,7 +52,7 @@ class FinanceChart2Fragment : Fragment() {
         ""
     )
     private var mountMass = mutableListOf<String>()
-    private lateinit  var layout: View
+    private lateinit var layout: View
     private var mount: Int = 0
 
     override fun onCreateView(
@@ -78,7 +79,8 @@ class FinanceChart2Fragment : Fragment() {
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
         fab.visibility = View.GONE
 
-        val appBar: MaterialToolbar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        val appBar: MaterialToolbar =
+            requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
         appBar.title = "Мои Финансы - Общее"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
@@ -134,7 +136,7 @@ class FinanceChart2Fragment : Fragment() {
         }
     }
 
-    private fun xaxis(lineChart: LineChart, valueX: Array<String>?) {
+    private fun xaxis(lineChart: LineChart, valueX: MutableList<String>) {
         val xAxis: XAxis = lineChart.xAxis
         xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
@@ -157,30 +159,19 @@ class FinanceChart2Fragment : Fragment() {
         }
     }
 
-    fun add(): ArrayList<String> {
+    fun add(): MutableList<String> {
         val tempList: MutableSet<String> = HashSet()
         val cursor = myDB.readAllDataSale()
 
         while (cursor.moveToNext()) {
-            val string1: String = cursor.getString(5)
-            tempList.add(string1)
+            tempList.add(cursor.getString(5))
         }
         cursor.close()
 
-        val tempList1: ArrayList<String> = ArrayList()
-        for (nameExpenses: String in tempList) {
-            tempList1.add(nameExpenses)
-        }
-        return tempList1
+        return tempList.toMutableList()
     }
 
     private fun allProducts() {
-
-        val cursorExpenses =
-
-        val sumCategory: MutableMap<Float, Float> = HashMap()
-        val sumCategoryExpenses: MutableMap<Float, Float> = HashMap()
-        val sumCategoryClear: MutableMap<Float, Float> = HashMap()
 
         val mountString: String = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
@@ -190,34 +181,42 @@ class FinanceChart2Fragment : Fragment() {
         when (mount) {
 
             in 1..12 -> {
-                allProductsMount(myDB.selectChartMountFinance2(MyConstanta.PRICEALL, MyConstanta.TABLE_NAMESALE, mount.toString(),year2), entriesFirst, 6, 1, year2)
-                allProductsMount(myDB.selectChartMountFinance2(MyConstanta.TITLEEXPENSES, MyConstanta.TABLE_NAMEEXPENSES, mount.toString(),year2), entriesThird, 2, -1, year2)
+                allProductsMount(
+                    myDB.selectChartMountFinance2(
+                        MyConstanta.PRICEALL,
+                        MyConstanta.TABLE_NAMESALE,
+                        mount.toString(),
+                        year2
+                    ), entriesFirst, 1
+                )
+                allProductsMount(
+                    myDB.selectChartMountFinance2(
+                        MyConstanta.TITLEEXPENSES,
+                        MyConstanta.TABLE_NAMEEXPENSES,
+                        mount.toString(),
+                        year2
+                    ), entriesThird, -1
+                )
             }
 
             13 -> {
 
-                allProductsYear(cursor, year2, sumCategory, entriesFirst, 6, 1)
-                allProductsYear(cursorExpenses, year2, sumCategoryExpenses, entriesThird, 2, -1)
+                allProductsYear( myDB.selectChartYearFinance2(
+                    MyConstanta.PRICEALL,
+                    MyConstanta.TABLE_NAMESALE,
+                    year2), entriesFirst,  1)
+                allProductsYear(myDB.selectChartYearFinance2(
+                    MyConstanta.TITLEEXPENSES,
+                    MyConstanta.TABLE_NAMEEXPENSES,
+                    year2
+                ), entriesThird, -1)
 
-                for (entry: Map.Entry<Float, Float?> in sumCategory.entries) {
-                    val name: Float = entry.key
-                    val sum: Float? = entry.value
-                    sumCategoryClear[name] = sum
-                }
-                for (entry2: Map.Entry<Float, Float?> in sumCategoryExpenses.entries) {
-                    val nameExpenses: Float = entry2.key
-                    val sumExpenses: Float? = entry2.value
-                    if (sumCategoryClear[nameExpenses] == null) {
-                        sumCategoryClear[nameExpenses] = sumExpenses
-                    } else {
-                        val sum: Float = sumCategoryClear[nameExpenses]!! + (sumExpenses)!!
-                        sumCategoryClear[nameExpenses] = sum
-                    }
-                }
-                for (entry: Map.Entry<Float, Float?> in sumCategoryClear.entries) {
-                    val name: Float = entry.key
-                    val sum: Float? = entry.value
-                    entriesSecond.add(Entry(name, sum))
+//                allProductsYear(myDB.selectChartYearSumFinance2(year2),entriesSecond,1)
+
+                for (i in 0..11){
+                    val x = entriesFirst[i].y
+                    val y = entriesThird[i].y
+                    entriesSecond[i] = Entry(i.toFloat(),x-y)
                 }
             }
 
@@ -227,75 +226,49 @@ class FinanceChart2Fragment : Fragment() {
                 entriesThird.add(Entry(0f, 0f))
             }
         }
-        cursorExpenses.close()
-        cursor.close()
     }
 
     private fun allProductsMount(
         cursor: Cursor,
-        entries: ArrayList<Entry>,
-        price: Int,
-        kof: Int,
-        year2: String
+        entries: MutableList<Entry>,
+        kof: Int
     ) {
-        var x: Float
-        var y: Float
         if (cursor.count != 0) {
             while (cursor.moveToNext()) {
-
-
-                //проверка месяца
-                if (mount == cursor.getString(4).toInt()) {
-                    //проверка года
-                    if ((year2 == cursor.getString(5))) {
-                        y = cursor.getString(price).toFloat() * kof //Для вычитания
-                        x = cursor.getString(0).toFloat()
-                        entries.add(Entry(x, y))
-                    }
-                }
+                val y = cursor.getString(1).toFloat() * kof //Для вычитания
+                val x = cursor.getString(0).toFloat()
+                entries.add(Entry(x, y))
             }
-        } else {
-            entries.add(Entry(0f, 0f))
-        }
+        } else entries.add(Entry(0f, 0f))
         cursor.close()
     }
 
     private fun allProductsYear(
         cursor: Cursor,
-        year2: String,
-        sumCategory: MutableMap<Float, Float?>,
-        entries: ArrayList<Entry>?,
-        price: Int,
+        entries: MutableList<Entry>,
         kof: Int
     ) {
-        if (cursor.count != 0) {
-            while (cursor.moveToNext()) {
-                //проверка года
-                if ((year2 == cursor.getString(5))) {
-                    if (sumCategory[cursor.getString(4).toFloat()] == null) {
-                        sumCategory[cursor.getString(4).toFloat()] = cursor.getString(price).toFloat() * kof
-                    } else {
-                        val sum: Float =
-                            sumCategory[cursor.getString(4).toFloat()]!! + cursor.getString(
-                                price
-                            ).toFloat() * kof
-                        sumCategory[cursor.getString(4).toFloat()] = sum
-                    }
-                }
+        for (i in 0..12) {
+            entries.add(BarEntry(i.toFloat(), 0f))
+        }
+
+        while (cursor.moveToNext()) {
+            when (cursor.getString(1).toInt()) {
+                1 -> entries[0] = Entry(1f, (cursor.getString(0).toFloat())*kof)
+                2 -> entries[1] = Entry(2f, (cursor.getString(0).toFloat())*kof)
+                3 -> entries[2] = Entry(3f, (cursor.getString(0).toFloat())*kof)
+                4 -> entries[3] = Entry(4f, (cursor.getString(0).toFloat())*kof)
+                5 -> entries[4] = Entry(5f, (cursor.getString(0).toFloat())*kof)
+                6 -> entries[5] = Entry(6f, (cursor.getString(0).toFloat())*kof)
+                7 -> entries[6] = Entry(7f, (cursor.getString(0).toFloat())*kof)
+                8 -> entries[7] = Entry(8f, (cursor.getString(0).toFloat())*kof)
+                9 -> entries[8] = Entry(9f, (cursor.getString(0).toFloat())*kof)
+                10 -> entries[9] = Entry(10f, (cursor.getString(0).toFloat())*kof)
+                11 -> entries[10] = Entry(11f, (cursor.getString(0).toFloat())*kof)
+                12 -> entries[11] = Entry(12f, (cursor.getString(0).toFloat())*kof)
             }
         }
         cursor.close()
-        for (i in 1..11) {
-            if (sumCategory.get(i) == null) {
-                entries!!.add(Entry(i, 0))
-            } else {
-                for (entry: Map.Entry<Float, Float?> in sumCategory.entries) {
-                    val name: Float = entry.key
-                    val sum: Float? = entry.value
-                    entries!!.add(Entry(name, sum))
-                }
-            }
-        }
     }
 
     fun setMount(mountString: String?) {

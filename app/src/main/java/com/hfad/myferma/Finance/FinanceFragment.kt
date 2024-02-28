@@ -242,14 +242,14 @@ class FinanceFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.financeChart_button -> onClickFinanceChart(v, FinanceChartFragment())
-//            R.id.financeChart2_button -> onClickFinanceChart(v, FinanceChart2Fragment())
+            R.id.financeChart2_button -> onClickFinanceChart(v, FinanceChart2Fragment())
         }
     }
 
     //Функция кнопки
-    private fun onClickFinanceChart(view: View?, fragment: Fragment?) {
+    private fun onClickFinanceChart(view: View?, fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.conteiner, (fragment)!!, "visible_fragment")
+            .replace(R.id.conteiner, (fragment), "visible_fragment")
             .addToBackStack(null)
             .commit()
     }

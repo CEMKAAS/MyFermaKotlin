@@ -363,19 +363,32 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
     }
 
     fun selectChartYearFinance2(
-        type: String,
+        priceColumn: String,
+        tableName: String,
         year: String
     ): Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
-            "SELECT sum(${MyConstanta.PRICEALL}), ${MyConstanta.MOUNT}" +
-                    " FROM ${MyConstanta.TABLE_NAMESALE} " +
-                    " WHERE ${MyConstanta.TITLESale} = ? and ${MyConstanta.YEAR} = ?" +
+            "SELECT sum($priceColumn), ${MyConstanta.MOUNT}" +
+                    " FROM $tableName " +
+                    " WHERE ${MyConstanta.YEAR} = ?" +
                     " group by ${MyConstanta.MOUNT}",
-            arrayOf(type, year)
+            arrayOf(year)
         )
     }
 
+    fun selectChartYearSumFinance2(
+        year: String
+    ): Cursor {
+        val db = this.readableDatabase
+        return db.rawQuery(
+            "SELECT sum(${MyConstanta.PRICEALL})-sum(${MyConstanta.TITLEEXPENSES}), ${MyConstanta.MOUNT}" +
+                    " FROM ${MyConstanta.TITLESale} LEFT JOIN ${MyConstanta.TITLEEXPENSES}" +
+                    " WHERE ${MyConstanta.YEAR} = ?" +
+                    " group by ${MyConstanta.MOUNT}",
+            arrayOf(year)
+        )
+    }
 
     fun idIncubator(id: String): Cursor {
         val db = readableDatabase
