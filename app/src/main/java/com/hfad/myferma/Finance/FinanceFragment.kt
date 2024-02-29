@@ -185,6 +185,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
 //            savedOnEggs_text.setText(String.valueOf((mydbManager.sumSaleEggPrice())));
 //            savedOnMilk_text.setText(String.valueOf((mydbManager.sumSaleMilkPrice())));
 //            savedOnMeat_text.setText(String.valueOf((mydbManager.sumSaleMeatPrice())));
+
         return layout
     }
 
@@ -198,7 +199,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
         cursor.close()
     }
 
-    //Считаем сумму по каждому продукту
+    //Считаем сумму по каждому продукту, Который есть в списке
     private fun addProduct() {
 
         for (product: String in productList) {
@@ -211,10 +212,9 @@ class FinanceFragment : Fragment(), View.OnClickListener {
 
             if (cursor.count != 0) {
                 cursor.moveToNext()
+
                 if (tempList[product] == null) {
                     tempList[product] = cursor.getDouble(1)
-                } else {
-                    tempList[product] = tempList[product]!! + cursor.getDouble(1)
                 }
 
             } else {
@@ -309,10 +309,9 @@ class FinanceFragment : Fragment(), View.OnClickListener {
         if (cursorExpens.count != 0) {
             while (cursorExpens.moveToNext()) {
                 val data: String =
-                    cursorExpens.getString(3) + "." + cursorExpens.getString(4) + "." + cursorExpens.getString(
-                        5
-                    )
+                    cursorExpens.getString(3) + "." + cursorExpens.getString(4) + "." + cursorExpens.getString(5)
                 val dateNow: Date = format.parse(data)
+
                 if ((dateFirst.before(dateNow) && dateEnd.after(dateNow)) || (dateFirst == dateNow) || (dateEnd == dateNow)) {
                     val productUnit: Double = cursorExpens.getDouble(2)
                     totalExpenses += productUnit

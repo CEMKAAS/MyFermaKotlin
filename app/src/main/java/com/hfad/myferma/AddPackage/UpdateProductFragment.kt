@@ -367,6 +367,7 @@ class UpdateProductFragment : Fragment() {
 
     //Считаем сколько у нас товара на текущий момент
     private fun sum(product: String, count: String): Double {
+
         val diff = oldCount?.toDouble()!! - count.toDouble()
         var nowUnitProduct = 0.0
         val a = add(product)
