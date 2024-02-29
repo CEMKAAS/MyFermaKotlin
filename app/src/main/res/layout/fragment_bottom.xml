@@ -1,34 +1,29 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:orientation="vertical"
     style="@style/Widget.Material3.BottomSheet"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
     app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior">
 
     <com.google.android.material.bottomsheet.BottomSheetDragHandleView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-       />
+        android:layout_height="wrap_content" />
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/menu"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="170dp"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="5dp"
             android:hint="Товар"
-            android:layout_row="3"
-            android:layout_column="0"
-            android:layout_gravity="fill_horizontal"
-            app:helperText="Укажите товар"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp">
+            app:helperText="Укажите товар">
 
             <AutoCompleteTextView
                 android:id="@+id/animals_spiner_sheet"
@@ -42,13 +37,12 @@
             android:id="@+id/data_sheet"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginLeft="5dp"
             android:hint="Период"
+            android:padding="5dp"
             app:endIconDrawable="@drawable/baseline_calendar_month_24"
             app:endIconMode="custom"
             app:errorEnabled="true"
             app:helperText="Укажите период"
-            android:layout_marginRight="10dp"
             app:helperTextEnabled="true">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -63,10 +57,10 @@
 
     <Button
         android:id="@+id/button_sheet"
-        android:layout_width="match_parent"
+        android:layout_gravity="center"
+        style="@style/Widget.Material3.Button"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Widget.Material3.Button.Icon"
-        android:layout_marginTop="12dp"
         android:text="Применить" />
 
 </LinearLayout>

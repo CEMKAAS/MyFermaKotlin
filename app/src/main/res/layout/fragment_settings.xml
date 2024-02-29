@@ -5,30 +5,27 @@
     android:layout_height="match_parent"
     android:layout_gravity="top|center">
 
-
-
     <LinearLayout
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="10dp"
-                android:layout_marginBottom="5dp"
-                android:fontFamily="@font/commissioner_regular"
-                android:text="Добавить новый товар :"
-                android:textSize="18dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/commissioner_regular"
+            android:padding="10dp"
+            android:text="Добавить новый товар :"
+            android:textSize="18dp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/menuProduct"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            app:helperText="Укажите товар, который хотите добавить"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="5dp"
-            app:errorEnabled="true">
+            android:padding="10dp"
+            app:errorEnabled="true"
+            app:helperText="Укажите товар, который хотите добавить">
 
             <AutoCompleteTextView
                 android:id="@+id/add_product"
@@ -40,33 +37,30 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
-            android:layout_width="wrap_content"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:gravity="center"
             android:orientation="horizontal">
 
             <Button
-                style="@style/Widget.Material3.Button.Icon"
                 android:id="@+id/add_product_button"
+                style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="30dp"
+                android:layout_gravity="center"
                 android:text="Добавить"
-                android:textAllCaps="false"
-                android:layout_gravity="center" />
+                android:textAllCaps="false" />
 
             <Button
-                style="@style/Widget.Material3.Button.Icon"
                 android:id="@+id/delete_product_button"
+                style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
-                android:layout_marginLeft="30dp"
-                android:text="Удалить"
                 android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:text="Удалить"
                 android:textAllCaps="false" />
+
         </LinearLayout>
-
     </LinearLayout>
-
 </ScrollView>

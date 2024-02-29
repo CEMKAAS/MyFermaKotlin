@@ -1,152 +1,144 @@
 <?xml version="1.0" encoding="utf-8"?>
-<GridLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:layout_gravity="center"
-    android:columnCount="3">
-    <TextView
-        android:id="@+id/text_unit"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_gravity="top|center">
+
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/unit_text"
-        android:layout_gravity="center"
-        android:textSize="24dp"
-        android:layout_columnSpan="2"
-        android:layout_marginBottom="16dp"
-        android:layout_row="0"
-        android:layout_column="0" />
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/tilleExpenses_input"
-        android:layout_width="342dp"
-        android:layout_height="wrap_content"
-        android:layout_row="1"
-        android:layout_column="0"
-        android:layout_columnSpan="2"
-        android:layout_marginBottom="16dp"
-        android:ems="10"
-        android:hint="Товар"
-        app:errorEnabled="true"
-        app:helperText="Укажите наименование товара"
-        app:helperTextEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
+        <TextView
+            android:id="@+id/text_unit"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="text" />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/titleSale_input"
-        android:layout_width="164dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_row="2"
-        android:layout_column="0"
-        android:hint="Количество"
-        android:layout_marginRight="16dp"
-        android:layout_marginBottom="16dp"
-        app:helperText="Укажите кол-во товара"
-        app:helperTextEnabled="true"
-        app:suffixText="шт."
-        app:errorEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="phone"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
-
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/daySale_input"
-        android:layout_width="164dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_row="2"
-        android:layout_column="1"
-        android:hint="Дата"
-        app:helperText="Укажите дату"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true"
-        app:endIconDrawable="@drawable/baseline_calendar_month_24"
-        app:endIconMode="custom">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="date" />
-            />
-
-
-    </com.google.android.material.textfield.TextInputLayout>
-    <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/priceEdit_input"
-        android:layout_width="164dp"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:layout_row="3"
-        android:layout_column="0"
-        android:hint="Цена"
-        app:suffixText="₽"
-        app:helperText="Укажите цену"
-        app:helperTextEnabled="true"
-        app:errorEnabled="true">
-
-        <com.google.android.material.textfield.TextInputEditText
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:inputType="number"
-            />
-
-    </com.google.android.material.textfield.TextInputLayout>
+            android:layout_gravity="center"
+            android:padding="10dp"
+            android:text="@string/unit_text"
+            android:textSize="24dp" />
 
         <com.google.android.material.textfield.TextInputLayout
-        android:id="@+id/menu"
-        style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
-        android:layout_width="342dp"
-        android:layout_height="wrap_content"
-        android:hint="Статус"
-        android:layout_row="4"
-        android:layout_column="0"
-        android:layout_marginBottom="16dp"
-        android:layout_columnSpan="2"
-        android:layout_gravity="fill_horizontal"
-        >
-
-        <AutoCompleteTextView
-            android:id="@+id/writeOff_spiner"
+            android:id="@+id/tilleExpenses_input"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:inputType="none"
-            app:simpleItems="@array/statusWriteOff" />
+            android:ems="10"
+            android:hint="Товар"
+            android:padding="10dp"
+            app:errorEnabled="true"
+            app:helperText="Укажите наименование товара"
+            app:helperTextEnabled="true">
 
-    </com.google.android.material.textfield.TextInputLayout>
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="text" />
 
-    <Button
-        android:id="@+id/update_button"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_row="5"
-        android:layout_column="0"
-        android:text="Обновить"
-        android:textAllCaps="false"
-        android:layout_gravity="center"
-        android:textSize="20sp" />
+        </com.google.android.material.textfield.TextInputLayout>
 
-    <Button
-        android:id="@+id/delete_button"
-        android:layout_width="match_parent"
-        android:layout_height="70dp"
-        android:layout_row="5"
-        android:layout_column="1"
-        android:text="Удалить"
-        android:layout_gravity="center"
-        android:textAllCaps="false"
-        android:textSize="20sp" />
 
-</GridLayout>
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/titleSale_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Количество"
+            android:padding="10dp"
+            app:errorEnabled="true"
+            app:helperText="Укажите кол-во товара"
+            app:helperTextEnabled="true"
+            app:suffixText="шт.">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="phone" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/daySale_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Дата"
+            android:padding="10dp"
+            app:endIconDrawable="@drawable/baseline_calendar_month_24"
+            app:endIconMode="custom"
+            app:errorEnabled="true"
+            app:helperText="Укажите дату"
+            app:helperTextEnabled="true">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="date" />
+        </com.google.android.material.textfield.TextInputLayout>
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/priceEdit_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:ems="10"
+            android:hint="Цена"
+            android:padding="10dp"
+            app:errorEnabled="true"
+            app:helperText="Укажите цену"
+            app:helperTextEnabled="true"
+            app:suffixText="₽">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="number" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/menu"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_gravity="fill_horizontal"
+            android:hint="Статус"
+            android:padding="10dp">
+
+            <AutoCompleteTextView
+                android:id="@+id/writeOff_spiner"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                app:simpleItems="@array/statusWriteOff" />
+
+        </com.google.android.material.textfield.TextInputLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center"
+            android:orientation="horizontal"
+            android:padding="10dp">
+
+            <Button
+                android:id="@+id/update_button"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:text="Обновить" />
+
+            <Button
+                android:id="@+id/delete_button"
+                style="@style/Widget.Material3.Button"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center"
+                android:layout_marginLeft="20dp"
+                android:text="Удалить" />
+
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

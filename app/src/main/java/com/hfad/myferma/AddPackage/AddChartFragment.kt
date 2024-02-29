@@ -19,22 +19,25 @@ import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
 import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.hfad.myferma.ChartMount
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
 
-class AddChartFragment : Fragment() {
+class AddChartFragment : Fragment(){
 
+    private val mountClass = ChartMount()
     private lateinit var myDB: MyFermaDatabaseHelper
     private lateinit var animalsSpiner: AutoCompleteTextView
     private lateinit var mountSpiner: AutoCompleteTextView
     private lateinit var yearSpiner: AutoCompleteTextView
     private var visitors = mutableListOf<BarEntry>()
 
-    private var mountMass = mutableListOf<String>()
     private var mount = 0
+    private var mountString = "За весь год"
+
     private lateinit var layout: View
     private var yearList = mutableListOf<String>()
     private var productList = mutableListOf<String>()
@@ -73,7 +76,7 @@ class AddChartFragment : Fragment() {
         val calendar = Calendar.getInstance()
 
         // настройка спинеров
-        mountSpiner.setText("За весь год", false)
+        mountSpiner.setText(mountString, false)
         yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
 
         //убириаем фаб кнопку
@@ -97,7 +100,7 @@ class AddChartFragment : Fragment() {
                 visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
-                    bar(mountMass)
+                    bar(mountClass.setMount(mountString))
                 } else {
                     bar(labes)
                 }
@@ -109,7 +112,7 @@ class AddChartFragment : Fragment() {
                 visitors.clear()
                 storeDataInArrays()
                 if (mount != 13) {
-                    bar(mountMass)
+                    bar(mountClass.setMount(mountString))
                 } else {
                     bar(labes)
                 }
@@ -122,14 +125,12 @@ class AddChartFragment : Fragment() {
                 storeDataInArrays()
 
                 if (mount != 13) {
-                    bar(mountMass)
+                    bar(mountClass.setMount(mountString))
                 } else {
                     bar(labes)
                 }
 
             }
-
-
         return layout
     }
 
@@ -200,10 +201,10 @@ class AddChartFragment : Fragment() {
     private fun storeDataInArrays() {
 
         val animalsType: String = animalsSpiner.text.toString()
-        val mountString: String = mountSpiner.text.toString()
+        mountString = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
 
-        setMount(mountString)
+        mount = mountClass.setMountInt(mountString)
 
         when (mount) {
 
@@ -271,8 +272,6 @@ class AddChartFragment : Fragment() {
             else -> {
                 visitors.add(BarEntry(0f, 0f))
             }
-
-
         }
     }
 }

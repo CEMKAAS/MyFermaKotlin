@@ -2,15 +2,32 @@ package com.hfad.myferma
 
 class ChartMount {
 
-    private var mount = 1
-//    private var mountMass = mutableListOf<String>()
+    var mountInt = 1
 
-    fun setMount(mountString: String) : MutableList<String>{
-        var mountMass = mutableListOf<String>()
+    fun setMountInt(mountString: String): Int {
+        when (mountString) {
+            "Январь" -> return 1
+            "Февраль" -> return 2
+            "Март" -> return 3
+            "Апрель" -> return 4
+            "Май" -> return 5
+            "Июнь" -> return 6
+            "Июль" -> return 7
+            "Август" -> return 8
+            "Сентябрь" -> return 9
+            "Октябрь" -> return 10
+            "Ноябрь" -> return 11
+            "Декабрь" -> return 12
+            "За весь год" -> return 13
+        }
+        return 13
+    }
+
+
+    fun setMount(mountString: String): MutableList<String> {
         when (mountString) {
             "Январь" -> {
-                mount = 1
-                return mountMass = mutableListOf<String>(
+                return mutableListOf<String>(
                     "",
                     "1",
                     "2",
@@ -48,8 +65,7 @@ class ChartMount {
             }
 
             "Февраль" -> {
-                mount = 2
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -84,8 +100,7 @@ class ChartMount {
             }
 
             "Март" -> {
-                mount = 3
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -123,8 +138,7 @@ class ChartMount {
             }
 
             "Апрель" -> {
-                mount = 4
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -161,8 +175,7 @@ class ChartMount {
             }
 
             "Май" -> {
-                mount = 5
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -200,8 +213,7 @@ class ChartMount {
             }
 
             "Июнь" -> {
-                mount = 6
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -238,8 +250,7 @@ class ChartMount {
             }
 
             "Июль" -> {
-                mount = 7
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -277,8 +288,7 @@ class ChartMount {
             }
 
             "Август" -> {
-                mount = 8
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -316,8 +326,7 @@ class ChartMount {
             }
 
             "Сентябрь" -> {
-                mount = 9
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -354,8 +363,7 @@ class ChartMount {
             }
 
             "Октябрь" -> {
-                mount = 10
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -393,8 +401,7 @@ class ChartMount {
             }
 
             "Ноябрь" -> {
-                mount = 11
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -431,8 +438,7 @@ class ChartMount {
             }
 
             "Декабрь" -> {
-                mount = 12
-                mountMass = arrayOf(
+                return arrayOf(
                     "",
                     "1",
                     "2",
@@ -469,10 +475,41 @@ class ChartMount {
                 ).toMutableList()
             }
 
-            "За весь год" -> {
-                mount = 13
-            }
         }
-        return var MutableList<String>
+        return arrayOf(
+            "",
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "7",
+            "8",
+            "9",
+            "10",
+            "11",
+            "12",
+            "13",
+            "14",
+            "15",
+            "16",
+            "17",
+            "18",
+            "19",
+            "20",
+            "21",
+            "22",
+            "23",
+            "24",
+            "25",
+            "26",
+            "27",
+            "28",
+            "29",
+            "30",
+            "31",
+            ""
+        ).toMutableList()
     }
 }
