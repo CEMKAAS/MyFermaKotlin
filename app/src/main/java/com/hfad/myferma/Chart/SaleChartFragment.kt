@@ -1,14 +1,16 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.Chart
 
 import android.database.Cursor
 import android.graphics.Color
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
+import android.widget.Button
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
 import com.github.mikephil.charting.components.XAxis
@@ -16,32 +18,26 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
-import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
+import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.hfad.myferma.ChartMount
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
-
-class AddChartFragment : Fragment(){
-
+class SaleChartFragment : Fragment() {
     private val mountClass = ChartMount()
     private lateinit var myDB: MyFermaDatabaseHelper
     private lateinit var animalsSpiner: AutoCompleteTextView
     private lateinit var mountSpiner: AutoCompleteTextView
     private lateinit var yearSpiner: AutoCompleteTextView
-    private var visitors = mutableListOf<BarEntry>()
-
-    private var mount = 0
-    private var mountString = "За весь год"
-
+    private lateinit var button: Button
+    private lateinit var bottomSheetDialog: BottomSheetDialog
     private lateinit var layout: View
-    private var yearList = mutableListOf<String>()
-    private var productList = mutableListOf<String>()
-    private val labes = mutableListOf(
+
+    private var visitors = mutableListOf<BarEntry>()
+    private val labes = mutableListOf<String>(
         "",
         "Январь",
         "Февраль",
@@ -58,107 +54,95 @@ class AddChartFragment : Fragment(){
         ""
     )
 
+    private var mount: Int = 0
+    private var mountString = "За весь год"
+
+    private var yearList = mutableListOf<String>()
+    private var productList = mutableListOf<String>()
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        layout = inflater.inflate(R.layout.fragment_sale_chart, container, false)
+
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
 
         add()
 
-        layout = inflater.inflate(R.layout.fragment_add_chart, container, false)
-        // установка спинеров
-        animalsSpiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
-        mountSpiner = layout.findViewById<View>(R.id.animals_spiner2) as AutoCompleteTextView
-        yearSpiner = layout.findViewById<View>(R.id.animals_spiner3) as AutoCompleteTextView
-
-        val calendar = Calendar.getInstance()
+        val calendar: Calendar = Calendar.getInstance()
 
         // настройка спинеров
         mountSpiner.setText(mountString, false)
-        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
         fab.visibility = View.GONE
 
-        // Настройка аппбара настройка стелочки назад
-        val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
-        appBar.title = "Мои товар - График"
+        val appBar: MaterialToolbar =
+            requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        appBar.title = "Мои продажи - График"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
-        appBar.setNavigationOnClickListener(View.OnClickListener { requireActivity().supportFragmentManager.popBackStack() })
+        appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
+
+        appBar.menu.findItem(R.id.filler).isVisible = true
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.filler -> bottomSheetDialog.show()
+            }
+            true
+        })
+
+        showBottomSheetDialog()
 
         //Логика просчета
         storeDataInArrays()
-        bar(labes)
 
-        animalsSpiner.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
+        button.setOnClickListener {
+            storeDataInArrays()
+            bottomSheetDialog.dismiss()
+        }
 
-                visitors.clear()
-                storeDataInArrays()
-                if (mount != 13) {
-                    bar(mountClass.setMount(mountString))
-                } else {
-                    bar(labes)
-                }
-
-            }
-        mountSpiner.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
-
-                visitors.clear()
-                storeDataInArrays()
-                if (mount != 13) {
-                    bar(mountClass.setMount(mountString))
-                } else {
-                    bar(labes)
-                }
-
-            }
-        yearSpiner.onItemClickListener =
-            AdapterView.OnItemClickListener { parent, view, position, id ->
-
-                visitors.clear()
-                storeDataInArrays()
-
-                if (mount != 13) {
-                    bar(mountClass.setMount(mountString))
-                } else {
-                    bar(labes)
-                }
-
-            }
         return layout
     }
 
+    //Добавляем bottobSheet
+    private fun showBottomSheetDialog() {
+        bottomSheetDialog = BottomSheetDialog(requireContext())
+        bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
+        animalsSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.animals_spiner)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
+
+    }
+
     private fun bar(xAsis: MutableList<String>) {
-        //установка графиков
         val barChart: BarChart = layout.findViewById(R.id.barChart)
-        // настройка графиков
-        val barDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
+        val barDataSet: BarDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
 //        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
-        barDataSet.valueTextColor = Color.BLACK
-        barDataSet.valueTextSize = 16f
-        val barData = BarData(barDataSet)
+        barDataSet.setValueTextColor(Color.BLACK)
+        barDataSet.setValueTextSize(16f)
+        val barData: BarData = BarData(barDataSet)
         barChart.invalidate()
         barChart.setFitBars(true)
         barChart.data = barData
-        barChart.description.text = "График добавленной продукции на склад"
+        barChart.description.text = "График проданной продукции со склада"
         barChart.animateY(2000)
         val xAxis: XAxis = barChart.xAxis
-        xAxis.position = XAxis.XAxisPosition.BOTTOM
+        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
         xAxis.setDrawGridLines(false)
-        xAxis.granularity = 1f // only intervals of 1 day
-        xAxis.labelCount = 6 //сколько отображается
-        xAxis.valueFormatter = IndexAxisValueFormatter(xAsis)
+        xAxis.setGranularity(1f) // only intervals of 1 day
+        xAxis.setLabelCount(6) //сколько отображается
+        xAxis.setValueFormatter(IndexAxisValueFormatter(xAsis))
     }
 
     override fun onStart() {
         super.onStart()
-        val view = view
+        val view: View? = view
         if (view != null) {
             //Настройка спинера с продуктами
             val arrayAdapterProduct = ArrayAdapter<String>(
@@ -179,11 +163,10 @@ class AddChartFragment : Fragment(){
     }
 
     fun add() {
-        val yearSet = mutableSetOf<String>()
-        val productSet = mutableSetOf<String>()
+        val yearSet: MutableSet<String> = HashSet()
+        val productSet: MutableSet<String> = HashSet()
 
-        val cursor = myDB.readAllData()
-
+        val cursor: Cursor = myDB.readAllDataSale()
         while (cursor.moveToNext()) {
             val year = cursor.getString(5)
             val product = cursor.getString(1)
@@ -198,11 +181,13 @@ class AddChartFragment : Fragment(){
 
     }
 
+
     private fun storeDataInArrays() {
 
         val animalsType: String = animalsSpiner.text.toString()
         mountString = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
+
 
         mount = mountClass.setMountInt(mountString)
 
@@ -211,16 +196,20 @@ class AddChartFragment : Fragment(){
             in 1..12 -> {
 
                 val cursor: Cursor = myDB.selectChartMount(
-                    MyConstanta.DISCROTION, MyConstanta.TABLE_NAME, MyConstanta.TITLE, animalsType,
-                    mount.toString(), year2
+                    MyConstanta.DISCROTIONSale,
+                    MyConstanta.TABLE_NAMESALE,
+                    MyConstanta.TITLESale,
+                    animalsType,
+                    mount.toString(),
+                    year2
                 )
 
                 if (cursor.count != 0) {
 
                     while (cursor.moveToNext()) {
 
-                       val x = cursor.getString(0).toFloat()
-                       val y = cursor.getString(1).toFloat()
+                        val x = cursor.getString(0).toFloat()
+                        val y = cursor.getString(1).toFloat()
 
                         visitors.add(BarEntry(y, x))
 
@@ -231,7 +220,7 @@ class AddChartFragment : Fragment(){
                 }
 
                 cursor.close()
-
+                bar(mountClass.setMount(mountString))
 
             }
 
@@ -242,9 +231,9 @@ class AddChartFragment : Fragment(){
                 }
 
                 val cursor = myDB.selectChartYear(
-                    MyConstanta.DISCROTION,
-                    MyConstanta.TABLE_NAME,
-                    MyConstanta.TITLE,
+                    MyConstanta.DISCROTIONSale,
+                    MyConstanta.TABLE_NAMESALE,
+                    MyConstanta.TITLESale,
                     animalsType,
                     year2
                 )
@@ -267,10 +256,14 @@ class AddChartFragment : Fragment(){
                     }
                 }
                 cursor.close()
+                bar(labes)
             }
 
             else -> {
-                visitors.add(BarEntry(0f, 0f))
+                for (i in 0..(labes.size - 2)) {
+                    visitors.add(BarEntry(0f, 0f))
+                    bar(labes)
+                }
             }
         }
     }

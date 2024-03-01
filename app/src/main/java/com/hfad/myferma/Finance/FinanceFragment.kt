@@ -1,6 +1,5 @@
 package com.hfad.myferma.Finance
 
-import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -20,8 +19,10 @@ import com.google.android.material.datepicker.DateValidatorPointBackward
 import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.android.material.textfield.TextInputLayout
-//import com.hfad.myferma.Finance.FinanceChart2Fragment
-//import com.hfad.myferma.Finance.FinanceChartFragment
+import com.hfad.myferma.Chart.FinanceChart2Fragment
+import com.hfad.myferma.Chart.FinanceChartFragment
+//import com.hfad.myferma.Chart.FinanceChart2Fragment
+//import com.hfad.myferma.Chart.FinanceChartFragment
 import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.ProductAdapter
 import com.hfad.myferma.R

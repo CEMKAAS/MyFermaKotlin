@@ -1,10 +1,11 @@
-package com.hfad.myferma
+package com.hfad.myferma.Chart
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.hfad.myferma.R
 
 class BottomChartSettingFragment : Fragment() {
 

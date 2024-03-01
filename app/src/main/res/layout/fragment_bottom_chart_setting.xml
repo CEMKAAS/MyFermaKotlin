@@ -41,7 +41,7 @@
             android:hint="Месяц">
 
             <AutoCompleteTextView
-                android:id="@+id/animals_spiner2"
+                android:id="@+id/mounts_spiner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -60,7 +60,7 @@
             android:hint="Год">
 
             <AutoCompleteTextView
-                android:id="@+id/animals_spiner3"
+                android:id="@+id/year_spiner"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none" />
@@ -91,12 +91,13 @@
         </RadioGroup>
 
         <Button
-            android:id="@+id/addSale_button"
+            android:id="@+id/add_button"
             android:layout_gravity="center"
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Применить"
             />
+
     </LinearLayout>
 </ScrollView>

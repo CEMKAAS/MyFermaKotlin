@@ -23,8 +23,8 @@ import com.hfad.myferma.AddPackage.AddFragment
 import com.hfad.myferma.AddPackage.AddManagerFragment
 import com.hfad.myferma.AddPackage.UpdateProductFragment
 import com.hfad.myferma.Finance.ExpensesPackage.ExpensesFragment
-//import com.hfad.myferma.Finance.FinanceChart2Fragment
-//import com.hfad.myferma.Finance.FinanceChartFragment
+//import com.hfad.myferma.Chart.FinanceChart2Fragment
+//import com.hfad.myferma.Chart.FinanceChartFragment
 import com.hfad.myferma.Finance.FinanceFragment
 import com.hfad.myferma.Finance.PriceFragment
 import com.hfad.myferma.SalePackage.SaleFragment
@@ -61,7 +61,6 @@ class MainActivity : AppCompatActivity() {
 
         val appBar = findViewById<MaterialToolbar>(R.id.topAppBar)
 
-
         if (savedInstanceState == null) {  //при повороте приложение не брасывается
             replaceFragment(WarehouseFragment())
             appBar.title = "Мой Склад" // При включении включает данный фрагмент
@@ -74,7 +73,6 @@ class MainActivity : AppCompatActivity() {
         myDB = MyFermaDatabaseHelper(this)
 
         //Назначение кнопок на нижней навигации
-
         binding.navView.setOnItemSelectedListener { item ->
             position = item.itemId
             when (position) {

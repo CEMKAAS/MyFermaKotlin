@@ -13,9 +13,9 @@ import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.Chart.AddChartFragment
 import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyConstanta
