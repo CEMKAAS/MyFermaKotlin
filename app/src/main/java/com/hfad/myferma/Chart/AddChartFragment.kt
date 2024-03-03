@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.RadioGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.BarChart
@@ -18,10 +19,13 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -72,12 +76,6 @@ class AddChartFragment : Fragment() {
 
         add()
 
-        val calendar = Calendar.getInstance()
-
-        // настройка спинеров
-        mountSpiner.setText(mountString, false)
-        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
-
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
@@ -88,16 +86,33 @@ class AddChartFragment : Fragment() {
         appBar.title = "Мои товар - График"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setNavigationOnClickListener(View.OnClickListener { requireActivity().supportFragmentManager.popBackStack() })
-
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
             }
             true
         })
 
         showBottomSheetDialog()
+
+
+
+        val calendar = Calendar.getInstance()
+        // настройка спинеров
+        mountSpiner.setText(mountString, false)
+        animalsSpiner.setText(productList[0], false)
+        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
 
         //Логика просчета
         storeDataInArrays()
@@ -113,9 +128,12 @@ class AddChartFragment : Fragment() {
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
         animalsSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.animals_spiner)!!
-        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mounts_spiner)!!
         yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        val radioGroup = bottomSheetDialog.findViewById<RadioGroup>(R.id.radioGroup)!!
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
+
+        radioGroup.visibility = View.GONE
 
     }
 
@@ -124,7 +142,7 @@ class AddChartFragment : Fragment() {
         val barChart: BarChart = layout.findViewById(R.id.barChart)
         // настройка графиков
         val barDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
-//        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
+        barDataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
         barDataSet.valueTextColor = Color.BLACK
         barDataSet.valueTextSize = 16f
         val barData = BarData(barDataSet)
@@ -265,5 +283,11 @@ class AddChartFragment : Fragment() {
             }
 
         }
+    }
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }

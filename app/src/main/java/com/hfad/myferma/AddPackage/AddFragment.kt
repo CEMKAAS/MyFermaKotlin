@@ -3,6 +3,7 @@ package com.hfad.myferma.AddPackage
 import android.icu.text.DecimalFormat
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -12,12 +13,16 @@ import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.Chart.AddChartFragment
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
@@ -29,7 +34,6 @@ class AddFragment : Fragment(), View.OnClickListener {
     private var tempList = mutableMapOf<String, Double>()
     private var productList = mutableListOf<String>()
     private var f = DecimalFormat("0.00")
-    private var unit: String = ""
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -38,6 +42,7 @@ class AddFragment : Fragment(), View.OnClickListener {
         val layout = inflater.inflate(R.layout.fragment_add, container, false)
         myDB = MyFermaDatabaseHelper(requireContext())
 
+        productList.clear()
 
         addArray()
         add()
@@ -46,43 +51,51 @@ class AddFragment : Fragment(), View.OnClickListener {
         addEdit = layout.findViewById(R.id.add_edit)
         addEdit.editText!!.setOnEditorActionListener(editorListenerAdd)
 
-        //TODO Нужнали она?
-        val fab =
-            requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
-        fab.show()
-        fab.text = "Журнал"
-        fab.setIconResource(R.drawable.ic_action_book)
-        fab.icon
-
         // Установка спинера  Todo Status воообще
         animalsSpiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
         animalsSpiner.setText(productList[0], false)
 
         // Установка текста
         val product = animalsSpiner.text.toString()
-        unitString(product)
 
         totalAddText = layout.findViewById<View>(R.id.totalAdd_text) as TextView
-        totalAddText.text = f.format(tempList[product]) + unit
+        totalAddText.text = f.format(tempList[product]) + unitString(product)
+
+        val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        appBar.menu.findItem(R.id.magazine).isVisible = true
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.magazine -> moveToNextFragment(AddManagerFragment())
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
+            }
+            true
+        })
 
         animalsSpiner.onItemClickListener =
             AdapterView.OnItemClickListener { parent, view, position, id ->
-
                 val productClick = productList[position]
-                unitString(productClick)
-                totalAddText.text = f.format(tempList[productClick]) + unit
-                addEdit.suffixText = unit
+                totalAddText.text = f.format(tempList[productClick]) + unitString(productClick)
+                addEdit.suffixText = unitString(productClick)
                 addEdit.endIconDrawable = null
                 addEdit.endIconDrawable
             }
 
         addEdit.setStartIconDrawable(R.drawable.baseline_shopping_bag_24)
 
+
         val add = layout.findViewById<Button>(R.id.add_button)
-        add.setOnClickListener(this)
+        add.setOnClickListener { onClickAdd() }
 
         val addChart = layout.findViewById<Button>(R.id.addChart_button)
-        addChart.setOnClickListener(this)
+        addChart.setOnClickListener { moveToNextFragment(AddChartFragment()) }
 
         if (savedInstanceState != null) {
             animalsSpiner.setText(productList[0], false)
@@ -163,9 +176,6 @@ class AddFragment : Fragment(), View.OnClickListener {
     override fun onClick(v: View) {
         when (v.id) {
             R.id.add_edit -> addEdit.editText!!.setOnEditorActionListener(editorListenerAdd)
-            R.id.add_button -> onClickAdd(v)
-            R.id.addChart_button -> addChart(AddChartFragment())
-            R.id.extended_fab -> addChart(AddManagerFragment())
         }
     }
 
@@ -178,7 +188,7 @@ class AddFragment : Fragment(), View.OnClickListener {
     }
 
     //Добавление продкции в таблицу через кнопку
-    private fun onClickAdd(view: View?) {
+    private fun onClickAdd() {
         val activity = MainActivity()
         addInTable()
         activity.closeKeyboard()
@@ -209,13 +219,17 @@ class AddFragment : Fragment(), View.OnClickListener {
 
             myDB.insertToDb(animalsType, inputUnit)
             tempList[animalsType] = tempList[animalsType]!! + inputUnit
-            totalAddText.text = f.format(tempList[animalsType]) + unit
+            totalAddText.text = f.format(tempList[animalsType]) + unitString(animalsType)
 
             addEdit.editText!!.text.clear()
             addEdit.setEndIconDrawable(R.drawable.baseline_done_24)
             addEdit.endIconDrawable
 
-            Toast.makeText(activity, "Добавлено $inputUnit$unit", Toast.LENGTH_SHORT).show()
+            Toast.makeText(
+                activity,
+                "Добавлено $inputUnit${unitString(animalsType)}",
+                Toast.LENGTH_SHORT
+            ).show()
         } else {
             addEdit.error = "Введите кол-во!"
             addEdit.error
@@ -223,21 +237,21 @@ class AddFragment : Fragment(), View.OnClickListener {
     }
 
     //todo Что-то придумать!
-    private fun unitString(animals: String) {
-        when (animals) {
+    private fun unitString(animals: String): String {
+        return when (animals) {
             "Яйца" -> {
                 f = DecimalFormat("0")
-                unit = " шт."
+                " шт."
             }
 
-            "Молоко" -> unit = " л."
-            "Мясо" -> unit = " кг."
-            else -> unit = " ед."
+            "Молоко" -> " л."
+            "Мясо" -> " кг."
+            else -> " ед."
 
         }
     }
 
-    private fun addChart(fragment: Fragment) {
+    private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")
             .addToBackStack(null)

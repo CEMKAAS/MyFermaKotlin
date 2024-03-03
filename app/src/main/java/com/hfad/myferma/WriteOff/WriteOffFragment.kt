@@ -4,6 +4,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -16,29 +17,32 @@ import android.widget.RadioButton
 import android.widget.RadioGroup
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.AddPackage.AddManagerFragment
+import com.hfad.myferma.Chart.WriteOffChartFragment
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.text.DecimalFormat
 
-class WriteOffFragment: Fragment(), View.OnClickListener {
+class WriteOffFragment : Fragment(), View.OnClickListener {
     private lateinit var resultText: TextView
-    private lateinit var error: TextView
     private lateinit var myDB: MyFermaDatabaseHelper
     private lateinit var radioButton1: RadioButton
     private lateinit var radioButton2: RadioButton
     private lateinit var radioGroup: RadioGroup
     private lateinit var addWriteOffEdit: TextInputLayout
     private lateinit var animalsSpiner: AutoCompleteTextView
+
     private var tempList = mutableMapOf<String, Double>()
     private var productList = mutableListOf<String>()
-    private var unit: String = ""
     private var f = DecimalFormat("0.00")
     private var status: Int = 0
     override fun onCreateView(
@@ -47,6 +51,8 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
     ): View? {
         val layout = inflater.inflate(R.layout.fragment_write_off, container, false)
         myDB = MyFermaDatabaseHelper(requireContext())
+
+        productList.clear()
 
         addArray()
         add()
@@ -62,21 +68,20 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
 
         // Установка Текста Todo Status воообще
         resultText = layout.findViewById<View>(R.id.result_text) as TextView
-        error = layout.findViewById<View>(R.id.errorText) as TextView
+
+        //Установка спинера
         animalsSpiner = layout.findViewById<View>(R.id.animals_spiner) as AutoCompleteTextView
         animalsSpiner.setText(productList[0], false)
 
-
         val product: String = animalsSpiner.text.toString()
-        unitString(product)
-        resultText.text = f.format(tempList[product]) + unit
+
+        resultText.text = f.format(tempList[product]) + unitString(product)
 
         animalsSpiner.onItemClickListener =
             OnItemClickListener { parent, view, position, id ->
                 val productClick: String = productList[position]
-                unitString(productClick)
-                resultText.text = f.format(tempList[productClick]) + unit
-                addWriteOffEdit.suffixText = unit
+                resultText.text = f.format(tempList[productClick]) +  unitString(productClick)
+                addWriteOffEdit.suffixText = unitString(productClick)
                 addWriteOffEdit.error = null
                 addWriteOffEdit.endIconDrawable = null
                 addWriteOffEdit.endIconDrawable
@@ -84,22 +89,30 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
         addWriteOffEdit.setStartIconDrawable(R.drawable.baseline_shopping_bag_24)
 
         val addWriteOff: Button = layout.findViewById<View>(R.id.addWriteOff_button) as Button
-        addWriteOff.setOnClickListener(this)
+        addWriteOff.setOnClickListener { onClickAddWriteOff() }
 
         val addWriteOffChar: Button = layout.findViewById<View>(R.id.writeOffChart_button) as Button
-        addWriteOffChar.setOnClickListener(this)
-
-        val fab: ExtendedFloatingActionButton =
-            requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
-        fab.setOnClickListener(this)
+        addWriteOffChar.setOnClickListener { moveToNextFragment(WriteOffChartFragment()) }
 
         //настройка верхнего меню фаб кнопку
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.title = "Мои Списания"
-        fab.show()
-        fab.text = "Журнал"
-        fab.setIconResource(R.drawable.ic_action_book)
-        fab.icon
+        appBar.menu.findItem(R.id.magazine).isVisible = true
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.magazine -> moveToNextFragment(AddManagerFragment())
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
+            }
+            true
+        })
 
         //Радио переключатель
         radioGroup.setOnCheckedChangeListener { group: RadioGroup?, checkedId: Int ->
@@ -183,27 +196,24 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
         when (v.id) {
             R.id.add_edit -> addWriteOffEdit.editText!!
                 .setOnEditorActionListener(editorListenerWriteOff)
-            R.id.addWriteOff_button -> onClickAddSale(v)
-            R.id.extended_fab -> moveNextFragment(AddManagerFragment())
-//            R.id.writeOffChart_button -> moveNextFragment(WriteOffChartFragment())
         }
     }
 
     private val editorListenerWriteOff: OnEditorActionListener =
         OnEditorActionListener { v, actionId, event ->
             if (actionId == EditorInfo.IME_ACTION_GO) {
-                saleInTable()
+                saveInTable()
             }
             false
         }
 
-    private fun onClickAddSale(view: View?) {
+    private fun onClickAddWriteOff() {
         val activity: MainActivity = MainActivity()
-        saleInTable()
+        saveInTable()
         activity.closeKeyboard()
     }
 
-    private fun saleInTable() {
+    private fun saveInTable() {
         if (addWriteOffEdit.editText!!.text.toString() != "") {
 
             val animalsType: String = animalsSpiner.text.toString()
@@ -213,7 +223,7 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
                     .replace("[^\\d.]".toRegex(), "")
 
             // Для ввода целых чисел или дробных
-            if ((animalsType == "Яйца")) {
+            if (animalsType == "Яйца") {
                 if (inputUnitString.contains(".")) {
                     addWriteOffEdit.error = "Яйца не могут быть дробными..."
                     addWriteOffEdit.error
@@ -233,7 +243,8 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
                     myDB.insertToDbWriteOff(animalsType, inputUnit, R.drawable.baseline_delete_24)
                 }
                 tempList[animalsType] = tempList[animalsType]!! - inputUnit
-                resultText.text = f.format((tempList[animalsType])) + unit
+
+                resultText.text = f.format((tempList[animalsType])) + unitString(animalsType)
 
                 addWriteOffEdit.editText!!.text.clear()
                 addWriteOffEdit.setEndIconDrawable(R.drawable.baseline_done_24)
@@ -246,21 +257,22 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
     }
 
     //todo Что-то придумать!
-    private fun unitString(animals: String) {
-        when (animals) {
+    private fun unitString(animals: String): String {
+        return when (animals) {
+
             "Яйца" -> {
                 f = DecimalFormat("0")
-                unit = " шт."
+                " шт."
             }
-            "Молоко" -> unit = " л."
-            "Мясо" -> unit = " кг."
-            else -> unit = " ед."
+            "Молоко" -> " л."
+            "Мясо" -> " кг."
+            else -> " ед."
         }
     }
 
     //проверка что не уйдем в минус
     private fun comparison(animalsType: String, inputUnit: Double): Boolean {
-        if (tempList[animalsType]!! - inputUnit <= 0) {
+        if (tempList[animalsType]!! - inputUnit < 0) {
             addWriteOffEdit.error = "Нет столько товара на складе"
             addWriteOffEdit.error
             return false
@@ -268,9 +280,9 @@ class WriteOffFragment: Fragment(), View.OnClickListener {
         return true
     }
 
-    private fun moveNextFragment(fragment: Fragment?) {
+    private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
-            .replace(R.id.conteiner, (fragment)!!, "visible_fragment")
+            .replace(R.id.conteiner, fragment, "visible_fragment")
             .addToBackStack(null)
             .commit()
     }

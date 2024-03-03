@@ -50,7 +50,7 @@ class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
 
         helpIncubator()
 
-        var arhive: Int = 0
+        var arhive = false
 
         val bundle: Bundle? = arguments
         if (bundle != null) {
@@ -63,16 +63,20 @@ class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
             time3 = bundle.getString("time3").toString()
             friz = bundle.getBoolean("friz")
             over = bundle.getBoolean("over")
-            arhive = bundle.getInt("arhive")
+            arhive = bundle.getBoolean("arhive")
         }
 
+        if (arhive) {
+            massTemp = bundle?.getStringArray("temp")!!.toMutableList()
+            massDamp = bundle.getStringArray("damp")!!.toMutableList()
+            massOver = bundle.getStringArray("over")!!.toMutableList()
+            massAiring = bundle.getStringArray("airing")!!.toMutableList()
 
-        if (arhive == 0) {
+        } else {
             setIncubator()
             setOverAndAiring()
-        } else {
-            addArhive(arhive)
         }
+
 
         //Настройка аппбара
         val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
@@ -729,7 +733,8 @@ class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
         val builder = MaterialAlertDialogBuilder(requireContext())
         builder.setTitle("Справка")
         builder.setMessage(
-            "Если у Вашего инкубатора имеются погрешность Вы можете задать нужную Вам температуру здесь, или воспользоваться рекомендуемыми значениями"
+            "Если у Вашего инкубатора имеется погрешность Вы можете задать нужную температуру здесь, или воспользоваться рекомендуемыми значениями в процессе их можно изменять.\n" +
+                    "Старайтесь вести журнал каждый день и кооректно заносить данные, чтобы в будующем пользоваться этими же данными из архива. "
         )
         builder.setPositiveButton(
             "Отлично!"
@@ -779,22 +784,6 @@ class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
         ) { dialogInterface, i -> }
 
         builder.create().show()
-    }
-
-
-    // TODO зачем?
-    private fun addArhive(idArhive: Int) {
-        val cursor: Cursor = myDB.readAllDataIncubator()
-
-        if (cursor.count != 0) {
-            while (cursor.moveToNext()) {
-
-                if (cursor.getString(8) == "1") {
-
-                }
-            }
-        }
-        cursor.close()
     }
 
     private fun addChart() {

@@ -25,6 +25,9 @@ class FotoIncubatorFragment : Fragment() {
         val layout: View = inflater.inflate(R.layout.fragment_foto_incubator, container, false)
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.menu.findItem(R.id.delete).isVisible = false
+        appBar.setNavigationOnClickListener {
+            requireActivity().supportFragmentManager.popBackStack()
+        }
 
         val bundle: Bundle? = arguments
         if (bundle != null) {

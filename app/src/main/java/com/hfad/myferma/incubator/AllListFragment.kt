@@ -143,7 +143,7 @@ class AllListFragment : Fragment(), View.OnClickListener, ListAdapterIncubator.L
     private fun addChart(fragment: Fragment, day: Int) {
         val bundle: Bundle = Bundle()
 
-        bundle.putInt("data", day)
+        bundle.putInt("data", day+1)
         bundle.putStringArray("id", massId.toTypedArray())
         bundle.putStringArray("temp", massTemp.toTypedArray())
         bundle.putStringArray("damp", massDamp.toTypedArray())

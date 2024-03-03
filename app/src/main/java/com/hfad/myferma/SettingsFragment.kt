@@ -3,20 +3,24 @@ package com.hfad.myferma
 import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.AddPackage.AddManagerFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
 
-class SettingsFragment : Fragment(), View.OnClickListener {
+class SettingsFragment : Fragment() {
     private lateinit var myDB: MyFermaDatabaseHelper
     private lateinit var menuProducts: TextInputLayout
     private lateinit var addProduct: AutoCompleteTextView
@@ -36,18 +40,33 @@ class SettingsFragment : Fragment(), View.OnClickListener {
 
         addArray()
 
-        //Убираем Фаб
-        val fab: ExtendedFloatingActionButton =
-            requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
-        fab.visibility = View.GONE
+        val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        appBar.menu.findItem(R.id.magazine).isVisible = false
+        appBar.menu.findItem(R.id.filler).isVisible = false
+        appBar.menu.findItem(R.id.delete).isVisible = false
+        appBar.navigationIcon = null
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
+            }
+            true
+        })
 
         // устнановка кнопок
         val addProductButton: Button = layout.findViewById<View>(R.id.add_product_button) as Button
-        addProductButton.setOnClickListener(this)
+        addProductButton.setOnClickListener { setAddProduct() }
 
         val deleteProductButton: Button =
             layout.findViewById<View>(R.id.delete_product_button) as Button
-        deleteProductButton.setOnClickListener(this)
+        deleteProductButton.setOnClickListener { deleteProduct() }
 
         return layout
     }
@@ -73,13 +92,6 @@ class SettingsFragment : Fragment(), View.OnClickListener {
             arrayListProduct.add(product)
         }
         cursor.close()
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.add_product_button -> setAddProduct()
-            R.id.delete_product_button -> deleteProduct()
-        }
     }
 
     private fun setAddProduct() {
@@ -131,10 +143,9 @@ class SettingsFragment : Fragment(), View.OnClickListener {
 
         if (arrayListProduct.contains(nameProduct)) {
             val builder: MaterialAlertDialogBuilder = MaterialAlertDialogBuilder(requireContext())
-            builder.setTitle("Удалить товар " + addProduct.text.toString() + " ?")
+            builder.setTitle("Удалить товар ${addProduct.text} ?")
             builder.setMessage(
-                "Товар " + addProduct.text
-                    .toString() + " больше не будет отображаться на складе, его нельзя будет добавить, продать или списать. Данные внесенные в журнал будут отображаться."
+                "Товар ${addProduct.text} больше не будет отображаться на складе, его нельзя будет добавить, продать или списать. Данные внесенные в журнал будут отображаться."
             )
             builder.setPositiveButton(
                 "Да"
@@ -156,12 +167,20 @@ class SettingsFragment : Fragment(), View.OnClickListener {
                 // чистим поле
                 addProduct.text.clear()
             }
-            builder.setNegativeButton("Нет"
+            builder.setNegativeButton(
+                "Нет"
             ) { dialogInterface, i -> }
             builder.show()
         } else {
             menuProducts.error = "Такого товара нет"
             menuProducts.error
         }
+    }
+
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }

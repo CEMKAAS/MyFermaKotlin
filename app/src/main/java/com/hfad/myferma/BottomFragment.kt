@@ -8,8 +8,6 @@ import android.widget.Button
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 
 class BottomFragment : BottomSheetDialogFragment() {
-    var TAG: String = "bottom"
-    private val buttonSheet: Button? = null
     public override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

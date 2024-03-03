@@ -38,20 +38,16 @@ import java.util.Date
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
-    private var pendingIntent //Уведомление
-            : PendingIntent? = null
-
-    private lateinit var fab : ExtendedFloatingActionButton
+    private lateinit var fab: ExtendedFloatingActionButton
     private var isAllFabsVisible: Boolean? = null
 
-    val time1 = mutableListOf<String>()
+    private val time1 = mutableListOf<String>()
     private val time2 = mutableListOf<String>()
     private val time3 = mutableListOf<String>()
 
     private lateinit var myDB: MyFermaDatabaseHelper
 
     private var position = 0
-
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,31 +82,26 @@ class MainActivity : AppCompatActivity() {
                 R.id.finance_button -> {
                     replaceFragment(FinanceFragment())
                     appBar.title = "Мои Финансы"
-                    fab.show()
-                    fab.text = "Цена"
-                    fab.setIconResource(R.drawable.ic_action_price)
-                    fab.icon
-                    fab.setOnClickListener(View.OnClickListener {
-                        replaceFragment(PriceFragment())
-                        appBar.title = "Моя Цена"
-                        fab.hide()
-                        fab.visibility = View.GONE
-                    })
+                    fab.hide()
+                    fab.visibility = View.GONE
                 }
 
                 R.id.add_button -> {
                     replaceFragment(AddFragment())
-                    fba(AddManagerFragment())
+                    fab.hide()
+                    fab.visibility = View.GONE
                 }
 
                 R.id.sale_button -> {
                     replaceFragment(SaleFragment())
-                    fba(AddManagerFragment())
+                    fab.hide()
+                    fab.visibility = View.GONE
                 }
 
                 R.id.expenses_button -> {
                     replaceFragment(ExpensesFragment())
-                    fba(AddManagerFragment())
+                    fab.hide()
+                    fab.visibility = View.GONE
                 }
             }
             true
@@ -137,7 +128,8 @@ class MainActivity : AppCompatActivity() {
             }
             true
         })
-
+        appBar.menu.findItem(R.id.price).isVisible = false
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.delete).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = false
 
@@ -176,18 +168,21 @@ class MainActivity : AppCompatActivity() {
             if (fragment is WarehouseFragment) {
                 appBar.title = "Мой Склад"
                 position = 0
+                fab.hide()
                 fab.visibility = View.GONE
                 appBar.navigationIcon = null
+                appBar.menu.findItem(R.id.price).isVisible = false
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             if (fragment is FinanceFragment) {
                 position = 1
                 appBar.title = "Мои Финансы"
-                fab.show()
-                fab.text = "Цена"
-                fab.setIconResource(R.drawable.ic_action_price)
-                fab.icon
+                fab.hide()
+                fab.visibility = View.GONE
+
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.navigationIcon = null
             }
@@ -196,29 +191,37 @@ class MainActivity : AppCompatActivity() {
                 position = 1
                 fab.hide()
                 fab.visibility = View.GONE
+                appBar.menu.findItem(R.id.price).isVisible = false
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             if (fragment is AddFragment) {
                 appBar.title = "Мои Товары"
-                fbaShowBack()
+                fab.hide()
+                fab.visibility = View.GONE
                 position = 2
+                appBar.menu.findItem(R.id.price).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.navigationIcon = null
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             if (fragment is SaleFragment) {
                 appBar.title = "Мои Продажи"
-                fbaShowBack()
+                fab.hide()
+                fab.visibility = View.GONE
                 position = 3
+                appBar.menu.findItem(R.id.price).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.navigationIcon = null
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             if (fragment is ExpensesFragment) {
                 appBar.title = "Мои Покупки"
-                fbaShowBack()
+                fab.hide()
+                fab.visibility = View.GONE
                 position = 4
+                appBar.menu.findItem(R.id.price).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.navigationIcon = null
                 appBar.menu.findItem(R.id.filler).isVisible = false
@@ -228,13 +231,17 @@ class MainActivity : AppCompatActivity() {
                 fab.hide()
                 fab.visibility = View.GONE
                 appBar.navigationIcon = null
+                appBar.menu.findItem(R.id.price).isVisible = false
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             if (fragment is WriteOffFragment) {
                 appBar.title = "Мои Списания"
-                fbaShowBack()
+                fab.hide()
+                fab.visibility = View.GONE
                 position = 0
+                appBar.menu.findItem(R.id.price).isVisible = false
                 appBar.menu.findItem(R.id.delete).isVisible = false
                 appBar.navigationIcon = null
                 appBar.menu.findItem(R.id.filler).isVisible = false
@@ -242,15 +249,13 @@ class MainActivity : AppCompatActivity() {
             if (fragment is IncubatorMenuFragment) {
                 fbaShowBackIncubator()
                 position = 0
+                appBar.menu.findItem(R.id.price).isVisible = false
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
-//            if (fragment is FinanceChartFragment) {
-//                appBar.menu.findItem(R.id.filler).isVisible = false
-//            }
-//            if (fragment is FinanceChart2Fragment) {
-//                appBar.menu.findItem(R.id.filler).isVisible = false
-//            }
             if (fragment is UpdateProductFragment) {
+                appBar.menu.findItem(R.id.price).isVisible = false
+                appBar.menu.findItem(R.id.magazine).isVisible = false
                 appBar.menu.findItem(R.id.filler).isVisible = false
             }
             binding.navView.menu.getItem(position).isChecked = true
@@ -279,12 +284,10 @@ class MainActivity : AppCompatActivity() {
             cal_alarm.add(Calendar.DATE, 1)
         }
         val myIntent = Intent(this@MainActivity, AlarmReceiver::class.java)
-//        pendingIntent =
-//            PendingIntent.getBroadcast(this@MainActivity, 0, myIntent, PendingIntent.FLAG_IMMUTABLE)
-//        manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] = pendingIntent
-//        sda(time1)
-//        sda(time2)
-//        sda(time3)
+        manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =  PendingIntent.getBroadcast(this@MainActivity, 0, myIntent, PendingIntent.FLAG_IMMUTABLE)
+        sda(time1)
+        sda(time2)
+        sda(time3)
     }
 
     fun add() {
@@ -304,6 +307,7 @@ class MainActivity : AppCompatActivity() {
             myDB.insertToDbSale("Яйца", 0.0, 0.0)
             myDB.insertToDbSale("Молоко", 0.0, 0.0)
             myDB.insertToDbSale("Мясо", 0.0, 0.0)
+
             myDB.insertToDbPrice("Яйца", 0.0)
             myDB.insertToDbPrice("Молоко", 0.0)
             myDB.insertToDbPrice("Мясо", 0.0)
@@ -331,13 +335,12 @@ class MainActivity : AppCompatActivity() {
                     cal_alarm.add(Calendar.DATE, 1)
                 }
                 val myIntent1 = Intent(this@MainActivity, AlarmIncubator::class.java)
-//                pendingIntent = PendingIntent.getBroadcast(
-//                    this@MainActivity,
-//                    0,
-//                    myIntent1,
-//                    PendingIntent.FLAG_IMMUTABLE
-//                )
-//                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] = pendingIntent
+                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =  PendingIntent.getBroadcast(
+                    this@MainActivity,
+                    0,
+                    myIntent1,
+                    PendingIntent.FLAG_IMMUTABLE
+                )
             }
         }
     }
@@ -398,20 +401,6 @@ class MainActivity : AppCompatActivity() {
 //        return ret
 //    }
 
-    // gпеоеключение значков FBA
-    private fun fba(fragment: Fragment) {
-        fab.show()
-        fab.text = "Журнал"
-        fab.setIconResource(R.drawable.ic_action_book)
-        fab.icon
-        fab.setOnClickListener {
-            supportFragmentManager.beginTransaction()
-                .replace(R.id.conteiner, fragment, "visible_fragment")
-                .addToBackStack(null)
-                .commit()
-        }
-    }
-
     private fun beginIncubator() {
         val builder = MaterialAlertDialogBuilder(this)
         builder.setTitle("Удаляем ?")
@@ -426,14 +415,6 @@ class MainActivity : AppCompatActivity() {
             "Нет"
         ) { dialogInterface, i -> }
         builder.create().show()
-    }
-
-    // показывать фаб кнопку при нажатие назад
-    private fun fbaShowBack() {
-        fab.show()
-        fab.text = "Журнал"
-        fab.setIconResource(R.drawable.ic_action_book)
-        fab.icon
     }
 
     // показывать фаб кнопку при нажатие назад

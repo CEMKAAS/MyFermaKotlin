@@ -161,20 +161,6 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
         return db.rawQuery("SELECT * FROM " + MyConstanta.TABLE_INCUBATOR, null)
     }
 
-    fun readAllDataIncubatorTempDamp(): Cursor {
-        val db = readableDatabase
-        return db.rawQuery("SELECT * FROM " + MyConstanta.TABLE_INCUBATORTEMPDAMP, null)
-    }
-
-    fun readAllDataIncubatorOver(): Cursor {
-        val db = readableDatabase
-        return db.rawQuery("SELECT * FROM " + MyConstanta.TABLE_INCUBATOROVER, null)
-    }
-
-    fun readAllDataIncubatorAiring(): Cursor {
-        val db = readableDatabase
-        return db.rawQuery("SELECT * FROM " + MyConstanta.TABLE_INCUBATORAIRING, null)
-    }
 
     fun readAllDataPrice(): Cursor {
         val db = readableDatabase
@@ -291,9 +277,9 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
     ): Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
-            "SELECT sum(${MyConstanta.TITLEWRITEOFF}), ${MyConstanta.DAY}" +
+            "SELECT sum(${MyConstanta.DISCROTIONSWRITEOFF}), ${MyConstanta.DAY}" +
                     " FROM ${MyConstanta.TABLE_NAMEWRITEOFF} " +
-                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ?  and  ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}" +
+                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ?  and  ${MyConstanta.MOUNT} =?  and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}=?" +
                     " group by ${MyConstanta.DAY}",
             arrayOf(type, mount, year, status)
         )
@@ -306,9 +292,9 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
     ): Cursor {
         val db = this.readableDatabase
         return db.rawQuery(
-            "SELECT sum(${MyConstanta.TITLEWRITEOFF}), ${MyConstanta.MOUNT}" +
+            "SELECT sum(${MyConstanta.DISCROTIONSWRITEOFF}), ${MyConstanta.MOUNT}" +
                     " FROM ${MyConstanta.TABLE_NAMEWRITEOFF} " +
-                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ? and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}" +
+                    " WHERE ${MyConstanta.TITLEWRITEOFF} = ? and ${MyConstanta.YEAR} = ? and ${MyConstanta.STASTUSWRITEOFF}=?" +
                     " group by ${MyConstanta.MOUNT}",
             arrayOf(type, year, status)
         )
@@ -1002,7 +988,4 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
         cv.put(MyConstanta.DAYAIRING30, mass[29])
         db.update(MyConstanta.TABLE_INCUBATORAIRING, cv, "_id=?", arrayOf(id))
     }
-
-
-
 }

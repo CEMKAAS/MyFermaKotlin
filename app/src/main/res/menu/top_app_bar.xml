@@ -12,10 +12,21 @@
     <item
         android:id="@+id/filler"
         android:icon="@drawable/baseline_filter_list_24"
-        android:title="Удалить"
-        android:contentDescription="Удалить"
+        android:title="Фильтр"
+        android:contentDescription="Фильтр"
         app:showAsAction="ifRoom" />
-
+    <item
+        android:id="@+id/magazine"
+        android:icon="@drawable/ic_action_book"
+        android:title="Журнал"
+        android:contentDescription="Журнал"
+        app:showAsAction="ifRoom" />
+    <item
+        android:id="@+id/price"
+        android:icon="@drawable/ic_action_price"
+        android:title="Цена"
+        android:contentDescription="Цена"
+        app:showAsAction="ifRoom" />
     <item
         android:id="@+id/setting"
         android:contentDescription="Настройка"

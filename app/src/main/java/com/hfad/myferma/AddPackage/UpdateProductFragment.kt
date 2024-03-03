@@ -39,13 +39,13 @@ class UpdateProductFragment : Fragment() {
     private lateinit var deleteButton: Button
     private lateinit var writeOffSpiner: AutoCompleteTextView
     private lateinit var productDB: ProductDB
-    private var id: String? = null
-    private var oldCount: String? = null
+    private var id  = ""
+    private var oldCount = ""
     private lateinit var myDB: MyFermaDatabaseHelper
     private var addSum = 0.0
     private var saleSum = 0.0
     private var writeOffSum = 0.0
-    private var f: DecimalFormat? = null
+    private var f = DecimalFormat("0.00")
     private var unit: String? = null
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -61,7 +61,7 @@ class UpdateProductFragment : Fragment() {
         val bundle = this.arguments
         if (bundle != null) {
             productDB = bundle.getParcelable("fd")!!
-            id = bundle.getString("id")
+            id = bundle.getString("id").toString()
         }
 
         // Настройка аппбара и настройка стрелки, чтобы вернутся назад
@@ -71,12 +71,12 @@ class UpdateProductFragment : Fragment() {
         appBar.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.more -> {
-                    replaceFragment(InfoFragment())
+                    moveToNextFragment(InfoFragment())
                     appBar.title = "Информация"
                 }
 
                 R.id.setting -> {
-                    replaceFragment(SettingsFragment())
+                    moveToNextFragment(SettingsFragment())
                     appBar.title = "Мои настройки"
                 }
             }
@@ -98,7 +98,7 @@ class UpdateProductFragment : Fragment() {
         textUnit.text = productDB.name
         unitString(productDB.name)
         titleExpenses.editText!!.setText(productDB.name)
-        titleCount.editText!!.setText(f!!.format(productDB.disc))
+        titleCount.editText!!.setText(f.format(productDB.disc))
         titleCount.suffixText = unit
         titleData.editText!!.setText(productDB.data)
         titlePrice.editText!!.setText(productDB.price.toString())
@@ -119,7 +119,7 @@ class UpdateProductFragment : Fragment() {
             .setValidator(DateValidatorPointBackward.now())
             .build()
 
-       val datePicker = MaterialDatePicker.Builder.datePicker()
+        val datePicker = MaterialDatePicker.Builder.datePicker()
             .setCalendarConstraints(constraintsBuilder)
             .setTitleText("Выберите дату")
             .setSelection(MaterialDatePicker.todayInUtcMilliseconds()) //Todo выбирать дату из EditText
@@ -132,8 +132,8 @@ class UpdateProductFragment : Fragment() {
                 calendar.timeInMillis = selection as Long
                 val format = java.text.SimpleDateFormat("dd.MM.yyyy")
                 val formattedDate: String = format.format(calendar.time)
-                    titleData.editText!!.setText(formattedDate)
-                })
+                titleData.editText!!.setText(formattedDate)
+            })
         }
 
         // Настройка видимости фронта
@@ -141,46 +141,37 @@ class UpdateProductFragment : Fragment() {
         menu.visibility = View.GONE
 
         //Для товаров
-        if ((id == "Мои Товары")) {
-            titlePrice.visibility = View.GONE
-
+        when (id) {
+            "Мои Товары" -> titlePrice.visibility = View.GONE
             // для покупок
-        } else if ((id == "Мои Покупки")) {
-
-            titleExpenses.visibility = View.VISIBLE
-            textUnit.visibility = View.GONE
-            titlePrice.visibility = View.GONE
-            titleCount.hint = "Цена"
-            titleCount.helperText = "Укажите цену за товар"
-            titleCount.editText!!.setText(productDB.disc.toString())
-
-            // для списаний
-        } else if ((id == "Мои Списания")) {
-            titlePrice.visibility = View.GONE
-            menu.visibility = View.VISIBLE
+            "Мои Покупки" -> {
+                titleExpenses.visibility = View.VISIBLE
+                textUnit.visibility = View.GONE
+                titlePrice.visibility = View.GONE
+                titleCount.hint = "Цена"
+                titleCount.helperText = "Укажите цену за товар"
+                titleCount.editText!!.setText(productDB.disc.toString())
+            }
+            "Мои Списания" -> {
+                titlePrice.visibility = View.GONE
+                menu.visibility = View.VISIBLE
+            }
         }
 
         updateButton.setOnClickListener {
             when (id) {
-                "Мои Товары" -> {
-                    myProduct()
-                }
-                "Мои Продажи" -> {
-                    mySale()
-                }
-                "Мои Покупки" -> {
-                    myExpenses()
-                }
-                "Мои Списания" -> {
-                    myWriteOff()
-                }
+                "Мои Товары" -> myProduct()
+                "Мои Продажи" -> mySale()
+                "Мои Покупки" -> myExpenses()
+                "Мои Списания" -> myWriteOff()
+
             }
         }
 
         deleteButton.setOnClickListener {
 
             val product = textUnit.text.toString()
-            val count = oldCount!!
+            val count = oldCount
 
             // Проверяем если мы удалим в продажах, товаров и списаниях, уйдем ли мы в минус
             if ((id == "Мои Товар") || (id == "Мои Продажи") || (id == "Мои Списания")) {
@@ -194,21 +185,17 @@ class UpdateProductFragment : Fragment() {
                         "Если вы удалите данную позицию вы уйдете в минус!\n" +
                                 "Вы действительно хотите это сделать ? "
                     )
-                    builder.setPositiveButton("Да"
+                    builder.setPositiveButton(
+                        "Да"
                     ) { dialogInterface, i -> delete() }
 
-                    builder.setNegativeButton("Нет"
+                    builder.setNegativeButton(
+                        "Нет"
                     ) { dialog, which -> }
-
                     builder.show()
-                } else {
-                    delete()
-                }
-
+                } else delete()
                 // удаляем, если это покупки
-            } else {
-                delete()
-            }
+            } else delete()
         }
         return layout
     }
@@ -230,17 +217,18 @@ class UpdateProductFragment : Fragment() {
 
         //вывод ошибки
         if (count == "") {
-                titleCount.error = "Введите кол-во!"
-                titleCount.error
+            titleCount.error = "Введите кол-во!"
+            titleCount.error
         } else if (containsEgg(product, count)) {
             titleCount.error = "Яйца не могут быть дробными..."
             titleCount.error
         } else if (sum(product, count) < 0) {
-            titleCount.error = "Столько товара нет на складе!\nу Вас списано " + (saleSum + writeOffSum)
+            titleCount.error =
+                "Столько товара нет на складе!\nу Вас списано " + (saleSum + writeOffSum)
             titleCount.error
         } else {
             myDB.updateData(productDB.id.toString(), product, count, data[0], data[1], data[2])
-            replaceFragment(AddManagerFragment())
+            moveToNextFragment(AddManagerFragment())
         }
     }
 
@@ -276,12 +264,21 @@ class UpdateProductFragment : Fragment() {
 
         } else if (sum(product, count) < 0) {
 
-            titleCount.error = "Столько товара нет на складе!\nу Вас добавленно $addSum списано $writeOffSum"
+            titleCount.error =
+                "Столько товара нет на складе!\nу Вас добавленно $addSum списано $writeOffSum"
             titleCount.error
 
         } else {
-            myDB.updateDataSale(productDB.id.toString(), product, count, data[0], data[1], data[2], sale.toDouble())
-            replaceFragment(AddManagerFragment())
+            myDB.updateDataSale(
+                productDB.id.toString(),
+                product,
+                count,
+                data[0],
+                data[1],
+                data[2],
+                sale.toDouble()
+            )
+            moveToNextFragment(AddManagerFragment())
         }
     }
 
@@ -300,12 +297,12 @@ class UpdateProductFragment : Fragment() {
         titleData.isErrorEnabled = false
 
         //вывод ошибки
-        if ((count == "")  || (product == "")) {
-            if ((count == "")) {
+        if ((count == "") || (product == "")) {
+            if (count == "") {
                 titleCount.error = "Введите кол-во!"
                 titleCount.error
             }
-            if ((product == "")) {
+            if (product == "") {
                 titleExpenses.error = "Укажите название"
                 titleExpenses.error
             }
@@ -313,8 +310,15 @@ class UpdateProductFragment : Fragment() {
             titleCount.error = "Яйца не могут быть дробными..."
             titleCount.error
         } else {
-            myDB.updateDataExpenses(productDB.id.toString(), product, count, data[0], data[1], data[2])
-            replaceFragment(AddManagerFragment())
+            myDB.updateDataExpenses(
+                productDB.id.toString(),
+                product,
+                count,
+                data[0],
+                data[1],
+                data[2]
+            )
+            moveToNextFragment(AddManagerFragment())
         }
     }
 
@@ -340,18 +344,27 @@ class UpdateProductFragment : Fragment() {
 
         //вывод ошибки
         if (count == "") {
-                titleCount.error = "Введите кол-во!"
-                titleCount.error
+            titleCount.error = "Введите кол-во!"
+            titleCount.error
 
         } else if (containsEgg(product, count)) {
             titleCount.error = "Яйца не могут быть дробными..."
             titleCount.error
         } else if (sum(product, count) < 0) {
-            titleCount.error = "Столько товара нет на складе!\nу Вас добавленно $addSum продано $saleSum"
+            titleCount.error =
+                "Столько товара нет на складе!\nу Вас добавленно $addSum продано $saleSum"
             titleCount.error
         } else {
-            myDB.updateDataWriteOff(productDB.id.toString(), product, count, data[0], data[1], data[2], statusDrawable)
-            replaceFragment(AddManagerFragment())
+            myDB.updateDataWriteOff(
+                productDB.id.toString(),
+                product,
+                count,
+                data[0],
+                data[1],
+                data[2],
+                statusDrawable
+            )
+            moveToNextFragment(AddManagerFragment())
         }
     }
 
@@ -368,7 +381,7 @@ class UpdateProductFragment : Fragment() {
     //Считаем сколько у нас товара на текущий момент
     private fun sum(product: String, count: String): Double {
 
-        val diff = oldCount?.toDouble()!! - count.toDouble()
+        val diff = oldCount.toDouble() - count.toDouble()
         var nowUnitProduct = 0.0
         val a = add(product)
         return when (id) {
@@ -376,14 +389,17 @@ class UpdateProductFragment : Fragment() {
                 nowUnitProduct = addSum - diff - saleSum - writeOffSum
                 nowUnitProduct
             }
+
             "Мои Покупки" -> {
                 nowUnitProduct = addSum - (saleSum - diff) - writeOffSum
                 nowUnitProduct
             }
+
             "Мои Списания" -> {
-                nowUnitProduct = addSum - writeOffSum - (writeOffSum - diff)
+                nowUnitProduct = addSum - saleSum- (writeOffSum - diff)
                 nowUnitProduct
             }
+
             else -> {
                 nowUnitProduct
             }
@@ -431,11 +447,11 @@ class UpdateProductFragment : Fragment() {
             )
 
             cursorWriteOff.moveToNext()
-            writeOffSum = cursorWriteOff.getDouble(2)
+            writeOffSum = cursorWriteOff.getDouble(1)
             cursorWriteOff.close()
 
         }
-        return addSum-saleSum-writeOffSum
+        return addSum - saleSum - writeOffSum
     }
 
     //Удаляем и возвращаемся назад
@@ -445,27 +461,19 @@ class UpdateProductFragment : Fragment() {
         builder.setMessage("Вы уверены, что хотите удалить " + textUnit.text.toString() + " ?")
         builder.setPositiveButton("Да") { dialogInterface, i ->
             when (id) {
-                "Мои Товары" -> {
-                    myDB.deleteOneRow(productDB.id.toString())
-                }
-                "Мои Продажи" -> {
-                    myDB.deleteOneRowSale(productDB.id.toString())
-                }
-                "Мои Покупки" -> {
-                    myDB.deleteOneRowExpenses(productDB.id.toString())
-                }
-                "Мои Списания" -> {
-                    myDB.deleteOneRowWriteOff(productDB.id.toString())
-                }
+                "Мои Товары" -> myDB.deleteOneRow(productDB.id.toString())
+                "Мои Продажи" -> myDB.deleteOneRowSale(productDB.id.toString())
+                "Мои Покупки" -> myDB.deleteOneRowExpenses(productDB.id.toString())
+                "Мои Списания" -> myDB.deleteOneRowWriteOff(productDB.id.toString())
             }
-            replaceFragment(AddManagerFragment())
+            moveToNextFragment(AddManagerFragment())
         }
         builder.setNegativeButton("Нет") { dialogInterface, i -> }
         builder.create().show()
     }
 
     //Возвращаемся назад при нажатии на клавишу
-    private fun replaceFragment(fragment: Fragment) {
+    private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")
             .addToBackStack(null)
@@ -479,22 +487,11 @@ class UpdateProductFragment : Fragment() {
                     f = DecimalFormat("0")
                     unit = " шт."
                 }
-                "Молоко" -> {
-                    f = DecimalFormat("0.00")
-                    unit = " л."
-                }
-                "Мясо" -> {
-                    f = DecimalFormat("0.00")
-                    unit = " кг."
-                }
-                else -> {
-                    f = DecimalFormat("0.00")
-                    unit = " ед."
-                }
+
+                "Молоко" -> unit = " л."
+                "Мясо" -> unit = " кг."
+                else -> unit = " ед."
             }
-        } else {
-            unit = " ₽"
-            f = DecimalFormat("0.00")
-        }
+        } else unit = " ₽"
     }
 }

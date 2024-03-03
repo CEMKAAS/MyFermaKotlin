@@ -62,6 +62,7 @@ class NowIncubatorFragment : Fragment(), View.OnClickListener {
 
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.menu.findItem(R.id.delete).isVisible = false
+        appBar.menu.findItem(R.id.filler).isVisible = false
         appBar.title = "Мои инкубатор"
         appBar.setNavigationOnClickListener {
             replaceFragment(HomeIncubatorFragment())
@@ -108,6 +109,8 @@ class NowIncubatorFragment : Fragment(), View.OnClickListener {
         // Скрываем временно не нужные кнопки
         ovoskopNow.visibility = View.GONE
         ovoskopTomorrow.visibility = View.GONE
+
+
 
         // Фаб кнопочка
         val fab: ExtendedFloatingActionButton =

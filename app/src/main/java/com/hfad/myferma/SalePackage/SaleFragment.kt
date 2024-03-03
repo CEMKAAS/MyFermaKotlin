@@ -4,6 +4,7 @@ import android.database.Cursor
 import android.os.Bundle
 import android.view.KeyEvent
 import android.view.LayoutInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
@@ -16,10 +17,16 @@ import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.AddPackage.AddManagerFragment
+import com.hfad.myferma.Chart.SaleChartFragment
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.text.DecimalFormat
@@ -32,10 +39,10 @@ class SaleFragment : Fragment(), View.OnClickListener {
     private lateinit var addSaleEdit: TextInputLayout
     private lateinit var addPrice: TextInputLayout
     private lateinit var animalsSpiner: AutoCompleteTextView
-    private var unit: String = ""
+
     private lateinit var checkPrice: CheckBox
     private var tempList = mutableMapOf<String, Double>()
-    private var tempListPrice= mutableMapOf<String, Double>()
+    private var tempListPrice = mutableMapOf<String, Double>()
     private var productList = mutableListOf<String>()
     private var f = DecimalFormat("0.00")
 
@@ -45,6 +52,8 @@ class SaleFragment : Fragment(), View.OnClickListener {
     ): View? {
         val layout = inflater.inflate(R.layout.fragment_sale, container, false)
         myDB = MyFermaDatabaseHelper(requireContext())
+
+        productList.clear()
 
         addArray()
         add()
@@ -70,20 +79,37 @@ class SaleFragment : Fragment(), View.OnClickListener {
         animalsSpiner.setText(productList[0], false)
         addPrice.visibility = View.GONE
         val product = animalsSpiner.text.toString()
-        unitString(product)
-        resultText.text = f.format(tempList[product]) + unit //Todo suffix+ f = new DecimalFormat("0.00");
-        priceSale.text = unit + " Товара " + product + " " + tempListPrice[product] + " ₽"
+
+        resultText.text =
+            f.format(tempList[product]) + unitString(product) //Todo suffix+ f = new DecimalFormat("0.00");
+        priceSale.text = unitString(product) + " Товара " + product + " " + tempListPrice[product] + " ₽"
+
+        //AppBar
+        val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        appBar.menu.findItem(R.id.magazine).isVisible = true
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.magazine -> moveToNextFragment(AddManagerFragment())
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
+            }
+            true
+        })
 
         //При выборе спинера происходят следующие изменения
         animalsSpiner.onItemClickListener =
             OnItemClickListener { parent, view, position, id ->
-
                 val productClick = productList[position]
-
-                unitString(productClick)
-                resultText.text = f.format(tempList[productClick]) + unit
-                priceSale.text = "$unit Товара $productClick " + tempListPrice[productClick] + " ₽"
-                addSaleEdit.suffixText = unit
+                resultText.text = f.format(tempList[productClick]) +  unitString(productClick)
+                priceSale.text = "${unitString(productClick)} Товара $productClick ${tempListPrice[productClick]} ₽"
+                addSaleEdit.suffixText = unitString(productClick)
                 addSaleEdit.endIconDrawable = null
                 addSaleEdit.endIconDrawable
                 addPrice.endIconDrawable = null
@@ -95,10 +121,10 @@ class SaleFragment : Fragment(), View.OnClickListener {
 
         // устнановка кнопок
         val addSale: Button = layout.findViewById<View>(R.id.addSale_button) as Button
-        addSale.setOnClickListener(this)
+        addSale.setOnClickListener { onClickAddSale() }
 
         val saleChart: Button = layout.findViewById<View>(R.id.saleChart_button) as Button
-        saleChart.setOnClickListener(this)
+        saleChart.setOnClickListener { moveToNextFragment(SaleChartFragment()) }
 
         //Настройка чека
         checkPrice.setOnClickListener {
@@ -113,9 +139,11 @@ class SaleFragment : Fragment(), View.OnClickListener {
             addPrice.endIconDrawable
 
         }
-        if (checkPrice.isChecked) {
-            addPrice.visibility = View.VISIBLE
-        }
+
+//        if (checkPrice.isChecked) {
+//            addPrice.visibility = View.VISIBLE
+//        }
+
         return layout
     }
 
@@ -123,7 +151,7 @@ class SaleFragment : Fragment(), View.OnClickListener {
         super.onStart()
         val view: View? = view
         if (view != null) {
-           val arrayAdapterProduct = ArrayAdapter(
+            val arrayAdapterProduct = ArrayAdapter(
                 requireContext().applicationContext,
                 android.R.layout.simple_spinner_dropdown_item,
                 productList
@@ -203,9 +231,6 @@ class SaleFragment : Fragment(), View.OnClickListener {
         when (v.id) {
             R.id.addSale_edit -> addSaleEdit.editText!!
                 .setOnEditorActionListener(editorListenerSale)
-
-            R.id.addSale_button -> onClickAddSale(v)
-            R.id.saleChart_button -> saleChart(v)
         }
     }
 
@@ -217,7 +242,7 @@ class SaleFragment : Fragment(), View.OnClickListener {
             false
         }
 
-    private fun onClickAddSale(view: View?) {
+    private fun onClickAddSale() {
         val activity = MainActivity()
         saleInTable()
         activity.closeKeyboard()
@@ -270,8 +295,9 @@ class SaleFragment : Fragment(), View.OnClickListener {
                     tempList[animalsType] = tempList[animalsType]!! - inputUnit
                     myDB.insertToDbSale(animalsType, inputUnit, priceSale)
 
-                    resultText.text = f.format(tempList[animalsType]) + unit
-                    Toast.makeText(activity, "Вы заработали $priceSale ₽", Toast.LENGTH_SHORT).show()
+                    resultText.text = f.format(tempList[animalsType]) + unitString(animalsType)
+                    Toast.makeText(activity, "Вы заработали $priceSale ₽", Toast.LENGTH_SHORT)
+                        .show()
 
                     // установка значков после выполнения
                     addSaleEdit.editText!!.text.clear()
@@ -284,7 +310,8 @@ class SaleFragment : Fragment(), View.OnClickListener {
                     addPrice.endIconDrawable
                 }
             } else {
-                error.text = "Пожалуйста, введите цену за 1 ед. товара в разделе Мои Финансы, чтобы продать"
+                error.text =
+                    "Пожалуйста, введите цену за 1 ед. товара в разделе Мои Финансы, чтобы продать"
                 Toast.makeText(activity, "Пожалуйста, укажите цену!", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -294,15 +321,16 @@ class SaleFragment : Fragment(), View.OnClickListener {
         }
     }
 
-    private fun unitString(animals: String) {
-        when (animals) {
+    private fun unitString(animals: String): String {
+        return when (animals) {
             "Яйца" -> {
                 f = DecimalFormat("0")
-                unit = " шт."
+                " шт."
             }
-            "Молоко" -> unit = " л."
-            "Мясо" -> unit = " кг."
-            else -> unit = " ед."
+
+            "Молоко" -> " л."
+            "Мясо" -> " кг."
+            else -> " ед."
         }
     }
 
@@ -316,11 +344,10 @@ class SaleFragment : Fragment(), View.OnClickListener {
         return true
     }
 
-    private fun saleChart(view: View?) {
-//        val saleChartFragment = SaleChartFragment()
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.conteiner, saleChartFragment, "visible_fragment")
-//            .addToBackStack(null)
-//            .commit()
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }

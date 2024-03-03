@@ -109,17 +109,18 @@ class FinanceFragment : Fragment(), View.OnClickListener {
         //Настройка кнопки и верхнего бара
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.menu.findItem(R.id.filler).isVisible = true
-
+        appBar.menu.findItem(R.id.price).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
+                R.id.price -> moveToNextFragment(PriceFragment())
                 R.id.filler -> bottomSheetDialog.show()
                 R.id.more -> {
-                    replaceFragment(InfoFragment())
+                    moveToNextFragment(InfoFragment())
                     appBar.title = "Информация"
                 }
 
                 R.id.setting -> {
-                    replaceFragment(SettingsFragment())
+                    moveToNextFragment(SettingsFragment())
                     appBar.title = "Мои настройки"
                 }
             }
@@ -328,7 +329,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
         clearFinanceText.text = " " + f.format(clearFinance).toString() + " ₽"
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")
             .addToBackStack(null)

@@ -8,7 +8,7 @@ import android.view.View
 import androidx.fragment.app.Fragment
 import com.hfad.myferma.R
 
-class bottomFinaceFragment : Fragment() {
+class BottomFinaceFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?

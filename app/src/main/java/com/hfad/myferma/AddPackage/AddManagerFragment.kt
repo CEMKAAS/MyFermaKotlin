@@ -64,23 +64,27 @@ class AddManagerFragment : Fragment(), CustomAdapterAdd.Listener {
 
         val layout = inflater.inflate(R.layout.fragment_add_manager, container, false)
 
+        product.clear()
+        productNow.clear()
+
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
 
         //Настройка кнопки и верхнего бара
         val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
         appBar.menu.findItem(R.id.filler).isVisible = true
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setOnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
                 R.id.more -> {
-                    replaceFragment(InfoFragment())
+                    moveToNextFragment(InfoFragment())
                     appBar.title = "Информация"
                 }
 
                 R.id.setting -> {
-                    replaceFragment(SettingsFragment())
+                    moveToNextFragment(SettingsFragment())
                     appBar.title = "Мои настройки"
                 }
             }
@@ -340,10 +344,10 @@ class AddManagerFragment : Fragment(), CustomAdapterAdd.Listener {
         bundle.putParcelable("fd", productDB)
         bundle.putString("id", appBarManager)
         updateProductFragment.arguments = bundle
-        replaceFragment(updateProductFragment)
+        moveToNextFragment(updateProductFragment)
     }
 
-    private fun replaceFragment(fragment: Fragment) {
+    private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")
             .addToBackStack(null)

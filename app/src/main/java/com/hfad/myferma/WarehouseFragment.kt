@@ -16,7 +16,7 @@ import com.hfad.myferma.incubator.IncubatorMenuFragment
 import java.text.DecimalFormat
 
 
-class WarehouseFragment : Fragment(), View.OnClickListener {
+class WarehouseFragment : Fragment(){
     private lateinit var myDB: MyFermaDatabaseHelper
     private var productList = mutableListOf<String>()
     private val unit: String? = null
@@ -33,10 +33,11 @@ class WarehouseFragment : Fragment(), View.OnClickListener {
         myDB = MyFermaDatabaseHelper(requireContext())
 
         // Назначаем кнопки
-        val addSale: Button = layout.findViewById<View>(R.id.writeOff_button) as Button
-        addSale.setOnClickListener(this)
+        val writeOffFragment: Button = layout.findViewById<View>(R.id.writeOff_button) as Button
+        writeOffFragment.setOnClickListener { onClickButtonOff(WriteOffFragment())}
+
         val incubator: Button = layout.findViewById<View>(R.id.incubator_button) as Button
-        incubator.setOnClickListener(this)
+        incubator.setOnClickListener {onClickButtonOff(IncubatorMenuFragment())}
 
         //Настройка листа
         addArray()
@@ -104,13 +105,6 @@ class WarehouseFragment : Fragment(), View.OnClickListener {
 
         }
         return tempList
-    }
-
-    override fun onClick(v: View) {
-        when (v.id) {
-            R.id.writeOff_button -> onClickButtonOff(WriteOffFragment())
-            R.id.incubator_button -> onClickButtonOff(IncubatorMenuFragment())
-        }
     }
 
     private fun onClickButtonOff(fragment: Fragment) {

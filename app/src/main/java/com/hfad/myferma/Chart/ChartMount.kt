@@ -2,8 +2,6 @@ package com.hfad.myferma.Chart
 
 class ChartMount {
 
-    var mountInt = 1
-
     fun setMountInt(mountString: String): Int {
         when (mountString) {
             "Январь" -> return 1

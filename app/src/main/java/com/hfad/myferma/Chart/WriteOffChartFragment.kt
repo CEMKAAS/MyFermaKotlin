@@ -16,10 +16,13 @@ import com.github.mikephil.charting.data.BarData
 import com.github.mikephil.charting.data.BarDataSet
 import com.github.mikephil.charting.data.BarEntry
 import com.github.mikephil.charting.formatter.IndexAxisValueFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
@@ -79,13 +82,6 @@ class WriteOffChartFragment : Fragment() {
 
         add()
 
-        //Создание списка с данными для графиков
-        val calendar = Calendar.getInstance()
-
-        // настройка спинеров
-        mountSpiner.setText(mountString, false)
-        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
-
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
@@ -99,16 +95,32 @@ class WriteOffChartFragment : Fragment() {
         appBar.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
             }
             true
         })
 
         showBottomSheetDialog()
+        //Создание списка с данными для графиков
+        val calendar = Calendar.getInstance()
+
+        // настройка спинеров
+        mountSpiner.setText(mountString, false)
+        animalsSpiner.setText(productList[0], false)
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
 
         //Логика просчета
         storeDataInArrays()
@@ -126,29 +138,30 @@ class WriteOffChartFragment : Fragment() {
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
         animalsSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.animals_spiner)!!
-        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mounts_spiner)!!
         yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        radioGroup = bottomSheetDialog.findViewById<RadioGroup>(R.id.radioGroup)!!
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
     }
 
     private fun bar(xAsis: MutableList<String>, info: String) {
         val barChart: BarChart = layout.findViewById(R.id.barChart)
         val barDataSet: BarDataSet = BarDataSet(visitors, animalsSpiner.text.toString())
-//        barDataSet.setColors(ColorTemplate.MATERIAL_COLORS)
-        barDataSet.setValueTextColor(Color.BLACK)
-        barDataSet.setValueTextSize(16f)
+        barDataSet.colors = ColorTemplate.MATERIAL_COLORS.toMutableList()
+        barDataSet.valueTextColor = Color.BLACK
+        barDataSet.valueTextSize = 16f
         val barData: BarData = BarData(barDataSet)
         barChart.invalidate()
         barChart.setFitBars(true)
-        barChart.setData(barData)
-        barChart.getDescription().setText(info)
+        barChart.data = barData
+        barChart.description.text = info
         barChart.animateY(2000)
-        val xAxis: XAxis = barChart.getXAxis()
-        xAxis.setPosition(XAxis.XAxisPosition.BOTTOM)
+        val xAxis: XAxis = barChart.xAxis
+        xAxis.position = XAxis.XAxisPosition.BOTTOM
         xAxis.setDrawGridLines(false)
-        xAxis.setGranularity(1f) // only intervals of 1 day
-        xAxis.setLabelCount(6) //сколько отображается
-        xAxis.setValueFormatter(IndexAxisValueFormatter(xAsis))
+        xAxis.granularity = 1f // only intervals of 1 day
+        xAxis.labelCount = 6 //сколько отображается
+        xAxis.valueFormatter = IndexAxisValueFormatter(xAsis)
     }
 
     override fun onStart() {
@@ -201,12 +214,15 @@ class WriteOffChartFragment : Fragment() {
         mountString = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
 
-        when (radioGroup.checkedRadioButtonId) {
-            0 -> {
+        val radioChoise = bottomSheetDialog.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
+
+        when (radioChoise?.text.toString()) {
+            "На собственные нужды" -> {
                 infoChart = "График списанной продукции на собсвенные нужды"
                 status = R.drawable.baseline_cottage_24
             }
-            1 -> {
+
+            "На утилизацию" -> {
                 infoChart = "График списанной продукции на утилизацию"
                 status = R.drawable.baseline_delete_24
             }
@@ -226,6 +242,7 @@ class WriteOffChartFragment : Fragment() {
                 )
                 bar(mountMass, infoChart)
             }
+
             13 -> {
                 allProductsYear(
                     myDB.selectChartYearWriteOff(
@@ -236,6 +253,7 @@ class WriteOffChartFragment : Fragment() {
                 )
                 bar(labes, infoChart)
             }
+
             else -> {
                 for (i in 0..(labes.size - 2)) {
                     visitors.add(BarEntry(0f, 0f))
@@ -281,5 +299,12 @@ class WriteOffChartFragment : Fragment() {
             }
         }
         cursor.close()
+    }
+
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }

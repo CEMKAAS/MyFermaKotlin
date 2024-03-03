@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.RadioGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.PieChart
@@ -18,10 +19,14 @@ import com.github.mikephil.charting.data.PieData
 import com.github.mikephil.charting.data.PieDataSet
 import com.github.mikephil.charting.data.PieEntry
 import com.github.mikephil.charting.formatter.PercentFormatter
+import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.*
 import kotlin.collections.HashSet
@@ -50,11 +55,6 @@ class ExpensesChartFragment : Fragment() {
         //Подключение к базе данных
         myDB = MyFermaDatabaseHelper(requireContext())
 
-        val calendar = Calendar.getInstance()
-
-        // настройка спинеров
-        mountSpiner.setText(mountString, false)
-        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
 
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
@@ -67,15 +67,34 @@ class ExpensesChartFragment : Fragment() {
         appBar.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
             }
             true
         })
 
         showBottomSheetDialog()
+
+        val calendar = Calendar.getInstance()
+
+        // настройка спинеров
+
+        mountSpiner.setText(mountString, false)
+
+        yearSpiner.setText(calendar[Calendar.YEAR].toString(), false)
 
         storeDataInArrays()
 
@@ -91,10 +110,14 @@ class ExpensesChartFragment : Fragment() {
     private fun showBottomSheetDialog() {
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
-        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        val animalsSpiner = bottomSheetDialog.findViewById<TextInputLayout>(R.id.menu)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mounts_spiner)!!
         yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        val radioGroup = bottomSheetDialog.findViewById<RadioGroup>(R.id.radioGroup)!!
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
 
+        animalsSpiner.visibility = View.GONE
+        radioGroup.visibility = View.GONE
     }
 
     override fun onStart() {
@@ -131,7 +154,7 @@ class ExpensesChartFragment : Fragment() {
 
         val pieChart: PieChart = layout.findViewById(R.id.barChart)
         val pieDataSet: PieDataSet = PieDataSet(visitors, "Расходы")
-//            pieDataSet.setColors(ColorTemplate.COLORFUL_COLORS)
+        pieDataSet.colors = ColorTemplate.COLORFUL_COLORS.toMutableList()
         pieDataSet.valueTextColor = Color.BLACK
         pieDataSet.valueTextSize = 16f
         val pieData: PieData = PieData(pieDataSet)
@@ -176,5 +199,11 @@ class ExpensesChartFragment : Fragment() {
             }
         } else visitors.add(PieEntry(0f, "Нет товаров"))
         cursor.close()
+    }
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }

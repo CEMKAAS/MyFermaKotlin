@@ -8,6 +8,7 @@ import android.view.inputmethod.EditorInfo
 import android.widget.LinearLayout
 import android.widget.TextView.OnEditorActionListener
 import android.widget.Toast
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.textfield.TextInputEditText
@@ -32,6 +33,8 @@ class PriceFragment : Fragment(), View.OnClickListener {
 
         // Настройка аппбара настройка стелочки назад
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
+        appBar.menu.findItem(R.id.price).isVisible = false
+        appBar.menu.findItem(R.id.filler).isVisible = false
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
 
@@ -87,8 +90,10 @@ class PriceFragment : Fragment(), View.OnClickListener {
             container.orientation = LinearLayout.VERTICAL
             til = TextInputLayout(requireContext())
 
+            til.setPadding(30)
+
             // Установка наименования
-            til.hint = "Товар " + product
+            til.hint = "Товар $product"
             til.helperText = "Укажите цену за одну единицу товара"
             til.suffixText = "₽"
             til.isErrorEnabled = true
@@ -175,16 +180,20 @@ class PriceFragment : Fragment(), View.OnClickListener {
     }
 
     //Настройка значков на продукции (в будущем можно дополнить)
-    private fun startIcon(p: TextInputLayout, product: String?) {
-        if ((product == "Яйца")) {
-            p.setStartIconDrawable(R.drawable.ic_action_egg)
-            p.startIconDrawable
-        } else if ((product == "Молоко")) {
-            p.setStartIconDrawable(R.drawable.ic_action_milk)
-            p.startIconDrawable
-        } else if ((product == "Мясо")) {
-            p.setStartIconDrawable(R.drawable.ic_action_meat)
-            p.startIconDrawable
+    private fun startIcon(p: TextInputLayout, product: String) {
+        when (product) {
+            "Яйца" -> {
+                p.setStartIconDrawable(R.drawable.ic_action_egg)
+                p.startIconDrawable
+            }
+            "Молоко" -> {
+                p.setStartIconDrawable(R.drawable.ic_action_milk)
+                p.startIconDrawable
+            }
+            "Мясо" -> {
+                p.setStartIconDrawable(R.drawable.ic_action_meat)
+                p.startIconDrawable
+            }
         }
     }
 

@@ -7,6 +7,7 @@ import android.widget.ArrayAdapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.os.Bundle
+import android.view.MenuItem
 import android.view.View
 import com.hfad.myferma.R
 import com.google.android.material.textfield.TextInputLayout
@@ -16,7 +17,13 @@ import android.view.inputmethod.EditorInfo
 import android.widget.Button
 import com.hfad.myferma.MainActivity
 import android.widget.Toast
+import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import com.google.android.material.appbar.MaterialToolbar
+import com.hfad.myferma.AddPackage.AddManagerFragment
+import com.hfad.myferma.Chart.ExpensesChartFragment
+import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
@@ -36,7 +43,7 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
     ): View? {
         val layout = inflater.inflate(R.layout.fragment_expenses, container, false)
         myDB = MyFermaDatabaseHelper(requireContext())
-
+        arrayListAnaimals.clear()
         expensesEditText = layout.findViewById(R.id.expenses_editText)
         expensesNameEditText = layout.findViewById(R.id.expensesName_editText)
         menu = layout.findViewById<TextInputLayout>(R.id.menu)
@@ -44,11 +51,29 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
         expensesEditText.editText!!.setOnEditorActionListener(editorListenerExpenses)
         expensesNameEditText.setOnEditorActionListener(editorListenerExpenses)
 
-        val addExpenses= layout.findViewById<Button>(R.id.addExpenses_button)
-        addExpenses.setOnClickListener(this)
+        val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)
+        appBar.menu.findItem(R.id.magazine).isVisible = true
+        appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
+            when (item.itemId) {
+                R.id.magazine -> moveToNextFragment(AddManagerFragment())
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
+            }
+            true
+        })
+
+        val addExpenses = layout.findViewById<Button>(R.id.addExpenses_button)
+        addExpenses.setOnClickListener { onClickAddExpenses() }
 
         val expensesChart = layout.findViewById<Button>(R.id.expensesChart_button)
-        expensesChart.setOnClickListener(this)
+        expensesChart.setOnClickListener { moveToNextFragment(ExpensesChartFragment()) }
 
         allExpenses()
 
@@ -61,7 +86,7 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
         super.onStart()
         val view: View? = view
         if (view != null) {
-           arrayAdapterAnimals = ArrayAdapter(
+            arrayAdapterAnimals = ArrayAdapter(
                 requireContext().applicationContext,
                 android.R.layout.simple_spinner_dropdown_item,
                 arrayListAnaimals
@@ -74,9 +99,6 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
         when (v.id) {
             R.id.expenses_editText -> expensesEditText.editText!!
                 .setOnEditorActionListener(editorListenerExpenses)
-
-            R.id.addExpenses_button -> onClickAddExpenses(v)
-            R.id.expensesChart_button -> expensesChart(v)
         }
     }
 
@@ -87,12 +109,13 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
                     Toast.makeText(activity, "Добавлено!", Toast.LENGTH_SHORT)
                     menu.isErrorEnabled = false
                 }
+
                 EditorInfo.IME_ACTION_GO -> expensesInTable()
             }
             false
         }
 
-    private fun onClickAddExpenses(view: View?) {
+    private fun onClickAddExpenses() {
         val activity: MainActivity = MainActivity()
         expensesInTable()
         activity.closeKeyboard()
@@ -150,43 +173,34 @@ class ExpensesFragment : Fragment(), View.OnClickListener {
 
     private fun allExpenses() {
         val cursor = myDB.readDataExpensesGroup()
-        if (cursor.count != 0) {
-            while (cursor.moveToNext()) {
-                arrayListAnaimals.add(cursor.getString(1))
-            }
-        }
+        if (cursor.count != 0) while (cursor.moveToNext()) arrayListAnaimals.add(cursor.getString(1))
         cursor.close()
     }
 
-    private fun expensesChart(view: View?) {
-//        val expensesChartFragment = ExpensesChartFragment()
-//        requireActivity().supportFragmentManager.beginTransaction()
-//            .replace(R.id.conteiner, expensesChartFragment, "visible_fragment")
-//            .addToBackStack(null)
-//            .commit()
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 
     //расчеты
     // Общая прибыль и общии расходы
-    private fun totalSum(priceColumn : String, table: String ): Double {
+    private fun totalSum(priceColumn: String, table: String): Double {
         val cursor = myDB.readDataAllSumTable(priceColumn, table)
         cursor.moveToNext()
-        val sum = if (cursor.count != 0) {
-            cursor.getDouble(0)
-        } else {
-            0.0
-        }
+        val sum = if (cursor.count != 0) cursor.getDouble(0)
+        else 0.0
         cursor.close()
         return sum
     }
 
-
     //Считает чистую прибыль(тяжелый способо, но пока так)
     private val clearFinance: Double
         get() {
-            val totalAmount: Double = totalSum(MyConstanta.PRICEALL,MyConstanta.TABLE_NAMESALE)
-            val totalExpenses: Double = totalSum(MyConstanta.DISCROTIONEXPENSES,MyConstanta.TABLE_NAMEEXPENSES)
+            val totalAmount: Double = totalSum(MyConstanta.PRICEALL, MyConstanta.TABLE_NAMESALE)
+            val totalExpenses: Double =
+                totalSum(MyConstanta.DISCROTIONEXPENSES, MyConstanta.TABLE_NAMEEXPENSES)
             return totalAmount - totalExpenses
         }
-
 }

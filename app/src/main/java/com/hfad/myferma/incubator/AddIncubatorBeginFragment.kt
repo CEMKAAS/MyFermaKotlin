@@ -2,6 +2,7 @@ package com.hfad.myferma.incubator
 
 import android.database.Cursor
 import android.os.Bundle
+import android.view.Gravity
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -10,6 +11,7 @@ import android.widget.Button
 import android.widget.CheckBox
 import android.widget.TextView
 import android.widget.Toast
+import androidx.core.view.setPadding
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.CalendarConstraints
@@ -189,10 +191,10 @@ class AddIncubatorBeginFragment : Fragment() {
         next.setOnClickListener {
 
             //Поиск архивных инкубаторов
-            if (arhiveSeach()){
+            if (arhiveSeach()) {
                 arhiveChoice(animalsSpiner.text.toString())
             } else {
-                nextFragment(AddIncubatorFragment())
+                nextFragment(AddIncubatorFragment(), false)
             }
 
         }
@@ -212,7 +214,6 @@ class AddIncubatorBeginFragment : Fragment() {
                 ) {
                     id.add(cursor.getString(0))
                     name.add(cursor.getString(1))
-                    type.add(cursor.getString(2))
                     arhive = true
                 }
             }
@@ -223,7 +224,7 @@ class AddIncubatorBeginFragment : Fragment() {
 
     //Переход на вторую влакдаку
     //todo perenos vo fragment с архива
-    private fun nextFragment(fragment: Fragment) {
+    private fun nextFragment(fragment: Fragment, arhiveBoolean: Boolean) {
 
         val bundle = Bundle()
 
@@ -237,6 +238,14 @@ class AddIncubatorBeginFragment : Fragment() {
         bundle.putBoolean("friz", friz.isChecked)
         bundle.putBoolean("over", over.isChecked)
 
+        if (arhiveBoolean) {
+            bundle.putStringArray("temp", massTemp.toTypedArray())
+            bundle.putStringArray("damp", massDamp.toTypedArray())
+            bundle.putStringArray("over", massOver.toTypedArray())
+            bundle.putStringArray("airing", massAiring.toTypedArray())
+        }
+        bundle.putBoolean("arhive", arhiveBoolean)
+
         fragment.arguments = bundle
 
         requireActivity().supportFragmentManager.beginTransaction()
@@ -249,27 +258,26 @@ class AddIncubatorBeginFragment : Fragment() {
     private fun arhiveChoice(
         typeBirds: String
     ) {
+        val textView = TextView(activity)
+
+        textView.text = "Выбрать данные из архива?\n" +
+                "Данные которые Вы ввели не изменятся, температура, влажность, поворот и проветривание, будут добавлены из выбраного архива"
+        textView.setPadding(20)
+        textView.textSize = 18.0F
+        textView.gravity = Gravity.CENTER
 
         val builder = MaterialAlertDialogBuilder(requireContext())
-        builder.setTitle("Выбрать данные из архива?")
+        builder.setCustomTitle(textView)
 
-        val arrayListName = mutableListOf<String>()
-        val arrayListId = mutableListOf<String>()
-
-        for (i in type.indices) {
-            if (type[i] == typeBirds) {
-                arrayListName.add(name[i])
-                arrayListId.add(id[i])
-            }
-        }
-        val nameId = arrayOfNulls<String>(arrayListName.size)
-        val idFragment = arrayOfNulls<String>(arrayListId.size)
-
+        val nameId = name.toTypedArray()
+        val idFragment = id.toTypedArray()
         val n: IntArray = intArrayOf(0)
 
         builder.setSingleChoiceItems(
             nameId, 0
-        ) { dialog, which -> n[0] = which }
+        ) { dialog, which ->
+            n[0] = which
+        }
 
         builder.setPositiveButton(
             "Да"
@@ -278,22 +286,40 @@ class AddIncubatorBeginFragment : Fragment() {
                 .show()
 
             //TODO SQL AutoPerevorot
-            massId = setCursor(myDB.idIncubator(idFragment[n[0]].toString()), 0, 12)
-            massTemp = setCursor(myDB.idIncubatorTemp(idFragment[n[0]].toString()), 1, 30)
-            massDamp = setCursor(myDB.idIncubatorDamp(idFragment[n[0]].toString()), 1, 30)
-            massOver = setCursor(myDB.idIncubatorOver(idFragment[n[0]].toString()), 1, 30)
-            massAiring = setCursor(myDB.idIncubatorAiring(idFragment[n[0]].toString()), 1, 30)
+            setMassivToType(idFragment[n[0]])
+
+            nextFragment(AddIncubatorFragment(), true)
 
         }
-        builder.setNegativeButton(
-            "Нет"
-        ) { dialogInterface, i ->
-
+        builder.setNegativeButton("Нет") { dialogInterface, i ->
+            nextFragment(
+                AddIncubatorFragment(),
+                false
+            )
         }
+
         builder.show()
     }
 
-    //Todo
+
+    private fun setMassivToType(idFragment: String) {
+        when (animalsSpiner.text.toString()) {
+            "Курицы" -> {logicSetMassivToType(idFragment, 21) }
+            "Гуси" -> {logicSetMassivToType(idFragment, 30) }
+            "Перепела" -> {logicSetMassivToType(idFragment, 17) }
+            "Индюки", "Утки" -> {logicSetMassivToType(idFragment, 28)
+            }
+        }
+
+    }
+
+    private fun logicSetMassivToType(idFragment: String, size: Int) {
+        massTemp = setCursor(myDB.idIncubatorTemp(idFragment), 1, size)
+        massDamp = setCursor(myDB.idIncubatorDamp(idFragment), 1, size)
+        massOver = setCursor(myDB.idIncubatorOver(idFragment), 1, size)
+        massAiring = setCursor(myDB.idIncubatorAiring(idFragment), 1, size)
+    }
+
     private fun setCursor(cursor: Cursor, sizeBegin: Int, size: Int): MutableList<String> {
         cursor.moveToNext()
 
@@ -305,5 +331,4 @@ class AddIncubatorBeginFragment : Fragment() {
         return mass
     }
 
-    companion object {}
 }

@@ -65,6 +65,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
                     android:imeOptions="actionGo"
                     android:inputType="date" />
 
@@ -107,6 +108,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
                     android:imeOptions="actionGo"
                     android:inputType="time" />
 
@@ -127,6 +129,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
                     android:imeOptions="actionGo"
                     android:inputType="time" />
 
@@ -147,6 +150,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
+                    android:focusableInTouchMode="false"
                     android:imeOptions="actionGo"
                     android:inputType="time" />
 

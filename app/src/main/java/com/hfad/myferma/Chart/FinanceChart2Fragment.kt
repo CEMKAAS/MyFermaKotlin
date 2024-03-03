@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.RadioGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.LineChart
@@ -23,7 +24,10 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -73,11 +77,6 @@ class FinanceChart2Fragment : Fragment() {
 
         layout = inflater.inflate(R.layout.fragment_finance_chart2, container, false)
 
-        val calendar = Calendar.getInstance()
-        // настройка спинеров
-        mountSpiner.setText("За весь год", false)
-        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
-
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
@@ -88,16 +87,34 @@ class FinanceChart2Fragment : Fragment() {
         appBar.title = "Мои Финансы - Общее"
         appBar.setNavigationIcon(R.drawable.baseline_arrow_back_24)
         appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
+        appBar.menu.findItem(R.id.price).isVisible = false
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
+
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
             }
             true
         })
 
         showBottomSheetDialog()
 
+        val calendar = Calendar.getInstance()
+        // настройка спинеров
+        mountSpiner.setText("За весь год", false)
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
+
+        spiner()
 
         button.setOnClickListener {
             spiner()
@@ -111,9 +128,14 @@ class FinanceChart2Fragment : Fragment() {
     private fun showBottomSheetDialog() {
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
-        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        val animalsSpiner = bottomSheetDialog.findViewById<TextInputLayout>(R.id.menu)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mounts_spiner)!!
         yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        val radioGroup = bottomSheetDialog.findViewById<RadioGroup>(R.id.radioGroup)!!
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
+
+        animalsSpiner.visibility = View.GONE
+        radioGroup.visibility = View.GONE
 
     }
 
@@ -200,7 +222,7 @@ class FinanceChart2Fragment : Fragment() {
         mountString = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
 
-        mountClass.setMountInt(mountString)
+        mount = mountClass.setMountInt(mountString)
 
         when (mount) {
 
@@ -301,5 +323,10 @@ class FinanceChart2Fragment : Fragment() {
         }
         cursor.close()
     }
-
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
+    }
 }

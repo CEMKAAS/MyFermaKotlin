@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import android.widget.ArrayAdapter
 import android.widget.AutoCompleteTextView
 import android.widget.Button
+import android.widget.RadioGroup
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.github.mikephil.charting.charts.LineChart
@@ -23,7 +24,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
+import com.hfad.myferma.InfoFragment
 import com.hfad.myferma.R
+import com.hfad.myferma.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -74,13 +77,6 @@ class FinanceChartFragment : Fragment() {
 
         add()
 
-        // настройка спинеров
-        animalsSpiner.setText("Все", false)
-        mountSpiner.setText(mountString, false)
-
-        val calendar = Calendar.getInstance()
-        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
-
         //убириаем фаб кнопку
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
@@ -92,15 +88,33 @@ class FinanceChartFragment : Fragment() {
         appBar.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
+        appBar.menu.findItem(R.id.price).isVisible = false
+        appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {
                 R.id.filler -> bottomSheetDialog.show()
+                R.id.more -> {
+                    moveToNextFragment(InfoFragment())
+                    appBar.title = "Информация"
+                }
+
+                R.id.setting -> {
+                    moveToNextFragment(SettingsFragment())
+                    appBar.title = "Мои настройки"
+                }
             }
             true
         })
 
         showBottomSheetDialog()
+
+        // настройка спинеров
+        animalsSpiner.setText("Все", false)
+        mountSpiner.setText(mountString, false)
+
+        val calendar = Calendar.getInstance()
+        yearSpiner.setText(calendar.get(Calendar.YEAR).toString(), false)
 
         // Формируем график
         spiner()
@@ -117,10 +131,12 @@ class FinanceChartFragment : Fragment() {
         bottomSheetDialog = BottomSheetDialog(requireContext())
         bottomSheetDialog.setContentView(R.layout.fragment_bottom_chart_setting)
         animalsSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.animals_spiner)!!
-        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mount_spiner)!!
+        mountSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.mounts_spiner)!!
         yearSpiner = bottomSheetDialog.findViewById<AutoCompleteTextView>(R.id.year_spiner)!!
+        val radioGroup = bottomSheetDialog.findViewById<RadioGroup>(R.id.radioGroup)!!
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
 
+        radioGroup.visibility = View.GONE
     }
 
     private fun spiner() {
@@ -141,7 +157,7 @@ class FinanceChartFragment : Fragment() {
 
             when (mount) {
                 in 1..12 -> allProducts(dataSets, year2, true)
-                13 -> allProducts(dataSets, year2, true)
+                13 -> allProducts(dataSets, year2, false)
             }
 
             val data: LineData = LineData(dataSets)
@@ -339,5 +355,11 @@ class FinanceChartFragment : Fragment() {
 
         productListAll = productSet.toMutableList()
         productListAll.add("Все")
+    }
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
     }
 }
