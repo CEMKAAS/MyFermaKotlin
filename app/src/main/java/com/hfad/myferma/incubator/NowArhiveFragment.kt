@@ -15,6 +15,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
+import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
 
 class NowArhiveFragment : Fragment(), View.OnClickListener, ListAdapterIncubator.Listener {
     private lateinit var myDB: MyFermaDatabaseHelper
@@ -120,6 +121,6 @@ class NowArhiveFragment : Fragment(), View.OnClickListener, ListAdapterIncubator
     }
 
     override fun onClick(position: Int, day: Int) {
-        TODO("Not yet implemented")
+
     }
 }

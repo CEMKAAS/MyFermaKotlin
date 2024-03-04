@@ -1,4 +1,4 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.MenuIncubators
 
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentActivity

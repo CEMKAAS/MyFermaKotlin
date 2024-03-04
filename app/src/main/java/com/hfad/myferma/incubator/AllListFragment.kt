@@ -83,6 +83,7 @@ class AllListFragment : Fragment(), View.OnClickListener, ListAdapterIncubator.L
         appBar.title = "Мои Инкубатор"
         appBar.menu.findItem(R.id.delete).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
+        appBar.menu.findItem(R.id.filler).setIcon(R.drawable.baseline_settings_24)
 
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
             when (item.itemId) {

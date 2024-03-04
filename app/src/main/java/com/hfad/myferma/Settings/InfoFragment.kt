@@ -1,4 +1,4 @@
-package com.hfad.myferma
+package com.hfad.myferma.Settings
 
 import android.os.Bundle
 import android.view.LayoutInflater

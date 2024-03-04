@@ -1,9 +1,7 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.ManagerMenuPackage
 
 
 import android.os.Parcelable
-import android.os.Parcel
-import android.os.Parcelable.Creator
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

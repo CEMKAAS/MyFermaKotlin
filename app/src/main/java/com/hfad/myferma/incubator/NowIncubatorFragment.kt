@@ -14,6 +14,8 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
+import com.hfad.myferma.incubator.MenuIncubators.HomeIncubatorFragment
+import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.util.Calendar
@@ -62,6 +64,7 @@ class NowIncubatorFragment : Fragment(), View.OnClickListener {
 
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.menu.findItem(R.id.delete).isVisible = false
+        appBar.menu.findItem(R.id.filler).setIcon(R.drawable.baseline_filter_list_24)
         appBar.menu.findItem(R.id.filler).isVisible = false
         appBar.title = "Мои инкубатор"
         appBar.setNavigationOnClickListener {

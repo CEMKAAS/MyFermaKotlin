@@ -23,9 +23,9 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -107,7 +107,6 @@ class AddChartFragment : Fragment() {
         showBottomSheetDialog()
 
 
-
         val calendar = Calendar.getInstance()
         // настройка спинеров
         mountSpiner.setText(mountString, false)
@@ -117,8 +116,10 @@ class AddChartFragment : Fragment() {
         //Логика просчета
         storeDataInArrays()
 
-        button.setOnClickListener { storeDataInArrays()
-        bottomSheetDialog.dismiss()}
+        button.setOnClickListener {
+            storeDataInArrays()
+            bottomSheetDialog.dismiss()
+        }
 
         return layout
     }
@@ -134,7 +135,6 @@ class AddChartFragment : Fragment() {
         button = bottomSheetDialog.findViewById<Button>(R.id.add_button)!!
 
         radioGroup.visibility = View.GONE
-
     }
 
     private fun bar(xAsis: MutableList<String>) {
@@ -186,19 +186,22 @@ class AddChartFragment : Fragment() {
         val productSet = mutableSetOf<String>()
 
         val cursor = myDB.readAllData()
-
-        while (cursor.moveToNext()) {
-            val year = cursor.getString(5)
-            val product = cursor.getString(1)
-            yearSet.add(year)
-            productSet.add(product)
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                val year = cursor.getString(5)
+                val product = cursor.getString(1)
+                yearSet.add(year)
+                productSet.add(product)
+            }
+        } else {
+            val calendar = Calendar.getInstance()
+            yearSet.add(calendar[Calendar.YEAR].toString())
+            productSet.add("Нет товаров")
         }
-
         cursor.close()
 
         yearList = yearSet.toMutableList()
         productList = productSet.toMutableList()
-
     }
 
 
@@ -221,19 +224,14 @@ class AddChartFragment : Fragment() {
                 )
 
                 if (cursor.count != 0) {
-
                     while (cursor.moveToNext()) {
 
                         val x = cursor.getString(0).toFloat()
                         val y = cursor.getString(1).toFloat()
 
                         visitors.add(BarEntry(y, x))
-
                     }
-
-                } else {
-                    visitors.add(BarEntry(0f, 0f))
-                }
+                } else visitors.add(BarEntry(0f, 0f))
 
                 cursor.close()
                 bar(mountClass.setMount(mountString))
@@ -254,21 +252,23 @@ class AddChartFragment : Fragment() {
                     year2
                 )
 
-                while (cursor.moveToNext()) {
-                    when (cursor.getString(1).toInt()) {
+                if (cursor.count != 0) {
+                    while (cursor.moveToNext()) {
+                        when (cursor.getString(1).toInt()) {
 
-                        1 -> visitors[0] = BarEntry(1f, cursor.getString(0).toFloat())
-                        2 -> visitors[1] = BarEntry(2f, cursor.getString(0).toFloat())
-                        3 -> visitors[2] = BarEntry(3f, cursor.getString(0).toFloat())
-                        4 -> visitors[3] = BarEntry(4f, cursor.getString(0).toFloat())
-                        5 -> visitors[4] = BarEntry(5f, cursor.getString(0).toFloat())
-                        6 -> visitors[5] = BarEntry(6f, cursor.getString(0).toFloat())
-                        7 -> visitors[6] = BarEntry(7f, cursor.getString(0).toFloat())
-                        8 -> visitors[7] = BarEntry(8f, cursor.getString(0).toFloat())
-                        9 -> visitors[8] = BarEntry(9f, cursor.getString(0).toFloat())
-                        10 -> visitors[9] = BarEntry(10f, cursor.getString(0).toFloat())
-                        11 -> visitors[10] = BarEntry(11f, cursor.getString(0).toFloat())
-                        12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
+                            1 -> visitors[0] = BarEntry(1f, cursor.getString(0).toFloat())
+                            2 -> visitors[1] = BarEntry(2f, cursor.getString(0).toFloat())
+                            3 -> visitors[2] = BarEntry(3f, cursor.getString(0).toFloat())
+                            4 -> visitors[3] = BarEntry(4f, cursor.getString(0).toFloat())
+                            5 -> visitors[4] = BarEntry(5f, cursor.getString(0).toFloat())
+                            6 -> visitors[5] = BarEntry(6f, cursor.getString(0).toFloat())
+                            7 -> visitors[6] = BarEntry(7f, cursor.getString(0).toFloat())
+                            8 -> visitors[7] = BarEntry(8f, cursor.getString(0).toFloat())
+                            9 -> visitors[8] = BarEntry(9f, cursor.getString(0).toFloat())
+                            10 -> visitors[9] = BarEntry(10f, cursor.getString(0).toFloat())
+                            11 -> visitors[10] = BarEntry(11f, cursor.getString(0).toFloat())
+                            12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
+                        }
                     }
                 }
                 cursor.close()
@@ -281,9 +281,9 @@ class AddChartFragment : Fragment() {
                 }
                 bar(labes)
             }
-
         }
     }
+
     private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")

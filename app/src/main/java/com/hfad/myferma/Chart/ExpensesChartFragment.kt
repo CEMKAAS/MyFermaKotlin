@@ -24,9 +24,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.*
 import kotlin.collections.HashSet
@@ -67,7 +67,6 @@ class ExpensesChartFragment : Fragment() {
         appBar.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }
-
         appBar.menu.findItem(R.id.magazine).isVisible = false
         appBar.menu.findItem(R.id.filler).isVisible = true
         appBar.setOnMenuItemClickListener(Toolbar.OnMenuItemClickListener { item: MenuItem ->
@@ -138,9 +137,13 @@ class ExpensesChartFragment : Fragment() {
 
         val tempList: MutableSet<String> = HashSet()
         val cursor = myDB.readAllDataExpenses()
-
-        while (cursor.moveToNext()) {
-            tempList.add(cursor.getString(5))
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                tempList.add(cursor.getString(5))
+            }
+        }else {
+            val calendar = Calendar.getInstance()
+            tempList.add(calendar[Calendar.YEAR].toString())
         }
         cursor.close()
 
@@ -200,6 +203,7 @@ class ExpensesChartFragment : Fragment() {
         } else visitors.add(PieEntry(0f, "Нет товаров"))
         cursor.close()
     }
+
     private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")

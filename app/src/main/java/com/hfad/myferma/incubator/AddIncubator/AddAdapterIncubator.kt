@@ -1,4 +1,4 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.AddIncubator
 
 import android.annotation.SuppressLint
 import android.text.Editable
@@ -9,10 +9,7 @@ import android.view.ViewGroup
 import android.widget.EditText
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.R
 
 class AddAdapterIncubator(

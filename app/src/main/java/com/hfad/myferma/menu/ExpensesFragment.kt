@@ -1,6 +1,5 @@
-package com.hfad.myferma.Finance.ExpensesPackage
+package com.hfad.myferma.menu
 
-import android.database.Cursor
 import android.icu.text.DecimalFormat
 import android.widget.AutoCompleteTextView
 import android.widget.ArrayAdapter
@@ -20,10 +19,10 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.hfad.myferma.AddPackage.AddManagerFragment
+import com.hfad.myferma.ManagerMenuPackage.AddManagerFragment
 import com.hfad.myferma.Chart.ExpensesChartFragment
-import com.hfad.myferma.InfoFragment
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.InfoFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 

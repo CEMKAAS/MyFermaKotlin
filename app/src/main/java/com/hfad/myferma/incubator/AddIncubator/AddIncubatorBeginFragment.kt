@@ -1,4 +1,4 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.AddIncubator
 
 import android.database.Cursor
 import android.os.Bundle
@@ -46,9 +46,7 @@ class AddIncubatorBeginFragment : Fragment() {
 
     private var id = mutableListOf<String>()
     private var name = mutableListOf<String>()
-    private var type = mutableListOf<String>()
 
-    private var massId = mutableListOf<String>()
     private var massTemp = mutableListOf<String>()
     private var massDamp = mutableListOf<String>()
     private var massOver = mutableListOf<String>()
@@ -67,7 +65,6 @@ class AddIncubatorBeginFragment : Fragment() {
         val fab: ExtendedFloatingActionButton =
             requireActivity().findViewById<View>(R.id.extended_fab) as ExtendedFloatingActionButton
         fab.visibility = View.GONE
-
 
         //Настройка аппбара
         val appBar = requireActivity().findViewById<MaterialToolbar>(R.id.topAppBar)

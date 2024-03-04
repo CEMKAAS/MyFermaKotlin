@@ -9,14 +9,14 @@ import android.widget.Button
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.hfad.myferma.WriteOff.WriteOffFragment
+import com.hfad.myferma.menu.WriteOffFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
-import com.hfad.myferma.incubator.IncubatorMenuFragment
+import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
 import java.text.DecimalFormat
 
 
-class WarehouseFragment : Fragment(){
+class WarehouseFragment : Fragment() {
     private lateinit var myDB: MyFermaDatabaseHelper
     private var productList = mutableListOf<String>()
     private val unit: String? = null
@@ -34,10 +34,10 @@ class WarehouseFragment : Fragment(){
 
         // Назначаем кнопки
         val writeOffFragment: Button = layout.findViewById<View>(R.id.writeOff_button) as Button
-        writeOffFragment.setOnClickListener { onClickButtonOff(WriteOffFragment())}
+        writeOffFragment.setOnClickListener { onClickButtonOff(WriteOffFragment()) }
 
         val incubator: Button = layout.findViewById<View>(R.id.incubator_button) as Button
-        incubator.setOnClickListener {onClickButtonOff(IncubatorMenuFragment())}
+        incubator.setOnClickListener { onClickButtonOff(IncubatorMenuFragment()) }
 
         //Настройка листа
         addArray()
@@ -85,8 +85,10 @@ class WarehouseFragment : Fragment(){
                         product,
                         MyConstanta.DISCROTIONSale
                     )
-                cursorSale.moveToNext()
-                tempList[product] = tempList[product]!! - cursorSale.getDouble(1)
+                if (cursorSale.count != 0) {
+                    cursorSale.moveToNext()
+                    tempList[product] = tempList[product]!! - cursorSale.getDouble(1)
+                }
                 cursorSale.close()
 
                 val cursorWriteOff = myDB.selectTableNameAndSumCount(
@@ -95,8 +97,10 @@ class WarehouseFragment : Fragment(){
                     product, MyConstanta.DISCROTIONSWRITEOFF
                 )
 
-                cursorWriteOff.moveToNext()
-                tempList[product] = tempList[product]!! - cursorWriteOff.getDouble(1)
+                if (cursorWriteOff.count != 0) {
+                    cursorWriteOff.moveToNext()
+                    tempList[product] = tempList[product]!! - cursorWriteOff.getDouble(1)
+                }
                 cursorWriteOff.close()
 
             } else {

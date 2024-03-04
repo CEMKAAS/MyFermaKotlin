@@ -1,14 +1,11 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.ManagerMenuPackage
 
-import android.annotation.SuppressLint
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.hfad.myferma.R
 

@@ -24,9 +24,9 @@ import com.github.mikephil.charting.interfaces.datasets.ILineDataSet
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -258,9 +258,7 @@ class FinanceChartFragment : Fragment() {
                         visitors.add(BarEntry(y, x))
 
                     }
-                } else {
-                    visitors.add(BarEntry(0f, 0f))
-                }
+                } else visitors.add(BarEntry(0f, 0f))
                 cursor.close()
             }
 
@@ -278,28 +276,28 @@ class FinanceChartFragment : Fragment() {
                     year2
                 )
 
-                while (cursor.moveToNext()) {
-                    when (cursor.getString(1).toInt()) {
-                        1 -> visitors[0] = Entry(1f, cursor.getString(0).toFloat())
-                        2 -> visitors[1] = Entry(2f, cursor.getString(0).toFloat())
-                        3 -> visitors[2] = Entry(3f, cursor.getString(0).toFloat())
-                        4 -> visitors[3] = Entry(4f, cursor.getString(0).toFloat())
-                        5 -> visitors[4] = Entry(5f, cursor.getString(0).toFloat())
-                        6 -> visitors[5] = Entry(6f, cursor.getString(0).toFloat())
-                        7 -> visitors[6] = Entry(7f, cursor.getString(0).toFloat())
-                        8 -> visitors[7] = Entry(8f, cursor.getString(0).toFloat())
-                        9 -> visitors[8] = Entry(9f, cursor.getString(0).toFloat())
-                        10 -> visitors[9] = Entry(10f, cursor.getString(0).toFloat())
-                        11 -> visitors[10] = Entry(11f, cursor.getString(0).toFloat())
-                        12 -> visitors[11] = Entry(12f, cursor.getString(0).toFloat())
+                if (cursor.count != 0) {
+                    while (cursor.moveToNext()) {
+                        when (cursor.getString(1).toInt()) {
+                            1 -> visitors[0] = Entry(1f, cursor.getString(0).toFloat())
+                            2 -> visitors[1] = Entry(2f, cursor.getString(0).toFloat())
+                            3 -> visitors[2] = Entry(3f, cursor.getString(0).toFloat())
+                            4 -> visitors[3] = Entry(4f, cursor.getString(0).toFloat())
+                            5 -> visitors[4] = Entry(5f, cursor.getString(0).toFloat())
+                            6 -> visitors[5] = Entry(6f, cursor.getString(0).toFloat())
+                            7 -> visitors[6] = Entry(7f, cursor.getString(0).toFloat())
+                            8 -> visitors[7] = Entry(8f, cursor.getString(0).toFloat())
+                            9 -> visitors[8] = Entry(9f, cursor.getString(0).toFloat())
+                            10 -> visitors[9] = Entry(10f, cursor.getString(0).toFloat())
+                            11 -> visitors[10] = Entry(11f, cursor.getString(0).toFloat())
+                            12 -> visitors[11] = Entry(12f, cursor.getString(0).toFloat())
+                        }
                     }
                 }
                 cursor.close()
             }
 
-            else -> {
-                visitors.add(BarEntry(0f, 0f))
-            }
+            else -> visitors.add(BarEntry(0f, 0f))
         }
     }
 
@@ -340,14 +338,18 @@ class FinanceChartFragment : Fragment() {
         val productSet: MutableSet<String> = HashSet()
 
         val cursor: Cursor = myDB.readAllDataSale()
-
-        while (cursor.moveToNext()) {
-            val year: String = cursor.getString(5)
-            val product: String = cursor.getString(1)
-            yearSet.add(year)
-            productSet.add(product)
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                val year: String = cursor.getString(5)
+                val product: String = cursor.getString(1)
+                yearSet.add(year)
+                productSet.add(product)
+            }
+        } else {
+            val calendar = Calendar.getInstance()
+            yearSet.add(calendar[Calendar.YEAR].toString())
+            productSet.add("Нет товаров")
         }
-
         cursor.close()
 
         yearList = yearSet.toMutableList()
@@ -356,6 +358,7 @@ class FinanceChartFragment : Fragment() {
         productListAll = productSet.toMutableList()
         productListAll.add("Все")
     }
+
     private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")

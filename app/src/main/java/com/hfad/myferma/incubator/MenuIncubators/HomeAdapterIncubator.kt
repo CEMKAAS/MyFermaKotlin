@@ -1,14 +1,11 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.MenuIncubators
 
-import android.annotation.SuppressLint
 import android.graphics.drawable.Drawable
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
-import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.card.MaterialCardView
 import com.hfad.myferma.R

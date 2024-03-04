@@ -25,9 +25,9 @@ import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -208,9 +208,13 @@ class FinanceChart2Fragment : Fragment() {
     fun add(): MutableList<String> {
         val tempList: MutableSet<String> = HashSet()
         val cursor = myDB.readAllDataSale()
-
-        while (cursor.moveToNext()) {
-            tempList.add(cursor.getString(5))
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                tempList.add(cursor.getString(5))
+            }
+        } else {
+            val calendar = Calendar.getInstance()
+            tempList.add(calendar[Calendar.YEAR].toString())
         }
         cursor.close()
 
@@ -305,24 +309,27 @@ class FinanceChart2Fragment : Fragment() {
             entries.add(BarEntry(i.toFloat(), 0f))
         }
 
-        while (cursor.moveToNext()) {
-            when (cursor.getString(1).toInt()) {
-                1 -> entries[0] = Entry(0f, (cursor.getString(0).toFloat()) * kof)
-                2 -> entries[1] = Entry(1f, (cursor.getString(0).toFloat()) * kof)
-                3 -> entries[2] = Entry(2f, (cursor.getString(0).toFloat()) * kof)
-                4 -> entries[3] = Entry(3f, (cursor.getString(0).toFloat()) * kof)
-                5 -> entries[4] = Entry(4f, (cursor.getString(0).toFloat()) * kof)
-                6 -> entries[5] = Entry(5f, (cursor.getString(0).toFloat()) * kof)
-                7 -> entries[6] = Entry(6f, (cursor.getString(0).toFloat()) * kof)
-                8 -> entries[7] = Entry(7f, (cursor.getString(0).toFloat()) * kof)
-                9 -> entries[8] = Entry(8f, (cursor.getString(0).toFloat()) * kof)
-                10 -> entries[9] = Entry(9f, (cursor.getString(0).toFloat()) * kof)
-                11 -> entries[10] = Entry(10f, (cursor.getString(0).toFloat()) * kof)
-                12 -> entries[11] = Entry(11f, (cursor.getString(0).toFloat()) * kof)
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                when (cursor.getString(1).toInt()) {
+                    1 -> entries[0] = Entry(0f, (cursor.getString(0).toFloat()) * kof)
+                    2 -> entries[1] = Entry(1f, (cursor.getString(0).toFloat()) * kof)
+                    3 -> entries[2] = Entry(2f, (cursor.getString(0).toFloat()) * kof)
+                    4 -> entries[3] = Entry(3f, (cursor.getString(0).toFloat()) * kof)
+                    5 -> entries[4] = Entry(4f, (cursor.getString(0).toFloat()) * kof)
+                    6 -> entries[5] = Entry(5f, (cursor.getString(0).toFloat()) * kof)
+                    7 -> entries[6] = Entry(6f, (cursor.getString(0).toFloat()) * kof)
+                    8 -> entries[7] = Entry(7f, (cursor.getString(0).toFloat()) * kof)
+                    9 -> entries[8] = Entry(8f, (cursor.getString(0).toFloat()) * kof)
+                    10 -> entries[9] = Entry(9f, (cursor.getString(0).toFloat()) * kof)
+                    11 -> entries[10] = Entry(10f, (cursor.getString(0).toFloat()) * kof)
+                    12 -> entries[11] = Entry(11f, (cursor.getString(0).toFloat()) * kof)
+                }
             }
         }
         cursor.close()
     }
+
     private fun moveToNextFragment(fragment: Fragment) {
         requireActivity().supportFragmentManager.beginTransaction()
             .replace(R.id.conteiner, fragment, "visible_fragment")

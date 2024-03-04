@@ -53,7 +53,7 @@
             android:padding="10dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
-            app:helperText="Укажите кол-во товара"
+            app:helperText="Укажите кол-во товара, которое хотите сохранить на склад"
             app:helperTextEnabled="true"
             app:suffixText="шт.">
 

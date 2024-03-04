@@ -601,7 +601,8 @@ class MyFermaDatabaseHelper constructor(private val context: Context) : SQLiteOp
     fun deleteAllIncubator() {
         val db = writableDatabase
         db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATOR)
-        db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATORTEMPDAMP)
+        db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATORTEMP)
+        db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATORDAMP)
         db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATOROVER)
         db.execSQL("DELETE FROM " + MyConstanta.TABLE_INCUBATORAIRING)
     }

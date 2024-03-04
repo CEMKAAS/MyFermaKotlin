@@ -23,10 +23,10 @@ import com.hfad.myferma.Chart.FinanceChart2Fragment
 import com.hfad.myferma.Chart.FinanceChartFragment
 //import com.hfad.myferma.Chart.FinanceChart2Fragment
 //import com.hfad.myferma.Chart.FinanceChartFragment
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.ProductAdapter
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import java.text.DecimalFormat
 import java.text.ParseException
@@ -194,9 +194,13 @@ class FinanceFragment : Fragment(), View.OnClickListener {
     // Добавляем продукцию
     private fun addArray() {
         val cursor = myDB.readAllDataProduct()
-        while (cursor.moveToNext()) {
-            val product: String = cursor.getString(1)
-            productList.add(product)
+        if(cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                val product: String = cursor.getString(1)
+                productList.add(product)
+            }
+        }else{
+            productList.add("Нет товаров")
         }
         cursor.close()
     }
@@ -214,14 +218,8 @@ class FinanceFragment : Fragment(), View.OnClickListener {
 
             if (cursor.count != 0) {
                 cursor.moveToNext()
-
-                if (tempList[product] == null) {
-                    tempList[product] = cursor.getDouble(1)
-                }
-
-            } else {
-                tempList[product] = 0.0
-            }
+                if (tempList[product] == null) tempList[product] = cursor.getDouble(1)
+            } else tempList[product] = 0.0
             cursor.close()
         }
     }
@@ -230,12 +228,10 @@ class FinanceFragment : Fragment(), View.OnClickListener {
     // Общая прибыль и общии расходы
     private fun totalSum(priceColumn: String, table: String): Double {
         val cursor = myDB.readDataAllSumTable(priceColumn, table)
-        cursor.moveToNext()
         val sum = if (cursor.count != 0) {
+            cursor.moveToNext()
             cursor.getDouble(0)
-        } else {
-            0.0
-        }
+        } else 0.0
         cursor.close()
         return sum
     }
@@ -302,9 +298,7 @@ class FinanceFragment : Fragment(), View.OnClickListener {
                     }
                 }
                 cursor.close()
-            } else {
-                tempList[product] = 0.0
-            }
+            } else tempList[product] = 0.0
         }
 
         val cursorExpens = myDB.readAllDataExpenses()

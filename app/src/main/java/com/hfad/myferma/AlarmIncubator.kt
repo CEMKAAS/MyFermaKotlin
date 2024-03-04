@@ -10,10 +10,11 @@ import android.content.Intent
 import android.os.Build
 import android.widget.Toast
 import androidx.core.app.NotificationCompat
+import androidx.core.app.NotificationManagerCompat
 
 
 class AlarmIncubator : BroadcastReceiver() {
-    private var notifManager: NotificationManager? = null
+//    private var notifManager: NotificationManager? = null
 
     // Установка уведомления, делал не я, поэтому хз, что и как тут
     override fun onReceive(context: Context, intent: Intent) {
@@ -30,13 +31,13 @@ class AlarmIncubator : BroadcastReceiver() {
         val intent: Intent
         val pendingIntent: PendingIntent
         val builder: NotificationCompat.Builder
-        if (notifManager == null) {
-            notifManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        }
+
+        val notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
-            var mChannel: NotificationChannel? = notifManager!!.getNotificationChannel(id)
+            var mChannel: NotificationChannel = notifManager.getNotificationChannel(id)
             if (mChannel == null) {
                 mChannel = NotificationChannel(id, name, importance)
                 mChannel.description = description
@@ -52,7 +53,7 @@ class AlarmIncubator : BroadcastReceiver() {
                     200,
                     400
                 )
-                notifManager!!.createNotificationChannel(mChannel)
+                notifManager.createNotificationChannel(mChannel)
             }
             builder = NotificationCompat.Builder(context, id)
             intent = Intent(context, MainActivity::class.java)
@@ -82,7 +83,6 @@ class AlarmIncubator : BroadcastReceiver() {
                 .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
                 Notification.PRIORITY_HIGH
         }
-        val notification: Notification = builder.build()
-        notifManager!!.notify(NOTIFY_ID, notification)
+        notifManager.notify(NOTIFY_ID, builder.build())
     }
 }

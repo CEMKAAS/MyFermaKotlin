@@ -1,8 +1,6 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.ManagerMenuPackage
 
-import android.content.DialogInterface
 import android.icu.text.DecimalFormat
-import android.icu.text.SimpleDateFormat
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.MenuItem
@@ -11,7 +9,6 @@ import android.view.ViewGroup
 import android.widget.AutoCompleteTextView
 import android.widget.Button
 import android.widget.TextView
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.datepicker.CalendarConstraints
@@ -20,9 +17,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
@@ -436,8 +433,12 @@ class UpdateProductFragment : Fragment() {
                     MyConstanta.DISCROTIONSale
                 )
 
-            cursorSale.moveToNext()
-            saleSum = cursorSale.getDouble(1)
+
+            saleSum = if (cursorSale.count !=0) {
+                cursorSale.moveToNext()
+                cursorSale.getDouble(1)
+            } else 0.0
+
             cursorSale.close()
 
             val cursorWriteOff = myDB.selectTableNameAndSumCount(
@@ -446,8 +447,11 @@ class UpdateProductFragment : Fragment() {
                 product, MyConstanta.DISCROTIONSWRITEOFF
             )
 
-            cursorWriteOff.moveToNext()
-            writeOffSum = cursorWriteOff.getDouble(1)
+            writeOffSum = if (cursorWriteOff.count !=0) {
+                cursorWriteOff.moveToNext()
+                cursorWriteOff.getDouble(1)
+            }else 0.0
+
             cursorWriteOff.close()
 
         }

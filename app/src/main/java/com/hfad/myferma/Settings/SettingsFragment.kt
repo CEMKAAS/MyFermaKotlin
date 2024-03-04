@@ -1,4 +1,4 @@
-package com.hfad.myferma
+package com.hfad.myferma.Settings
 
 import android.database.Cursor
 import android.os.Bundle
@@ -14,9 +14,8 @@ import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.hfad.myferma.AddPackage.AddManagerFragment
+import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
 

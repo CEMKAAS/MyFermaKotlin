@@ -55,7 +55,7 @@
             android:padding="10dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
-            app:helperText="Укажите цену за товар"
+            app:helperText="Укажите цену за купленный товар"
             app:helperTextEnabled="true"
             app:suffixText="₽">
 

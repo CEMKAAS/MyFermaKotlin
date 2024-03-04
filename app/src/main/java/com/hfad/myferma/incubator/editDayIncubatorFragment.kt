@@ -39,6 +39,7 @@ class editDayIncubatorFragment : Fragment(), View.OnClickListener {
 
         val appBar: MaterialToolbar = requireActivity().findViewById(R.id.topAppBar)
         appBar.menu.findItem(R.id.delete).isVisible = false
+        appBar.menu.findItem(R.id.filler).isVisible = false
         appBar.setNavigationOnClickListener {
             requireActivity().supportFragmentManager.popBackStack()
         }

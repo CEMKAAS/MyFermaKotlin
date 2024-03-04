@@ -20,9 +20,9 @@ import com.github.mikephil.charting.utils.ColorTemplate
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.util.Calendar
 
@@ -192,11 +192,17 @@ class WriteOffChartFragment : Fragment() {
         val productSet: MutableSet<String> = HashSet()
 
         val cursor: Cursor = myDB.readAllDataWriteOff()
-        while (cursor.moveToNext()) {
-            val year: String = cursor.getString(5)
-            val product: String = cursor.getString(1)
-            yearSet.add(year)
-            productSet.add(product)
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                val year: String = cursor.getString(5)
+                val product: String = cursor.getString(1)
+                yearSet.add(year)
+                productSet.add(product)
+            }
+        } else {
+            val calendar = Calendar.getInstance()
+            yearSet.add(calendar[Calendar.YEAR].toString())
+            productSet.add("Нет товаров")
         }
         cursor.close()
 
@@ -214,7 +220,8 @@ class WriteOffChartFragment : Fragment() {
         mountString = mountSpiner.text.toString()
         val year2: String = yearSpiner.text.toString()
 
-        val radioChoise = bottomSheetDialog.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
+        val radioChoise =
+            bottomSheetDialog.findViewById<RadioButton>(radioGroup.checkedRadioButtonId)
 
         when (radioChoise?.text.toString()) {
             "На собственные нужды" -> {
@@ -261,7 +268,6 @@ class WriteOffChartFragment : Fragment() {
                 bar(labes, infoChart)
             }
         }
-
     }
 
     //Считаем продукцию за месяц
@@ -281,21 +287,23 @@ class WriteOffChartFragment : Fragment() {
             visitors.add(BarEntry(i.toFloat(), 0f))
         }
 
-        while (cursor.moveToNext()) {
-            when (cursor.getString(1).toInt()) {
+        if (cursor.count != 0) {
+            while (cursor.moveToNext()) {
+                when (cursor.getString(1).toInt()) {
 
-                1 -> visitors[0] = BarEntry(1f, cursor.getString(0).toFloat())
-                2 -> visitors[1] = BarEntry(2f, cursor.getString(0).toFloat())
-                3 -> visitors[2] = BarEntry(3f, cursor.getString(0).toFloat())
-                4 -> visitors[3] = BarEntry(4f, cursor.getString(0).toFloat())
-                5 -> visitors[4] = BarEntry(5f, cursor.getString(0).toFloat())
-                6 -> visitors[5] = BarEntry(6f, cursor.getString(0).toFloat())
-                7 -> visitors[6] = BarEntry(7f, cursor.getString(0).toFloat())
-                8 -> visitors[7] = BarEntry(8f, cursor.getString(0).toFloat())
-                9 -> visitors[8] = BarEntry(9f, cursor.getString(0).toFloat())
-                10 -> visitors[9] = BarEntry(10f, cursor.getString(0).toFloat())
-                11 -> visitors[10] = BarEntry(11f, cursor.getString(0).toFloat())
-                12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
+                    1 -> visitors[0] = BarEntry(1f, cursor.getString(0).toFloat())
+                    2 -> visitors[1] = BarEntry(2f, cursor.getString(0).toFloat())
+                    3 -> visitors[2] = BarEntry(3f, cursor.getString(0).toFloat())
+                    4 -> visitors[3] = BarEntry(4f, cursor.getString(0).toFloat())
+                    5 -> visitors[4] = BarEntry(5f, cursor.getString(0).toFloat())
+                    6 -> visitors[5] = BarEntry(6f, cursor.getString(0).toFloat())
+                    7 -> visitors[6] = BarEntry(7f, cursor.getString(0).toFloat())
+                    8 -> visitors[7] = BarEntry(8f, cursor.getString(0).toFloat())
+                    9 -> visitors[8] = BarEntry(9f, cursor.getString(0).toFloat())
+                    10 -> visitors[9] = BarEntry(10f, cursor.getString(0).toFloat())
+                    11 -> visitors[10] = BarEntry(11f, cursor.getString(0).toFloat())
+                    12 -> visitors[11] = BarEntry(12f, cursor.getString(0).toFloat())
+                }
             }
         }
         cursor.close()

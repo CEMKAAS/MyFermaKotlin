@@ -1,4 +1,4 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.menu
 
 import android.icu.text.DecimalFormat
 import android.os.Bundle
@@ -16,13 +16,13 @@ import android.widget.Toast
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
 import com.google.android.material.appbar.MaterialToolbar
-import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
+import com.hfad.myferma.ManagerMenuPackage.AddManagerFragment
 import com.hfad.myferma.Chart.AddChartFragment
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyConstanta
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
@@ -152,10 +152,12 @@ class AddFragment : Fragment(), View.OnClickListener {
                         product,
                         MyConstanta.DISCROTIONSale
                     )
-                cursorSale.moveToNext()
-                tempList[product] = tempList[product]!! - cursorSale.getDouble(1)
-                cursorSale.close()
 
+                if (cursorSale.count != 0) {
+                    cursorSale.moveToNext()
+                    tempList[product] = tempList[product]!! - cursorSale.getDouble(1)
+                }
+                cursorSale.close()
 
                 val cursorWriteOff = myDB.selectTableNameAndSumCount(
                     MyConstanta.TABLE_NAMEWRITEOFF,
@@ -163,9 +165,12 @@ class AddFragment : Fragment(), View.OnClickListener {
                     product, MyConstanta.DISCROTIONSWRITEOFF
                 )
 
-                cursorWriteOff.moveToNext()
-                tempList[product] = tempList[product]!! - cursorWriteOff.getDouble(1)
+                if (cursorWriteOff.count != 0) {
+                    cursorWriteOff.moveToNext()
+                    tempList[product] = tempList[product]!! - cursorWriteOff.getDouble(1)
+                }
                 cursorWriteOff.close()
+
 
             } else {
                 tempList[product] = 0.0

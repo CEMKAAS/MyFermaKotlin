@@ -1,22 +1,18 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.AddIncubator
 
-import android.database.Cursor
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.AdapterView
 import android.widget.Button
-import android.widget.CheckBox
-import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
+import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
 
 class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
     private lateinit var recyclerView: RecyclerView

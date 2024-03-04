@@ -1,4 +1,4 @@
-package com.hfad.myferma.AddPackage
+package com.hfad.myferma.ManagerMenuPackage
 
 import android.database.Cursor
 import android.os.Bundle
@@ -23,9 +23,9 @@ import com.google.android.material.datepicker.MaterialDatePicker
 import com.google.android.material.datepicker.MaterialPickerOnPositiveButtonClickListener
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
 import com.google.android.material.textfield.TextInputLayout
-import com.hfad.myferma.InfoFragment
+import com.hfad.myferma.Settings.InfoFragment
 import com.hfad.myferma.R
-import com.hfad.myferma.SettingsFragment
+import com.hfad.myferma.Settings.SettingsFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import java.text.ParseException
 import java.text.SimpleDateFormat

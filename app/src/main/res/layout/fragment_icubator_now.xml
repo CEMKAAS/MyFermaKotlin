@@ -4,24 +4,20 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="wrap_content"
     android:layout_height="wrap_content"
-    android:layout_gravity="center">
+    android:layout_gravity="center|top">
 
-    <GridLayout
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_gravity="top|center"
-        android:columnCount="3">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
 
         <TextView
             android:id="@+id/name"
             style="@style/TextAppearance.MyApp.DisplaySmall3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="1"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:text="Инкубатор 3" />
 
 
@@ -30,11 +26,8 @@
             style="@style/TextAppearance.MyApp.DisplaySmall3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="2"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:text="Идет день 1" />
 
 
@@ -43,10 +36,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="3"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
-            android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Температура должна быть 38 г" />
 
@@ -55,9 +44,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="4"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Влажность должна быть 50 %" />
@@ -68,9 +54,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="5"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Переворачивать нужно 5-6 раз" />
@@ -80,9 +63,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="6"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Провертивать нужно 10 минут" />
@@ -93,51 +73,45 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="7"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:text="Овоскопирование" />
 
-        <Button
-            android:id="@+id/addChart_button"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="8"
-            android:layout_column="0"
-            android:layout_gravity="left"
-            android:layout_marginTop="5dp"
-            android:onClick="onClickAddChart"
-            android:text="Изменить"
-            app:icon="@drawable/baseline_edit_24" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center."
+            android:orientation="horizontal">
 
+            <Button
+                android:id="@+id/addChart_button"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:onClick="onClickAddChart"
+                android:text="Изменить"
+                app:icon="@drawable/baseline_edit_24" />
 
-        <Button
-            android:id="@+id/add_button"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="8"
-            android:layout_column="1"
-            android:layout_gravity="left"
-
-            android:layout_marginTop="5dp"
-            android:onClick="onClickAdd"
-            android:text="Фото"
-            app:icon="@drawable/baseline_egg_24" />
+            <Button
+                android:id="@+id/add_button"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="5dp"
+                android:layout_marginLeft="10dp"
+                android:onClick="onClickAdd"
+                android:text="Фото"
+                app:icon="@drawable/baseline_egg_24" />
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tomorrow"
             style="@style/TextAppearance.MyApp.DisplaySmall3"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="9"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginTop="20dp"
-            android:layout_marginBottom="20dp"
+            android:layout_marginBottom="15dp"
             android:text="Завтра" />
 
 
@@ -146,9 +120,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="10"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Температура должна быть 38 г" />
@@ -158,9 +129,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="11"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Влажность должна быть 50 %" />
@@ -171,9 +139,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="12"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Переворачивать нужно 5-6 раз" />
@@ -183,9 +148,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="13"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginBottom="5dp"
             android:text="Провертивать нужно 10 минут " />
@@ -196,9 +158,6 @@
             style="@style/TextAppearance.MyApp.DisplaySmall2"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_row="14"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:text="Овоскопирование" />
 
@@ -207,9 +166,6 @@
             android:id="@+id/add_edit"
             android:layout_width="200dp"
             android:layout_height="wrap_content"
-            android:layout_row="15"
-            android:layout_column="0"
-            android:layout_columnSpan="2"
             android:layout_gravity="center"
             android:layout_marginLeft="5dp"
             android:layout_marginRight="10dp"
@@ -228,35 +184,32 @@
 
         </com.google.android.material.textfield.TextInputLayout>
 
-        <Button
-            android:id="@+id/dayDamp1"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="16"
-            android:layout_column="0"
-            android:layout_gravity="left"
-            android:layout_marginTop="5dp"
-            android:layout_marginRight="10dp"
-            android:onClick="onClickAddChart"
-            android:text="Настройки"
-            app:icon="@drawable/baseline_edit_note_24" />
-        />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/end"
-            style="@style/Widget.Material3.Button.Icon"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_row="16"
-            android:layout_column="1"
-            android:layout_columnSpan="2"
-            android:layout_gravity="left"
-            android:layout_marginTop="5dp"
-            android:onClick="onClickAdd"
-            android:text="Завершить"
+            <Button
+                android:id="@+id/dayDamp1"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:layout_marginRight="10dp"
+                android:onClick="onClickAddChart"
+                android:text="Настройки"
+                app:icon="@drawable/baseline_edit_note_24" />
 
-            />
-
-    </GridLayout>
+            <Button
+                android:id="@+id/end"
+                style="@style/Widget.Material3.Button.Icon"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:layout_marginTop="5dp"
+                android:onClick="onClickAdd"
+                android:text="Завершить" />
+        </LinearLayout>
+    </LinearLayout>
 </ScrollView>

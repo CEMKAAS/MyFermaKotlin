@@ -57,6 +57,7 @@
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            app:helperText="Выберите товар со склада"
             android:hint="Товар"
             android:padding="10dp">
 
@@ -77,7 +78,7 @@
             android:padding="10dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
-            app:helperText="Укажите кол-во товара"
+            app:helperText="Укажите кол-во товара, которое хотите продать со склада"
             app:helperTextEnabled="true"
             app:suffixText="шт.">
 

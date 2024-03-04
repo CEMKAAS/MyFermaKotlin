@@ -1,4 +1,4 @@
-package com.hfad.myferma.incubator
+package com.hfad.myferma.incubator.AddIncubator
 
 import android.view.LayoutInflater
 import android.view.View
@@ -8,8 +8,6 @@ import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.widget.addTextChangedListener
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.textfield.TextInputEditText
-import com.google.android.material.textfield.TextInputLayout
 import com.hfad.myferma.R
 
 class AddSetAdapterIncubator(
@@ -46,11 +44,7 @@ class AddSetAdapterIncubator(
         }
 
         holder.titleTxt2.addTextChangedListener {
-
-
         }
-
-
     }
 
 
