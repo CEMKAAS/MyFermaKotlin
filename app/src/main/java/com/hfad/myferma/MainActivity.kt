@@ -7,10 +7,12 @@ import android.database.Cursor
 import android.os.Bundle
 import android.view.MenuItem
 import android.view.View
+import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ProcessLifecycleOwner
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.floatingactionbutton.ExtendedFloatingActionButton
@@ -28,14 +30,33 @@ import com.hfad.myferma.menu.WriteOffFragment
 import com.hfad.myferma.databinding.ActivityMainBinding
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
+import com.yandex.mobile.ads.appopenad.AppOpenAd
+import com.yandex.mobile.ads.appopenad.AppOpenAdEventListener
+import com.yandex.mobile.ads.appopenad.AppOpenAdLoadListener
+import com.yandex.mobile.ads.appopenad.AppOpenAdLoader
+import com.yandex.mobile.ads.banner.BannerAdEventListener
+import com.yandex.mobile.ads.banner.BannerAdSize
+import com.yandex.mobile.ads.banner.BannerAdView
+import com.yandex.mobile.ads.common.AdError
+import com.yandex.mobile.ads.common.AdRequest
+import com.yandex.mobile.ads.common.AdRequestConfiguration
+import com.yandex.mobile.ads.common.AdRequestError
+import com.yandex.mobile.ads.common.ImpressionData
+import com.yandex.mobile.ads.common.MobileAds
 import java.util.Calendar
 import java.util.Date
+import kotlin.math.roundToInt
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
     private lateinit var fab: ExtendedFloatingActionButton
     private var isAllFabsVisible: Boolean? = null
+
+    private var bannerAd:BannerAdView? = null
+
+    private var appOpenAd: AppOpenAd? = null
+    private var isAdShowOnColdStart = false
 
     private val time1 = mutableListOf<String>()
     private val time2 = mutableListOf<String>()
@@ -259,7 +280,154 @@ class MainActivity : AppCompatActivity() {
 
         // Добавляем основые продукты, если приложение открыто впервые
         add()
+
         //Реклама от яндекса
+        MobileAds.initialize(this) {
+            loadAppOpenAd()
+            val processLifecycleObserver = DefaultProcessLifecycleObserver(
+                onProcessCameForeground = ::showAppOpenAd
+            )
+            ProcessLifecycleOwner.get().lifecycle.addObserver(processLifecycleObserver)
+        }
+
+        binding.bannerAdView.viewTreeObserver.addOnGlobalLayoutListener(object :
+            ViewTreeObserver.OnGlobalLayoutListener {
+            override fun onGlobalLayout() {
+                binding.bannerAdView.viewTreeObserver.removeOnGlobalLayoutListener(this);
+                bannerAd = loadBannerAd(adSize)
+            }
+        })
+
+
+    }
+    private val adSize: BannerAdSize
+        get() {
+            // Calculate the width of the ad, taking into account the padding in the ad container.
+            var adWidthPixels = binding.bannerAdView.width
+            if (adWidthPixels == 0) {
+                // If the ad hasn't been laid out, default to the full screen width
+                adWidthPixels = resources.displayMetrics.widthPixels
+            }
+            val adWidth = (adWidthPixels / resources.displayMetrics.density).roundToInt()
+
+            return BannerAdSize.stickySize(this, adWidth)
+        }
+
+    private fun loadBannerAd(adSize: BannerAdSize): BannerAdView {
+        return binding.bannerAdView.apply {
+            setAdSize(adSize)
+            setAdUnitId("R-M-2139251-1")
+            setBannerAdEventListener(object : BannerAdEventListener {
+                override fun onAdLoaded() {
+                    // If this callback occurs after the activity is destroyed, you
+                    // must call destroy and return or you may get a memory leak.
+                    // Note `isDestroyed` is a method on Activity.
+                    if (isDestroyed) {
+                        bannerAd?.destroy()
+                        return
+                    }
+                }
+
+                override fun onAdFailedToLoad(adRequestError: AdRequestError) {
+                    // Ad failed to load with AdRequestError.
+                    // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
+                }
+
+                override fun onAdClicked() {
+                    // Called when a click is recorded for an ad.
+                }
+
+                override fun onLeftApplication() {
+                    // Called when user is about to leave application (e.g., to go to the browser), as a result of clicking on the ad.
+                }
+
+                override fun onReturnedToApplication() {
+                    // Called when user returned to application after click.
+                }
+
+                override fun onImpression(impressionData: ImpressionData?) {
+                    // Called when an impression is recorded for an ad.
+                }
+            })
+            loadAd(
+                AdRequest.Builder()
+                    // Methods in the AdRequest.Builder class can be used here to specify individual options settings.
+                    .build()
+            )
+        }
+    }
+
+
+
+
+    private fun loadAppOpenAd(){
+        val appOpenAdLoader = AppOpenAdLoader(application)
+        val appOpenAdLoadListener = object : AppOpenAdLoadListener {
+            override fun onAdLoaded(appOpenAd: AppOpenAd) {
+                // The ad was loaded successfully. Now you can show loaded ad.
+                this@MainActivity.appOpenAd = appOpenAd
+
+                if (!isAdShowOnColdStart){
+                    showAppOpenAd()
+                    isAdShowOnColdStart = true
+                }
+
+            }
+
+            override fun onAdFailedToLoad(adRequestError: AdRequestError) {
+                // Ad failed to load with AdRequestError.
+                // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
+            }
+        }
+        appOpenAdLoader.setAdLoadListener(appOpenAdLoadListener)
+
+        val AD_UNIT_ID =
+            "R-M-2139251-5" // для отладки можно использовать "demo-appopenad-yandex"
+        val adRequestConfiguration = AdRequestConfiguration.Builder(AD_UNIT_ID).build()
+        appOpenAdLoader.loadAd(adRequestConfiguration)
+    }
+
+
+
+    private inner class AdEventListener : AppOpenAdEventListener {
+        override fun onAdShown() {
+            // Called when ad is shown.
+        }
+
+        override fun onAdFailedToShow(adError: AdError) {
+            // Called when ad failed to show.
+            clearAppOpenAd()
+            loadAppOpenAd()
+        }
+
+        override fun onAdDismissed() {
+            // Called when ad is dismissed.
+            // Clean resources after dismiss and preload new ad.
+            clearAppOpenAd()
+            loadAppOpenAd()
+        }
+
+        override fun onAdClicked() {
+            // Called when a click is recorded for an ad.
+        }
+
+        override fun onAdImpression(impressionData: ImpressionData?) {
+            // Called when an impression is recorded for an ad.
+            // Get Impression Level Revenue Data in argument.
+        }
+    }
+
+    private fun clearAppOpenAd() {
+        appOpenAd?.setAdEventListener(null)
+        appOpenAd = null
+    }
+
+
+    private fun showAppOpenAd() {
+        val appOpenAdEventListener = AdEventListener()
+        appOpenAd?.setAdEventListener(appOpenAdEventListener)
+        appOpenAd?.show(this@MainActivity)
+
     }
 
 

@@ -15,6 +15,7 @@ import com.google.android.material.floatingactionbutton.ExtendedFloatingActionBu
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayout.OnTabSelectedListener
 import com.hfad.myferma.R
+import com.hfad.myferma.WarehouseFragment
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 
 
@@ -44,7 +45,7 @@ class IncubatorMenuFragment : Fragment() {
             }
             true
         })
-        appBar.setNavigationOnClickListener { requireActivity().supportFragmentManager.popBackStack() }
+        appBar.setNavigationOnClickListener {moveToNextFragment(WarehouseFragment())}
 
         val tabLayout: TabLayout = layout.findViewById(R.id.tab)
         val viewPager2: ViewPager2 = layout.findViewById(R.id.view_pager)
@@ -92,6 +93,11 @@ class IncubatorMenuFragment : Fragment() {
         ) { dialogInterface, i -> }
         builder.create().show()
     }
-
+    private fun moveToNextFragment(fragment: Fragment) {
+        requireActivity().supportFragmentManager.beginTransaction()
+            .replace(R.id.conteiner, fragment, "visible_fragment")
+            .addToBackStack(null)
+            .commit()
+    }
 
 }

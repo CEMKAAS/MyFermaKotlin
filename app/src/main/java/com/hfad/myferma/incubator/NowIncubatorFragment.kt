@@ -68,7 +68,7 @@ class NowIncubatorFragment : Fragment(), View.OnClickListener {
         appBar.menu.findItem(R.id.filler).isVisible = false
         appBar.title = "Мои инкубатор"
         appBar.setNavigationOnClickListener {
-            replaceFragment(HomeIncubatorFragment())
+            replaceFragment(IncubatorMenuFragment())
         }
 
 

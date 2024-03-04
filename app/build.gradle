@@ -50,6 +50,7 @@ dependencies {
 
     //Реклама яндекс
     implementation 'com.yandex.android:mobileads:6.4.0'
+
     //АppMetrica
     implementation 'io.appmetrica.analytics:analytics:6.2.1'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
