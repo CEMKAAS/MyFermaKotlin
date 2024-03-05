@@ -17,7 +17,7 @@ class AlarmReceiver : BroadcastReceiver() {
     private var notifManager: NotificationManager? = null
 
     // Установка уведомления, делал не я, поэтому хз, что и как тут
-    public override fun onReceive(context: Context, intent: Intent) {
+    override fun onReceive(context: Context, intent: Intent) {
         Toast.makeText(context, "Alarm", Toast.LENGTH_SHORT).show()
         createNotification(context)
     }
@@ -31,35 +31,31 @@ class AlarmReceiver : BroadcastReceiver() {
         val intent: Intent
         val pendingIntent: PendingIntent
         val builder: NotificationCompat.Builder
-        if (notifManager == null) {
-            notifManager =
-                context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager?
-        }
+        val notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
-            var mChannel: NotificationChannel? = notifManager!!.getNotificationChannel(id)
+            var mChannel: NotificationChannel? = notifManager.getNotificationChannel(id)
             if (mChannel == null) {
                 mChannel = NotificationChannel(id, name, importance)
-                mChannel.setDescription(description)
+                mChannel.description = description
                 mChannel.enableVibration(true)
-                mChannel.setVibrationPattern(
-                    longArrayOf(
-                        100,
-                        200,
-                        300,
-                        400,
-                        500,
-                        400,
-                        300,
-                        200,
-                        400
-                    )
+                mChannel.vibrationPattern = longArrayOf(
+                    100,
+                    200,
+                    300,
+                    400,
+                    500,
+                    400,
+                    300,
+                    200,
+                    400
                 )
-                notifManager!!.createNotificationChannel(mChannel)
+                notifManager.createNotificationChannel(mChannel)
             }
             builder = NotificationCompat.Builder(context, id)
             intent = Intent(context, MainActivity::class.java)
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent =
                 PendingIntent.getActivity(context, 0, intent, PendingIntent.FLAG_IMMUTABLE)
             builder.setContentTitle("Время пришло!") // required
@@ -73,7 +69,7 @@ class AlarmReceiver : BroadcastReceiver() {
         } else {
             builder = NotificationCompat.Builder(context)
             intent = Intent(context, MainActivity::class.java)
-            intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP)
+            intent.flags = Intent.FLAG_ACTIVITY_CLEAR_TOP or Intent.FLAG_ACTIVITY_SINGLE_TOP
             pendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
             builder.setContentTitle("Время пришло!") // required
                 .setSmallIcon(R.drawable.ic_launcher_foreground) // required
@@ -82,10 +78,10 @@ class AlarmReceiver : BroadcastReceiver() {
                 .setAutoCancel(true)
                 .setContentIntent(pendingIntent)
                 .setTicker("ABCD")
-                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400))
-                .setPriority(Notification.PRIORITY_HIGH)
+                .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
+                Notification.PRIORITY_HIGH
         }
         val notification: Notification = builder.build()
-        notifManager!!.notify(NOTIFY_ID, notification)
+        notifManager.notify(NOTIFY_ID, notification)
     }
 }

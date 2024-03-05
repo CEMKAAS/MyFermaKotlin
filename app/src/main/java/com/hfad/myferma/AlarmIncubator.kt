@@ -14,7 +14,7 @@ import androidx.core.app.NotificationManagerCompat
 
 
 class AlarmIncubator : BroadcastReceiver() {
-//    private var notifManager: NotificationManager? = null
+    private var notifManager: NotificationManager? = null
 
     // Установка уведомления, делал не я, поэтому хз, что и как тут
     override fun onReceive(context: Context, intent: Intent) {
@@ -33,7 +33,6 @@ class AlarmIncubator : BroadcastReceiver() {
         val builder: NotificationCompat.Builder
 
         val notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
@@ -83,6 +82,7 @@ class AlarmIncubator : BroadcastReceiver() {
                 .setVibrate(longArrayOf(100, 200, 300, 400, 500, 400, 300, 200, 400)).priority =
                 Notification.PRIORITY_HIGH
         }
-        notifManager.notify(NOTIFY_ID, builder.build())
+        val notification: Notification = builder.build()
+        notifManager.notify(NOTIFY_ID, notification)
     }
 }

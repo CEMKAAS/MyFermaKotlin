@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var fab: ExtendedFloatingActionButton
     private var isAllFabsVisible: Boolean? = null
 
-    private var bannerAd:BannerAdView? = null
+    private var bannerAd: BannerAdView? = null
 
     private var interstitialAd: InterstitialAd? = null
     private var interstitialAdLoader: InterstitialAdLoader? = null
@@ -327,12 +327,13 @@ class MainActivity : AppCompatActivity() {
         interstitialAdLoader?.loadAd(adRequestConfiguration)
     }
 
-   fun showAd() {
+    fun showAd() {
         interstitialAd?.apply {
             setAdEventListener(object : InterstitialAdEventListener {
                 override fun onAdShown() {
                     // Called when ad is shown.
                 }
+
                 override fun onAdFailedToShow(adError: AdError) {
                     // Called when an InterstitialAd failed to show.
                     // Clean resources after Ad dismissed
@@ -341,6 +342,7 @@ class MainActivity : AppCompatActivity() {
                     // Now you can preload the next interstitial ad.
                     loadInterstitialAd()
                 }
+
                 override fun onAdDismissed() {
                     // Called when ad is dismissed.
                     // Clean resources after Ad dismissed
@@ -349,9 +351,11 @@ class MainActivity : AppCompatActivity() {
                     // Now you can preload the next interstitial ad.
                     loadInterstitialAd()
                 }
+
                 override fun onAdClicked() {
                     // Called when a click is recorded for an ad.
                 }
+
                 override fun onAdImpression(impressionData: ImpressionData?) {
                     // Called when an impression is recorded for an ad.
                 }
@@ -430,16 +434,14 @@ class MainActivity : AppCompatActivity() {
     }
 
 
-
-
-    private fun loadAppOpenAd(){
+    private fun loadAppOpenAd() {
         val appOpenAdLoader = AppOpenAdLoader(application)
         val appOpenAdLoadListener = object : AppOpenAdLoadListener {
             override fun onAdLoaded(appOpenAd: AppOpenAd) {
                 // The ad was loaded successfully. Now you can show loaded ad.
                 this@MainActivity.appOpenAd = appOpenAd
 
-                if (!isAdShowOnColdStart){
+                if (!isAdShowOnColdStart) {
                     showAppOpenAd()
                     isAdShowOnColdStart = true
                 }
@@ -458,7 +460,6 @@ class MainActivity : AppCompatActivity() {
         val adRequestConfiguration = AdRequestConfiguration.Builder(AD_UNIT_ID).build()
         appOpenAdLoader.loadAd(adRequestConfiguration)
     }
-
 
 
     private inner class AdEventListener : AppOpenAdEventListener {
@@ -513,18 +514,51 @@ class MainActivity : AppCompatActivity() {
         cal_now.time = dat
         val cal_alarm = Calendar.getInstance()
         cal_alarm.time = dat
-        cal_alarm[Calendar.HOUR_OF_DAY] = 20
-        cal_alarm[Calendar.MINUTE] = 0
+        cal_alarm[Calendar.HOUR_OF_DAY] = 19
+        cal_alarm[Calendar.MINUTE] = 42
         cal_alarm[Calendar.SECOND] = 0
         if (cal_alarm.before(cal_now)) {
             cal_alarm.add(Calendar.DATE, 1)
         }
         val myIntent = Intent(this@MainActivity, AlarmReceiver::class.java)
-        manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =  PendingIntent.getBroadcast(this@MainActivity, 0, myIntent, PendingIntent.FLAG_IMMUTABLE)
+        manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =
+            PendingIntent.getBroadcast(this@MainActivity, 0, myIntent, PendingIntent.FLAG_IMMUTABLE)
         sda(time1)
         sda(time2)
         sda(time3)
     }
+
+    private fun sda(time: List<String>) {
+        val manager = getSystemService(ALARM_SERVICE) as AlarmManager
+        val dat = Date()
+        val cal_now = Calendar.getInstance()
+        cal_now.time = dat
+        val cal_alarm = Calendar.getInstance()
+        for (i in time.indices) {
+            if (time[i] == "0" || time[i] == "") {
+                continue
+            } else {
+                val time11 = time[i].toString().split(":".toRegex()).dropLastWhile { it.isEmpty() }
+                    .toTypedArray()
+                cal_alarm.time = dat
+                cal_alarm[Calendar.HOUR_OF_DAY] = time11[0].toInt()
+                cal_alarm[Calendar.MINUTE] = time11[1].toInt()
+                cal_alarm[Calendar.SECOND] = 0
+                if (cal_alarm.before(cal_now)) {
+                    cal_alarm.add(Calendar.DATE, 1)
+                }
+//                val myIntent1 = Intent(this@MainActivity, AlarmIncubator::class.java)
+//                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =
+//                    PendingIntent.getBroadcast(
+//                        this@MainActivity,
+//                        0,
+//                        myIntent1,
+//                        PendingIntent.FLAG_IMMUTABLE
+//                    )
+            }
+        }
+    }
+
 
     fun add() {
         val cursor: Cursor = myDB.readAllDataProduct()
@@ -551,42 +585,12 @@ class MainActivity : AppCompatActivity() {
         cursor.close()
     }
 
-    private fun sda(time: List<String>) {
-        val manager = getSystemService(ALARM_SERVICE) as AlarmManager
-        val dat = Date()
-        val cal_now = Calendar.getInstance()
-        cal_now.time = dat
-        val cal_alarm = Calendar.getInstance()
-        for (i in time.indices) {
-            if (time[i] == "0" || time[i] == "") {
-                continue
-            } else {
-                val time11 = time[i].toString().split(":".toRegex()).dropLastWhile { it.isEmpty() }
-                    .toTypedArray()
-                cal_alarm.time = dat
-                cal_alarm[Calendar.HOUR_OF_DAY] = time11[0].toInt()
-                cal_alarm[Calendar.MINUTE] = time11[1].toInt()
-                cal_alarm[Calendar.SECOND] = 0
-                if (cal_alarm.before(cal_now)) {
-                    cal_alarm.add(Calendar.DATE, 1)
-                }
-                val myIntent1 = Intent(this@MainActivity, AlarmIncubator::class.java)
-                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =  PendingIntent.getBroadcast(
-                    this@MainActivity,
-                    0,
-                    myIntent1,
-                    PendingIntent.FLAG_IMMUTABLE
-                )
-            }
-        }
-    }
+
 
 
     private fun storeDataInArrays() {
         val cursor = myDB.readAllDataIncubator()
-        if (cursor.count == 0) {
-            cursor.close()
-        } else {
+        if (cursor.count != 0) {
             while (cursor.moveToNext()) {
                 if (cursor.getString(8) == "0") {
                     time1.add(cursor.getString(10))
@@ -594,8 +598,8 @@ class MainActivity : AppCompatActivity() {
                     time3.add(cursor.getString(12))
                 }
             }
-            cursor.close()
         }
+        cursor.close()
     }
 
     private fun replaceFragment(fragment: Fragment) {
