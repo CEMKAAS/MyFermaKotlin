@@ -43,6 +43,10 @@ import com.yandex.mobile.ads.common.AdRequestConfiguration
 import com.yandex.mobile.ads.common.AdRequestError
 import com.yandex.mobile.ads.common.ImpressionData
 import com.yandex.mobile.ads.common.MobileAds
+import com.yandex.mobile.ads.interstitial.InterstitialAd
+import com.yandex.mobile.ads.interstitial.InterstitialAdEventListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoadListener
+import com.yandex.mobile.ads.interstitial.InterstitialAdLoader
 import java.util.Calendar
 import java.util.Date
 import kotlin.math.roundToInt
@@ -54,6 +58,9 @@ class MainActivity : AppCompatActivity() {
     private var isAllFabsVisible: Boolean? = null
 
     private var bannerAd:BannerAdView? = null
+
+    private var interstitialAd: InterstitialAd? = null
+    private var interstitialAdLoader: InterstitialAdLoader? = null
 
     private var appOpenAd: AppOpenAd? = null
     private var isAdShowOnColdStart = false
@@ -283,13 +290,14 @@ class MainActivity : AppCompatActivity() {
 
         //Реклама от яндекса
         MobileAds.initialize(this) {
+            //реклама при включении
             loadAppOpenAd()
             val processLifecycleObserver = DefaultProcessLifecycleObserver(
                 onProcessCameForeground = ::showAppOpenAd
             )
             ProcessLifecycleOwner.get().lifecycle.addObserver(processLifecycleObserver)
         }
-
+        //Баннер
         binding.bannerAdView.viewTreeObserver.addOnGlobalLayoutListener(object :
             ViewTreeObserver.OnGlobalLayoutListener {
             override fun onGlobalLayout() {
@@ -297,9 +305,73 @@ class MainActivity : AppCompatActivity() {
                 bannerAd = loadBannerAd(adSize)
             }
         })
+        //Инкубатор
+        interstitialAdLoader = InterstitialAdLoader(this).apply {
+            setAdLoadListener(object : InterstitialAdLoadListener {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                    // The ad was loaded successfully. Now you can show loaded ad.
+                }
 
-
+                override fun onAdFailedToLoad(adRequestError: AdRequestError) {
+                    // Ad failed to load with AdRequestError.
+                    // Attempting to load a new ad from the onAdFailedToLoad() method is strongly discouraged.
+                }
+            })
+        }
+        loadInterstitialAd()
     }
+
+    private fun loadInterstitialAd() {
+        val adRequestConfiguration = AdRequestConfiguration.Builder("R-M-2139251-4").build()
+        interstitialAdLoader?.loadAd(adRequestConfiguration)
+    }
+
+   fun showAd() {
+        interstitialAd?.apply {
+            setAdEventListener(object : InterstitialAdEventListener {
+                override fun onAdShown() {
+                    // Called when ad is shown.
+                }
+                override fun onAdFailedToShow(adError: AdError) {
+                    // Called when an InterstitialAd failed to show.
+                    // Clean resources after Ad dismissed
+                    destroyInterstitialAd()
+
+                    // Now you can preload the next interstitial ad.
+                    loadInterstitialAd()
+                }
+                override fun onAdDismissed() {
+                    // Called when ad is dismissed.
+                    // Clean resources after Ad dismissed
+                    destroyInterstitialAd()
+
+                    // Now you can preload the next interstitial ad.
+                    loadInterstitialAd()
+                }
+                override fun onAdClicked() {
+                    // Called when a click is recorded for an ad.
+                }
+                override fun onAdImpression(impressionData: ImpressionData?) {
+                    // Called when an impression is recorded for an ad.
+                }
+            })
+            show(this@MainActivity)
+        }
+    }
+
+    override fun onDestroy() {
+        super.onDestroy()
+        interstitialAdLoader?.setAdLoadListener(null)
+        interstitialAdLoader = null
+        destroyInterstitialAd()
+    }
+
+    private fun destroyInterstitialAd() {
+        interstitialAd?.setAdEventListener(null)
+        interstitialAd = null
+    }
+
     private val adSize: BannerAdSize
         get() {
             // Calculate the width of the ad, taking into account the padding in the ad container.

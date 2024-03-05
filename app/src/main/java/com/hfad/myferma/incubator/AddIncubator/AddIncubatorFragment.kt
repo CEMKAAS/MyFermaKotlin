@@ -10,6 +10,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.appbar.MaterialToolbar
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.hfad.myferma.MainActivity
 import com.hfad.myferma.R
 import com.hfad.myferma.db.MyFermaDatabaseHelper
 import com.hfad.myferma.incubator.MenuIncubators.IncubatorMenuFragment
@@ -774,6 +775,7 @@ class AddIncubatorFragment : Fragment(), AddAdapterIncubator.Listener {
             myDB.insertToDbIncubatorOver(massOver)
 
             addChart()
+            (activity as MainActivity?)?.showAd()
         }
         builder.setNegativeButton(
             "Нет"
