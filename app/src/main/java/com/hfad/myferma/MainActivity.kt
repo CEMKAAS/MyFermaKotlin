@@ -514,8 +514,8 @@ class MainActivity : AppCompatActivity() {
         cal_now.time = dat
         val cal_alarm = Calendar.getInstance()
         cal_alarm.time = dat
-        cal_alarm[Calendar.HOUR_OF_DAY] = 19
-        cal_alarm[Calendar.MINUTE] = 42
+        cal_alarm[Calendar.HOUR_OF_DAY] = 11
+        cal_alarm[Calendar.MINUTE] = 20
         cal_alarm[Calendar.SECOND] = 0
         if (cal_alarm.before(cal_now)) {
             cal_alarm.add(Calendar.DATE, 1)
@@ -523,6 +523,7 @@ class MainActivity : AppCompatActivity() {
         val myIntent = Intent(this@MainActivity, AlarmReceiver::class.java)
         manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =
             PendingIntent.getBroadcast(this@MainActivity, 0, myIntent, PendingIntent.FLAG_IMMUTABLE)
+
         sda(time1)
         sda(time2)
         sda(time3)
@@ -547,14 +548,14 @@ class MainActivity : AppCompatActivity() {
                 if (cal_alarm.before(cal_now)) {
                     cal_alarm.add(Calendar.DATE, 1)
                 }
-//                val myIntent1 = Intent(this@MainActivity, AlarmIncubator::class.java)
-//                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =
-//                    PendingIntent.getBroadcast(
-//                        this@MainActivity,
-//                        0,
-//                        myIntent1,
-//                        PendingIntent.FLAG_IMMUTABLE
-//                    )
+                val myIntent1 = Intent(this@MainActivity, AlarmIncubator::class.java)
+                manager[AlarmManager.RTC_WAKEUP, cal_alarm.timeInMillis] =
+                    PendingIntent.getBroadcast(
+                        this@MainActivity,
+                        0,
+                        myIntent1,
+                        PendingIntent.FLAG_IMMUTABLE
+                    )
             }
         }
     }

@@ -23,7 +23,7 @@ class AlarmIncubator : BroadcastReceiver() {
     }
 
     private fun createNotification(context: Context) {
-        val NOTIFY_ID: Int = 1003
+        val NOTIFY_ID: Int = 1121
         val name: String = "my_package_channel121"
         val id: String = "my_package_channel_121" // The user-visible name of the channel.
         val description: String =
@@ -31,12 +31,11 @@ class AlarmIncubator : BroadcastReceiver() {
         val intent: Intent
         val pendingIntent: PendingIntent
         val builder: NotificationCompat.Builder
-
         val notifManager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
 
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val importance: Int = NotificationManager.IMPORTANCE_HIGH
-            var mChannel: NotificationChannel = notifManager.getNotificationChannel(id)
+            var mChannel: NotificationChannel? = notifManager.getNotificationChannel(id)
             if (mChannel == null) {
                 mChannel = NotificationChannel(id, name, importance)
                 mChannel.description = description
