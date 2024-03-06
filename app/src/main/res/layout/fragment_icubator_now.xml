@@ -160,7 +160,7 @@
             android:id="@+id/add_edit"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="10dp"
+            android:padding="5dp"
             android:hint="Количество"
             app:endIconDrawable="@drawable/baseline_east_24"
             app:endIconMode="custom"
@@ -180,6 +180,8 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:gravity="center"
+            android:layout_marginTop="5dp"
+            android:layout_marginBottom="5dp"
             android:orientation="horizontal">
 
             <Button
@@ -187,7 +189,6 @@
                 style="@style/Widget.Material3.Button.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="5dp"
                 android:onClick="onClickAddChart"
                 android:text="Настройки"
                 app:icon="@drawable/baseline_edit_note_24" />
@@ -198,7 +199,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="5dp"
                 android:onClick="onClickAdd"
                 android:text="Завершить" />
         </LinearLayout>

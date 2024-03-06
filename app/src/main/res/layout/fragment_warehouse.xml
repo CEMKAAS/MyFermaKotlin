@@ -11,7 +11,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:layout_gravity="center">
+        android:layout_gravity="center|top">
 
       <TextView
           style="@style/TextAppearance.MyApp.DisplaySmall3"
@@ -19,6 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+          android:padding="10dp"
         android:text="@string/result_text" />
 
     <androidx.recyclerview.widget.RecyclerView
@@ -70,6 +71,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
+        android:layout_marginBottom="5dp"
         android:onClick="onClickWriteOff"
         android:text="Инкубатор"
 

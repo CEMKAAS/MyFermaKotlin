@@ -36,7 +36,7 @@
             android:layout_gravity="fill_horizontal"
             app:helperText="Выберите товар со склада"
             android:hint="Товар"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <AutoCompleteTextView
                 android:id="@+id/animals_spiner"
@@ -52,7 +52,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Количество"
-            android:padding="10dp"
+            android:padding="5dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
             app:helperText="Укажите кол-во товара, которое нужно списать со склада"
@@ -95,6 +95,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+           android:layout_marginTop="5dp"
             android:gravity="center"
             android:orientation="horizontal">
 

@@ -14,7 +14,7 @@
         android:layout_columnSpan="2"
         android:textSize="21dp"
         android:layout_gravity="center"
-        android:text="Мое Хозяйство v1.38" />
+        android:text="Мое Хозяйство v1.40" />
 
     <TextView
         android:layout_width="wrap_content"

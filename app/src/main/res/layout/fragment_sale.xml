@@ -46,7 +46,6 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:fontFamily="@font/commissioner_regular"
-                android:padding="10dp"
                 android:text=""
                 android:textSize="18dp" />
 
@@ -59,7 +58,7 @@
             android:layout_height="wrap_content"
             app:helperText="Выберите товар со склада"
             android:hint="Товар"
-            android:padding="10dp">
+            android:padding="5dp">
 
             <AutoCompleteTextView
                 android:id="@+id/animals_spiner"
@@ -75,7 +74,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Количество"
-            android:padding="10dp"
+            android:padding="5dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
             app:helperText="Укажите кол-во товара, которое хотите продать со склада"
@@ -103,7 +102,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Цена"
-            android:padding="10dp"
+            android:padding="5dp"
             app:endIconMode="custom"
             app:errorEnabled="true"
             app:helperText="Укажите цену за весь товар"
@@ -122,6 +121,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:gravity="center"
+            android:layout_marginTop="5dp"
             android:orientation="horizontal">
 
             <Button

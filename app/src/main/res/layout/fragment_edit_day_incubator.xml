@@ -25,7 +25,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="Температура"
-            android:padding="10dp"
+            android:padding="5dp"
             app:errorEnabled="true"
             app:helperText="Укажите температура"
             app:helperTextEnabled="true"
@@ -44,7 +44,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Влажность"
-            android:padding="10dp"
+            android:padding="5dp"
             app:errorEnabled="true"
             app:helperText="Укажите влажность"
             app:helperTextEnabled="true"
@@ -63,7 +63,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Переворот"
-            android:padding="10dp"
+            android:padding="5dp"
             app:errorEnabled="true"
             app:helperText="Укажите кол-во переворачиваний"
             app:helperTextEnabled="true">
@@ -82,7 +82,7 @@
             android:layout_height="wrap_content"
             android:ems="10"
             android:hint="Проветривание"
-            android:padding="10dp"
+            android:padding="5dp"
             app:errorEnabled="true"
             app:helperText="Укажите кол-во проветриваний"
             app:helperTextEnabled="true">
@@ -99,6 +99,8 @@
             style="@style/Widget.Material3.Button"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+           android:layout_marginTop="10dp"
+            android:layout_marginBottom="10dp"
             android:layout_gravity="center"
             android:text="Обновить" />
     </LinearLayout>
